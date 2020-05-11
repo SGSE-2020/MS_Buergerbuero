@@ -1,0 +1,35 @@
+syntax = "proto3";
+package announcement;
+
+service AnnouncementService {
+    rpc sendAnnouncement(AnnouncementCreation) returns (Announcement) {}
+    rpc deleteAnnouncement(AnnouncementDeletion) returns (Status) {}
+}
+
+message Status{
+    string status = 1;
+    string message = 2;
+}
+
+message AnnouncementCreation {
+    string title = 1;
+    string text = 2;
+    string image = 3;
+    string service = 4;
+}
+
+message AnnouncementDeletion {
+    string aid = 1;
+    string service = 2;
+}
+
+message Announcement {
+    string aid = 1;
+    string title = 2;
+    string text = 3;
+    string type = 4;
+    string image = 5;
+    string source = 6;
+    string service = 7;
+    bool iActive = 8;
+}

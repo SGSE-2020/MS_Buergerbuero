@@ -1,0 +1,20 @@
+{
+  "name": "ms_buergerbuero_server",
+  "version": "1.0.0",
+  "description": "Backend Server of MS Buergerbuero of Smart City",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Pia Schreiner",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.4",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.10.0",
+    "grpc": "^1.24.2",
+    "mali": "^0.20.0"
+  }
+}
