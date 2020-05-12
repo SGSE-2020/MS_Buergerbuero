@@ -1,23 +1,42 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
-  <div class="container">
-    <a class="navbar-brand" [routerLink]="'.'">Bürgerbüro</a>
+  <span class="navbar-brand mb-0 h1">Bürgerbüro</span>
 
-    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
-      &#9776;
-    </button>
+  <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+    &#9776;
+  </button>
 
-    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
-      <ul class="navbar-nav">
-        <button type="button" class="btn btn-outline-info" [routerLink]="'home'"><mat-icon>home</mat-icon> Home</button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'black-board'"><mat-icon>assignment</mat-icon> Aushänge</button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'user-account'"><mat-icon>settings</mat-icon> Konto</button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'work'"><mat-icon>work</mat-icon> Work</button>
+  <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+    <button type="button" class="btn btn-outline-info" [routerLink]="'home'"><mat-icon>home</mat-icon> Home</button>
+    <button type="button" class="btn btn-outline-info" [routerLink]="'black-board'"><mat-icon>assignment</mat-icon> Aushänge</button>
+    <button type="button" class="btn btn-outline-info" [routerLink]="'user-account'"><mat-icon>settings</mat-icon> Konto</button>
+    <button type="button" class="btn btn-outline-info" [routerLink]="'work'"><mat-icon>work</mat-icon> Arbeit</button>
 
-      </ul>
-      <ul class="nav justify-content-end">
-        <button type="button" class="btn btn-outline-info" [routerLink]="'.'"><mat-icon>account_circle</mat-icon> Login</button>
-      </ul>
-    </div>
+    <!--<button type="button" class="btn btn-outline-info" (click)="openModalVerticallyCentered(loginModal)"><mat-icon>account_circle</mat-icon> Anmeldung</button>-->
+    <button type="button" class="btn btn-outline-info" (click)="performLogin()"><mat-icon>account_circle</mat-icon> Anmeldung</button>
   </div>
 </nav>
+
+<!--
+<ng-template #loginModal let-modal>
+    <form [formGroup]="loginForm" (submit)="performLogin()">
+      <div class="modal-header">
+        <h4 class="modal-title">Anmeldung</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="inputEmail">Emailadresse</label>
+          <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" formControlName="email">
+        </div>
+        <div class="form-group">
+          <label for="inputPassword">Passwort</label>
+          <input type="password" class="form-control" id="inputPassword" formControlName="password">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.dismiss('Cancel click')">Cancel</button>
+        <button type="submit" class="btn btn-dark" (click)="performLogin()">Login</button>
+      </div>
+    </form>
+</ng-template>
+-->
 

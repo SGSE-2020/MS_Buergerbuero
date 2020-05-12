@@ -1,3 +1,8 @@
+const path = require('path');
+const caller = require('grpc-caller')
+const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
+const client = caller('127.0.0.1:50051', userProtoPath, 'UserService');
+
 module.exports = function (app, firebase) {
     /**
      * Register new user
@@ -7,29 +12,41 @@ module.exports = function (app, firebase) {
      * @returns Uid of the user or null if registering has failed
      */
     app.post("/registerUser", function (req, res) {
-        let username = req.body.username;
-        let email = req.body.email;
-        let password = req.body.password;
-
         let responseObj = {};
 
         firebase.auth().createUser({
-            email: email,
+            email: req.body.email,
             emailVerified: false,
-            password: password,
-            displayName: username,
-            disabled: true,
+            password: req.body.password,
+            displayName: "",
+            disabled: false,
         })
             .then(function (userRecord) {
                 responseObj.status = "success";
                 responseObj.message = userRecord.uid;
                 res.send(responseObj);
+                //todo add user data to database
             })
             .catch(function (error) {
                 responseObj.status = "error";
                 responseObj.message = error;
                 res.send(responseObj);
             });
+    });
+
+    /**
+     * Verify user token
+     * @param token User token from the current authenticated user
+     * @returns Uid if the token was successfully verified otherwise return null
+     */
+    app.post("/verifyUser", function (req, res) {
+        console.log(req.body);
+
+        client.verifyUser(req.body).then((res) => {
+            console.log(res);
+        }).catch((error) => {
+            console.log(error);
+        });
     });
 
     /**

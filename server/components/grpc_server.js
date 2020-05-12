@@ -21,17 +21,12 @@ module.exports = function(firebase){
      * @returns Uid of the verified user or null if not successful
      */
     async function verifyUser (param) {
-        let idToken = param.req.token;
-        let result = {};
-        firebase.auth().verifyIdToken(idToken)
-            .then(function(decodedToken) {
-                console.log("Verification of token: '" + idToken + "' was successful. Uid is: '" + decodedToken.uid + "'")
-                result.uid = decodedToken.uid;
-            }).catch(function() {
-                console.log("Verification of token: '" + idToken + "' was not successful.")
-                result.uid = null;
-        });
-        param.res = result;
+        let decodedToken = await firebase.auth().verifyIdToken(param.req.token);
+        if(decodedToken != undefined){
+            param.res = {uid: decodedToken.uid};
+        } else {
+            param.res = {uid: null};
+        }
     }
 
     /*Launch gRPC server*/
