@@ -1,32 +1,16 @@
-const express = require("express");
-const bodyParser = require('body-parser');
-const path = require('path')
-const Mali = require('mali')
+/*Firebase Initialization*/
+const firebase = require("firebase-admin");
+const serviceAccount = require("./smartcity_servicekey.json");
 
-const appRest = express();
-appRest.use(bodyParser.json());
-appRest.use(bodyParser.urlencoded({ extended: true }));
-
-const protoPath = path.resolve(__dirname, './proto/user.proto')
-const appGRpc = new Mali(protoPath, 'Greeter')
-
-/*Header*/
-appRest.all('/*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header("Access-Control-Allow-Headers", "x-xsrf-token, Content-Type");
-    next();
+firebase.initializeApp({
+    credential: firebase.credential.cert(serviceAccount),
+    databaseURL: "https://smartcity-auth-e09ae.firebaseio.com",
 });
 
-/*Routes*/
-require('./modules/user_management.js')(appRest, express);
-require('./modules/grpc_interfaces');
+/*Start all components*/
+//require('./components/rest_server')(firebase);
+require('./components/grpc_server')(firebase);
+require('./components/grpc_client');
 
-/*Launch REST server*/
-appRest.listen("9000", function () {
-    console.log("Server running on port: 9000");
-});
 
-/*Launch gRPC server*/
-appGRpc.start('127.0.0.1:50051')
 

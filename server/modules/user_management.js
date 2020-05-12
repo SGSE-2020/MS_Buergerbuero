@@ -1,6 +1,4 @@
-require('./firebase.js');
-
-module.exports = function (app) {
+module.exports = function (app, firebase) {
     /**
      * Register new user
      * @param nickname of the that should be registered
