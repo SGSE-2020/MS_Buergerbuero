@@ -1,42 +1,61 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
-  <span class="navbar-brand mb-0 h1">Bürgerbüro</span>
+  <div class="container">
+    <span class="navbar-brand mb-0 h1">Bürgerbüro</span>
 
-  <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
-    &#9776;
-  </button>
-
-  <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
-    <button type="button" class="btn btn-outline-info" [routerLink]="'home'"><mat-icon>home</mat-icon> Home</button>
-    <button type="button" class="btn btn-outline-info" [routerLink]="'black-board'"><mat-icon>assignment</mat-icon> Aushänge</button>
-    <button type="button" class="btn btn-outline-info" [routerLink]="'user-account'"><mat-icon>settings</mat-icon> Konto</button>
-    <button type="button" class="btn btn-outline-info" [routerLink]="'work'"><mat-icon>work</mat-icon> Arbeit</button>
-
-    <!--<button type="button" class="btn btn-outline-info" (click)="openModalVerticallyCentered(loginModal)"><mat-icon>account_circle</mat-icon> Anmeldung</button>-->
-    <button type="button" class="btn btn-outline-info" (click)="performLogin()"><mat-icon>account_circle</mat-icon> Anmeldung</button>
+    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+      &#9776;
+    </button>
+    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <button type="button" class="btn btn-outline-info" [routerLink]="'home'"><mat-icon>home</mat-icon> Home</button>
+        <button type="button" class="btn btn-outline-info" [routerLink]="'black-board'"><mat-icon>assignment</mat-icon> Aushänge</button>
+        <button type="button" class="btn btn-outline-info" [routerLink]="'user-account'"><mat-icon>settings</mat-icon> Konto</button>
+        <button type="button" class="btn btn-outline-info" [routerLink]="'work'"><mat-icon>work</mat-icon> Arbeit</button>
+      </ul>
+      <ul class="navbar-nav mr-auto">
+        <button type="button" class="btn btn-outline-info" (click)="openModal(loginModal)"><mat-icon>account_circle</mat-icon> Anmeldung</button>
+      </ul>
+    </div>
   </div>
+
 </nav>
 
-<!--
 <ng-template #loginModal let-modal>
-    <form [formGroup]="loginForm" (submit)="performLogin()">
-      <div class="modal-header">
-        <h4 class="modal-title">Anmeldung</h4>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="inputEmail">Emailadresse</label>
-          <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" formControlName="email">
-        </div>
-        <div class="form-group">
-          <label for="inputPassword">Passwort</label>
-          <input type="password" class="form-control" id="inputPassword" formControlName="password">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-light" (click)="modal.dismiss('Cancel click')">Cancel</button>
-        <button type="submit" class="btn btn-dark" (click)="performLogin()">Login</button>
-      </div>
-    </form>
+  <div class="modal-header">
+    <h4 class="modal-title">Anmeldung</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="emailLogin">Emailadresse</label>
+      <input type="email" class="form-control" id="emailLogin" aria-describedby="emailHelp" [(ngModel)]="emailLogin">
+    </div>
+    <div class="form-group">
+      <label for="passwordLogin">Passwort</label>
+      <input type="password" class="form-control" id="passwordLogin" [(ngModel)]="passwordLogin">
+    </div>
+    <button type="button" class="btn btn-link" (click)="openModal(registerModal)">Noch kein Bürger der Smart City? Jetzt registrieren!</button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.dismiss('Cancel click')">Cancel</button>
+    <button type="submit" class="btn btn-dark" (click)="performLogin()">Login</button>
+  </div>
 </ng-template>
--->
+
+<ng-template #registerModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Registrierung</h4>
+  </div>
+  <div class="modal-body">
+    <button type="button" class="btn btn-link" (click)="openModal(loginModal)">Bereits Bürger der Smart City? Jetzt anmelden!</button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.dismiss('Cancel click')">Cancel</button>
+    <button type="submit" class="btn btn-dark" (click)="performRegister()">Login</button>
+  </div>
+</ng-template>
+
+
+
+
+
 

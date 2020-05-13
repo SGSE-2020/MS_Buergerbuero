@@ -16,6 +16,7 @@ module.exports = function(firebase){
 
     /*Routes*/
     require('../modules/user_management')(app, firebase);
+    require('../modules/announcement_management')(app, firebase);
 
     /*Launch REST server*/
     app.listen("9000", function () {

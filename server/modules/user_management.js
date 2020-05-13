@@ -74,4 +74,27 @@ module.exports = function (app, firebase) {
                 res.send(responseObj);
             });
     });
+
+    /**
+     * Deactivate the given user
+     * @param uid Uid of of user the that should be deactivated
+     * @returns User record object or error message if not successful
+     */
+    app.post("/deactivateUser", function (req, res) {
+        let uid = req.body.uid;
+        let responseObj = {};
+        firebase.auth().updateUser(uid, {
+            deactivated: true
+        })
+            .then(function(userRecord) {
+                responseObj.status = "success";
+                responseObj.message = userRecord.toJSON();
+                res.send(responseObj);
+            })
+            .catch(function(error) {
+                responseObj.status = "error";
+                responseObj.message = error
+                res.send(responseObj);
+            });
+    });
 };
