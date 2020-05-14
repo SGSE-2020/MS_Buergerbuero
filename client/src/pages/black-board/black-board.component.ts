@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GlobalConstantsService } from '../../app/global-constants.service';
 
 @Component({
   selector: 'app-black-board',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BlackBoardComponent implements OnInit {
 
-  constructor() { }
+  constructor(public constants: GlobalConstantsService) { }
 
   ngOnInit(): void {
   }

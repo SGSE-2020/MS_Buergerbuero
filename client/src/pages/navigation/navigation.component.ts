@@ -2,7 +2,8 @@ import {Component, OnInit, TemplateRef} from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import { FormBuilder, Validators} from '@angular/forms';
+import { GlobalConstantsService } from '../../app/global-constants.service';
 
 @Component({
   selector: 'app-navigation',
@@ -13,12 +14,9 @@ import {FormBuilder, FormControl, Validators} from '@angular/forms';
 export class NavigationComponent implements OnInit {
   public isMenuCollapsed = true;
   action: string;
-  currentUser: any;
-  currentRole: number; // 0 = Gast, 1 = Bürger, 2 = Mitarbeiter
-
   authForm: any;
 
-  constructor(private http: HttpClient, public modalService: NgbModal,
+  constructor(private http: HttpClient, public modalService: NgbModal, public constants: GlobalConstantsService,
               private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder) {
   }
 
@@ -27,20 +25,28 @@ export class NavigationComponent implements OnInit {
    * Builds the login form validation.
    */
   ngOnInit(): void {
-    this.currentRole = 0;
+    this.constants.userRole = 0;
     this.action = 'login';
     this.authForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+    this.checkIfUserIsLoggedIn();
   }
 
+  // <editor-fold desc="Authentication functions">
   /**
-   * Function to open the modal
-   * @param modalContent Modal that should be opened
+   * Check if an user is signed in at the moment
    */
-  openModal(modalContent: any) {
-    this.modalService.open(modalContent, {centered: true});
+  checkIfUserIsLoggedIn(){
+      this.firebaseAuth.currentUser.then((user) => {
+          if (user != null){
+            this.constants.userRole = 1;
+            // todo check role from current logged in user
+          } else {
+            this.constants.currentUser = null;
+          }
+      });
   }
 
   /**
@@ -51,18 +57,16 @@ export class NavigationComponent implements OnInit {
       if (this.action === 'login'){
         this.firebaseAuth.signInWithEmailAndPassword(this.authForm.value.email, this.authForm.value.password).then((result) => {
           result.user.getIdToken(true).then((token) => {
-            this.http.post('http://localhost:9000/verifyUser', {
-              token
-            }).subscribe(
-              (val) => {
-                // todo dismiss modal -> login successful
-                // todo get role from response
-                console.log(val);
-
-                this.currentRole = 0;
-                this.currentUser = result.user;
-                this.modalService.dismissAll();
-                // todo hide login button and show nickname of user
+            this.http.post('http://localhost:9000/verifyUser', {token}).subscribe(
+              (val: any) => {
+                if (val.success){
+                  this.constants.userRole = val.role;
+                  this.constants.currentUser = result.user;
+                  this.modalService.dismissAll();
+                  // todo hide login button and show nickname of user
+                } else {
+                  alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+                }
               },
               error => {
                 console.log(error);
@@ -78,10 +82,55 @@ export class NavigationComponent implements OnInit {
           }
         });
       } else {
-        // todo perform register
-        alert(this.authForm.value.gender);
+        const newUser = JSON.stringify({
+          gender: Number(this.authForm.value.gender),
+          firstName: this.authForm.value.firstName,
+          lastName: this.authForm.value.lastName,
+          nickname: this.authForm.value.nickname,
+          email: this.authForm.value.email,
+          password: this.authForm.value.password,
+          birthDate: this.authForm.value.birthDate,
+          streetAddress: this.authForm.value.streetAddress,
+          zipcode: this.authForm.value.zipcode,
+          phone: this.authForm.value.phone
+        });
+
+        this.http.post('http://localhost:9000/registerUser', {newUser}).subscribe(
+          (val: any) => {
+            if (val.success){
+              alert('Bürgerkonto wurde erfolgreich erstellt.');
+              this.modalService.dismissAll();
+            } else {
+              alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+            }
+          },
+          error => {
+            console.log(error);
+            alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+          });
       }
     }
+  }
+
+  /**
+   * Logout the current signed in user and set the role to guest
+   */
+  performLogout() {
+    this.firebaseAuth.signOut().then((result) => {
+      this.constants.currentUser = null;
+      this.constants.userRole = 0;
+    });
+  }
+
+  // </editor-fold>
+
+  // <editor-fold desc="Modal utility">
+  /**
+   * Function to open the modal
+   * @param modalContent Modal that should be opened
+   */
+  openModal(modalContent: any) {
+    this.modalService.open(modalContent, {centered: true});
   }
 
   /**
@@ -100,7 +149,7 @@ export class NavigationComponent implements OnInit {
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
         nickname: [''],
-        birthDate: [null, Validators.required],
+        birthDate: ['', Validators.required],
         streetAddress: ['', Validators.required],
         zipcode: ['', Validators.required],
         city: ['Smart City'],
@@ -111,4 +160,6 @@ export class NavigationComponent implements OnInit {
     }
     this.action = givenAction;
   }
+
+  // </editor-fold>
 }

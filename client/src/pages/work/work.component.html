@@ -1,3 +1,9 @@
 <div class="container">
-  WORK
+  <div class="alert alert-danger" role="alert" *ngIf="this.constants.userRole != 2">
+    <h4 class="alert-heading">Keine Berechtigung!</h4>
+    <p>Sie haben keine Berechtigung auf diese Seite zuzugreifen</p>
+  </div>
+  <div id="content" *ngIf="this.constants.userRole == 2">
+    WORK
+  </div>
 </div>

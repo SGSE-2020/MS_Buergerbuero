@@ -15,20 +15,26 @@
           <mat-icon>assignment</mat-icon>
           Aushänge
         </button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'user-account'">
+        <button type="button" class="btn btn-outline-info" [routerLink]="'user-account'" *ngIf="this.constants.userRole==1">
           <mat-icon>settings</mat-icon>
           Konto
         </button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'work'">
+        <button type="button" class="btn btn-outline-info" [routerLink]="'work'" *ngIf="this.constants.userRole==2">
           <mat-icon>work</mat-icon>
           Arbeit
         </button>
       </ul>
       <ul class="navbar-nav">
-        <button type="button" class="btn btn-outline-light" (click)="openModal(authModal)">
+        <button type="button" class="btn btn-outline-light" (click)="openModal(authModal)" *ngIf="this.constants.userRole==0">
           <mat-icon>account_circle</mat-icon>
           Anmeldung
-        </button>
+        </button >
+        <div ngbDropdown class="d-inline-block" *ngIf="this.constants.userRole!=0">
+          <button class="btn btn-outline-light" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.currentUser.displayName}} <mat-icon>account_circle</mat-icon></button>
+          <div ngbDropdownMenu aria-labelledby="useraccount-dropdown">
+            <button ngbDropdownItem (click)="performLogout()">Logout</button>
+          </div>
+        </div>
       </ul>
     </div>
   </div>
@@ -58,7 +64,7 @@
             <div class="form-check">
               <input class="form-check-input" type="radio" name="gender" formControlName="gender" id="genderMale" value="1" >
               <label class="form-check-label" for="genderMale">
-                Frau
+                Herr
               </label>
             </div>
           </div>
@@ -86,8 +92,8 @@
         <div class="form-row" *ngIf="action=='register'">
           <label for="birthDate" class="control-label">Geburtsdatum</label>
           <div class="input-group">
-            <input class="form-control" placeholder="dd-mm-yyyy" id="birthDate"
-                   name="dp" ngbDatepicker #d="ngbDatepicker">
+            <input class="form-control" placeholder="yyyy-mm-dd" id="birthDate"
+                   name="dp" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker" [minDate]="{year:1920, month:1, day:1}">
             <div class="input-group-append">
               <button type="button" class="btn btn-info" (click)="d.toggle()"><mat-icon>event</mat-icon></button>
             </div>
@@ -111,7 +117,7 @@
         </div>
         <div class="form-row">
           <label for="password" class="control-label">Passwort</label>
-          <input type="text" id="password" class="form-control" formControlName="password" placeholder="Passwort eintragen...">
+          <input type="password" id="password" class="form-control" formControlName="password" placeholder="Passwort eintragen...">
         </div>
       </div>
 

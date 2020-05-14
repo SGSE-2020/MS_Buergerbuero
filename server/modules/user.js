@@ -13,22 +13,22 @@ module.exports = function (app, firebase) {
      */
     app.post("/registerUser", function (req, res) {
         let responseObj = {};
-
+        let user = JSON.parse(req.body.newUser);
         firebase.auth().createUser({
-            email: req.body.email,
-            emailVerified: false,
-            password: req.body.password,
-            displayName: "",
+            email: user.email,
+            emailVerified: true,
+            password: user.password,
+            displayName: user.nickname,
             disabled: false,
         })
             .then(function (userRecord) {
-                responseObj.status = "success";
+                responseObj.success = true;
                 responseObj.message = userRecord.uid;
                 res.send(responseObj);
                 //todo add user data to database
             })
             .catch(function (error) {
-                responseObj.status = "error";
+                responseObj.success = false;
                 responseObj.message = error;
                 res.send(responseObj);
             });
@@ -42,7 +42,7 @@ module.exports = function (app, firebase) {
     app.post("/verifyUser", function (req, res) {
         let userResponse = {};
         client.verifyUser(req.body).then((result) => {
-            if(result.uid == null){
+            if(result.uid != null){
                 // todo get role of user
                 userResponse.success = true;
                 userResponse.role = 1;
