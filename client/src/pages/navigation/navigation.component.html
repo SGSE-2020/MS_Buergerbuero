@@ -44,18 +44,18 @@
   <div class="modal-header">
     <h4 class="modal-title" *ngIf="action=='login'">Anmeldung</h4>
     <h4 class="modal-title" *ngIf="action=='register'">Registrierung</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')" (click)="modalClosed()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <form [formGroup]="authForm" id="authFormId" (ngSubmit)="performLoginOrRegister()">
       <div class="form-group" [ngClass]="">
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row gender" *ngIf="action=='register'">
           <div class="col-auto my-1">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="gender" formControlName="gender" id="genderFemale" value="2" checked>
-              <label class="form-check-label" for="genderFemale">
+              <label class="form-check-label"  for="genderFemale">
                 Frau
               </label>
             </div>
@@ -78,19 +78,19 @@
           </div>
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="firstName" class="control-label">Vorname</label>
+          <label for="firstName" class="control-label font-weight-bold">Vorname</label>
           <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Vornamen eintragen...">
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="lastName" class="control-label">Nachname</label>
+          <label for="lastName" class="control-label font-weight-bold">Nachname</label>
           <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen...">
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="nickname" class="control-label">Spitzname</label>
+          <label for="nickname" class="control-label font-weight-bold">Spitzname</label>
           <input type="text" id="nickname" class="form-control" formControlName="nickname" placeholder="Spitznamen eintragen...">
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="birthDate" class="control-label">Geburtsdatum</label>
+          <label for="birthDate" class="control-label font-weight-bold">Geburtsdatum</label>
           <div class="input-group">
             <input class="form-control" placeholder="yyyy-mm-dd" id="birthDate"
                    name="dp" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker" [minDate]="{year:1920, month:1, day:1}">
@@ -100,23 +100,29 @@
           </div>
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="streetAddress" class="control-label">Straße / Hausnummer</label>
+          <label for="streetAddress" class="control-label font-weight-bold">Straße / Hausnummer</label>
           <input type="text" id="streetAddress" class="form-control" formControlName="streetAddress" placeholder="Straße und Hausnummer eintragen...">
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="zipcode" class="control-label">PLZ</label>
-          <input type="text" id="zipcode" class="form-control" formControlName="zipcode"  placeholder="PLZ eintragen...">
+          <div class="form-group col-md-5">
+            <label for="zipcode" class="control-label font-weight-bold">PLZ</label>
+            <input type="text" id="zipcode" class="form-control" formControlName="zipcode"  placeholder="PLZ eintragen...">
+          </div>
+          <div class="form-group col-md-7">
+            <label for="city" class="control-label font-weight-bold">Stadt</label>
+            <input type="text" id="city" class="form-control" readonly="readonly" value="Smart City">
+          </div>
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="phone" class="control-label">Telefon</label>
+          <label for="phone" class="control-label font-weight-bold">Telefon</label>
           <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Telefonnr eintragen...">
         </div>
         <div class="form-row">
-          <label for="email" class="control-label">E-Mail</label>
+          <label for="email" class="control-label font-weight-bold">E-Mail</label>
           <input type="text" id="email" class="form-control" formControlName="email" placeholder="E-Mail eintragen...">
         </div>
         <div class="form-row">
-          <label for="password" class="control-label">Passwort</label>
+          <label for="password" class="control-label font-weight-bold">Passwort</label>
           <input type="password" id="password" class="form-control" formControlName="password" placeholder="Passwort eintragen...">
         </div>
       </div>

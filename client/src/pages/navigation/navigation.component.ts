@@ -130,7 +130,14 @@ export class NavigationComponent implements OnInit {
    * @param modalContent Modal that should be opened
    */
   openModal(modalContent: any) {
-    this.modalService.open(modalContent, {centered: true});
+    this.modalService.open(modalContent, {
+      centered: true,
+      scrollable: true
+    });
+  }
+
+  modalClosed(){
+    this.action = 'login';
   }
 
   /**

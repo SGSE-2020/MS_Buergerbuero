@@ -5,3 +5,11 @@ mat-icon{
 button{
   margin-left: 10px;
 }
+
+.form-row{
+  margin-top: 5%;
+}
+
+.form-row.gender{
+  margin-top: 0;
+}
