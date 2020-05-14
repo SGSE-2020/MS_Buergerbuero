@@ -16,16 +16,22 @@ message UserToken {
 
 message User {
     string uid = 1;
-    int32 gender = 2;
+    int32 gender = 2;  // 0 = Not known - 1 = Male - 2 = Female
     string firstName = 3;
     string lastName = 4;
     string nickname = 5;
     string email = 6;
-    string birthDate = 7;
+    Date birthDate = 7;
     string streetAddress = 8;
     string zipcode = 9;
     string city = 10;
     string phone = 11;
     string image = 12;
     bool iActive = 13;
+}
+
+message Date{
+    int32 year = 1;
+    int32 month = 2;
+    int32 day = 3;
 }

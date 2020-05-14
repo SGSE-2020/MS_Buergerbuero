@@ -40,12 +40,15 @@ module.exports = function (app, firebase) {
      * @returns Uid if the token was successfully verified otherwise return null
      */
     app.post("/verifyUser", function (req, res) {
-        console.log(req.body);
-
-        client.verifyUser(req.body).then((res) => {
-            console.log(res);
+        client.verifyUser(req.body).then((result) => {
+            if(result.uid == null){
+                res.send(false);
+            } else {
+                res.send(true);
+            }
         }).catch((error) => {
             console.log(error);
+            res.send(false);
         });
     });
 

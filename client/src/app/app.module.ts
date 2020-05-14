@@ -19,7 +19,6 @@ import { BlackBoardComponent } from '../pages/black-board/black-board.component'
 import { UserAccountComponent } from '../pages/user-account/user-account.component';
 import { WorkComponent } from '../pages/work/work.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,

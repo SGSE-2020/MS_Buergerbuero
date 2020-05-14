@@ -11,7 +11,7 @@ module.exports = function(firebase){
      */
     function getUser (param){
         //TODO get user from database by uid and return userdata
-        //TODO return null is not successfull
+        //TODO return null is not successful
         let exampleUser = {};
         exampleUser.uid = param.uid;
         exampleUser.gender = 1;
@@ -75,7 +75,7 @@ module.exports = function(firebase){
     }
 
     /*Launch gRPC server*/
-    gRpcServer.use({ verifyUser, getUser, sendAnnouncement, deleteAnnouncement })
+    gRpcServer.use({ verifyUser, getUser})
     gRpcServer.start('127.0.0.1:50051');
     console.log("gRPC Server running on port: 50051");
 }
