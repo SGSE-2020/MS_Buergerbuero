@@ -42,6 +42,7 @@ module.exports = function (app, firebase) {
     app.post("/verifyUser", function (req, res) {
         let userResponse = {};
         client.verifyUser(req.body).then((result) => {
+            console.log(result);
             if(result.uid != null){
                 // todo get role of user
                 userResponse.success = true;

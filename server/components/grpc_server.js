@@ -35,6 +35,7 @@ module.exports = function(firebase){
      * @returns Uid of the verified user or null if not successful
      */
     async function verifyUser (param) {
+        console.log(param.req);
         let decodedToken = await firebase.auth().verifyIdToken(param.req.token);
         if(decodedToken != undefined){
             param.res = {

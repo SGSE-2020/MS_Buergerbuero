@@ -3,7 +3,10 @@
     <h4 class="alert-heading">Keine Berechtigung!</h4>
     <p>Sie haben keine Berechtigung auf diese Seite zuzugreifen</p>
   </div>
-  <div id="content" *ngIf="this.constants.userRole == 1">
-    USER ACCOUNT
+  <div id="content" *ngIf="this.constants.userRole != 1">
+    <h3>Deine Daten:</h3>
+   
+    <h3>Was möchtest du tun?</h3>
+
   </div>
 </div>

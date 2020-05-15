@@ -13,3 +13,13 @@ button{
 .form-row.gender{
   margin-top: 0;
 }
+
+#logo_img{
+  width: 55px;
+  margin-bottom: 5px;
+}
+
+#nav_brand{
+  margin-left: 15px;
+}
+

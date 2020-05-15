@@ -1,12 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
   <div class="container">
-    <span class="navbar-brand mb-0 h1">Bürgerbüro</span>
+    <img id="image" src="../../assets/img/skyline_color.png" id="logo_img" alt="Responsive image">
+    <span class="navbar-brand mb-0 h1" id="nav_brand">Bürgerbüro</span>
 
     <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       &#9776;
     </button>
-    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
+    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
         <button type="button" class="btn btn-outline-info" [routerLink]="'home'">
           <mat-icon>home</mat-icon>
           Home
@@ -23,8 +24,6 @@
           <mat-icon>work</mat-icon>
           Arbeit
         </button>
-      </ul>
-      <ul class="navbar-nav">
         <button type="button" class="btn btn-outline-light" (click)="openModal(authModal)" *ngIf="this.constants.userRole==0">
           <mat-icon>account_circle</mat-icon>
           Anmeldung
