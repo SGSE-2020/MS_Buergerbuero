@@ -15,6 +15,11 @@ module.exports = function(firebase){
     });
 
     /*Routes*/
+    let db = require('../components/database');
+    db.sequelize.sync();
+
+    require('../components/database.routes')(app, express);
+
     require('../modules/user')(app, firebase);
     require('../modules/announcement');
 

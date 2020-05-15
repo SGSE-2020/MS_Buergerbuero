@@ -1,7 +1,10 @@
+const https = require('https');
 const path = require('path');
 const caller = require('grpc-caller')
 const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
 const client = caller('127.0.0.1:50051', userProtoPath, 'UserService');
+
+const userCtrl = require("../database/controller/user.controller");
 
 module.exports = function (app, firebase) {
     /**
@@ -11,23 +14,65 @@ module.exports = function (app, firebase) {
      * @param password of the user that should be registered
      * @returns Uid of the user or null if registering has failed
      */
-    app.post("/registerUser", function (req, res) {
+    app.post("/registerUser", async function (req, res) {
         let responseObj = {};
-        let user = JSON.parse(req.body.newUser);
+        let userObj = JSON.parse(req.body.newUser);
+
+        let displayName = (userObj.nickname == "") ? "Anonym" : userObj.nickname;
         firebase.auth().createUser({
-            email: user.email,
+            email: userObj.email,
             emailVerified: true,
-            password: user.password,
-            displayName: user.nickname,
+            password: userObj.password,
+            displayName: displayName,
             disabled: false,
         })
             .then(function (userRecord) {
-                responseObj.success = true;
-                responseObj.message = userRecord.uid;
-                res.send(responseObj);
-                //todo add user data to database
+
+                //todo map birth date
+                const user = JSON.stringify({
+                    uid: userRecord.uid,
+                    gender: userObj.gender,
+                    firstName: userObj.firstName,
+                    lastName: userObj.lastName,
+                    nickname: displayName,
+                    email: userObj.email,
+                    birthDate: Date.now(),
+                    streetAddress: userObj.streetAddress,
+                    zipcode: userObj.zipcode,
+                    city: 'Smart City',
+                    phone: userObj.phone,
+                    image: '',
+                    isActive: true,
+                });
+
+                const options = {
+                    hostname: '127:0.0.1:9000',
+                    port: 443,
+                    path: '/users',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Content-Length': user.length
+                    }
+                }
+
+                const req = https.request(options, res => {
+                    console.log(`statusCode: ${res.statusCode}`)
+
+                    res.on('data', d => {
+                        process.stdout.write(d)
+                    })
+                })
+
+                req.on('error', error => {
+                    console.error(error)
+                })
+
+                req.write(user);
+                req.end();
             })
             .catch(function (error) {
+                console.log("error2");
                 responseObj.success = false;
                 responseObj.message = error;
                 res.send(responseObj);
