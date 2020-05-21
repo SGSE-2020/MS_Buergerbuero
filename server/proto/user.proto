@@ -19,11 +19,11 @@ message User {
     int32 gender = 2;  // 0 = Not known - 1 = Male - 2 = Female
     string firstName = 3;
     string lastName = 4;
-    string nickname = 5;
+    string nickName = 5;
     string email = 6;
     Date birthDate = 7;
     string streetAddress = 8;
-    string zipcode = 9;
+    string zipCode = 9;
     string city = 10;
     string phone = 11;
     string image = 12;

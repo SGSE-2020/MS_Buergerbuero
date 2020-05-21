@@ -21,6 +21,10 @@ import { WorkComponent } from '../pages/work/work.component';
 
 import { GlobalConstantsService } from './global-constants.service';
 
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+registerLocaleData(localeDe);
+
 @NgModule({
   declarations: [
     AppComponent,

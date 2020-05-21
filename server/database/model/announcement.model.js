@@ -25,9 +25,13 @@ module.exports = (sequelize, Sequelize) => {
         },
         uid: {
             type: Sequelize.STRING,
+            references: {
+                model: "users",
+                key: "uid"
+            }
         },
-        isactive: {
-            type: Sequelize.BOOLEAN_TYPE,
+        isActive: {
+            type: Sequelize.BOOLEAN,
             defaultValue: false
         }
     });

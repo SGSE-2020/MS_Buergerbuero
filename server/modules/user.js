@@ -1,24 +1,19 @@
-const https = require('https');
 const path = require('path');
-const caller = require('grpc-caller')
-const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-const client = caller('127.0.0.1:50051', userProtoPath, 'UserService');
-
 const userCtrl = require("../database/controller/user.controller");
 
-module.exports = function (app, firebase) {
+module.exports = function (app, firebase, config, caller) {
+    const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
+    const client = caller(config.BACKEND_HOST + ':50051', userProtoPath, 'UserService');
+
     /**
      * Register new user
-     * @param nickname of the that should be registered
-     * @param email of the user that should be registered
-     * @param password of the user that should be registered
+     * @param user Complete json object with all user data
      * @returns Uid of the user or null if registering has failed
      */
     app.post("/registerUser", async function (req, res) {
         let responseObj = {};
-        let userObj = JSON.parse(req.body.newUser);
-
-        let displayName = (userObj.nickname == "") ? "Anonym" : userObj.nickname;
+        let userObj = JSON.parse(req.body.user);
+        let displayName = (userObj.nickName == undefined || userObj.nickName == '') ? userObj.firstName + " " + userObj.lastName : userObj.nickName;
         firebase.auth().createUser({
             email: userObj.email,
             emailVerified: true,
@@ -27,54 +22,41 @@ module.exports = function (app, firebase) {
             disabled: false,
         })
             .then(function (userRecord) {
-
-                //todo map birth date
-                const user = JSON.stringify({
+                const user = {
                     uid: userRecord.uid,
                     gender: userObj.gender,
                     firstName: userObj.firstName,
                     lastName: userObj.lastName,
-                    nickname: displayName,
+                    nickName: displayName,
                     email: userObj.email,
-                    birthDate: Date.now(),
+                    birthDate: userObj.birthDate,
                     streetAddress: userObj.streetAddress,
-                    zipcode: userObj.zipcode,
+                    zipCode: userObj.zipCode,
                     city: 'Smart City',
                     phone: userObj.phone,
                     image: '',
-                    isActive: true,
-                });
+                    isActive: true
+                };
 
-                const options = {
-                    hostname: '127:0.0.1:9000',
-                    port: 443,
-                    path: '/users',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Content-Length': user.length
+                userCtrl.create(user).then(databaseResult => {
+                    if(databaseResult != 'Not created'){
+                        responseObj.status = "success";
+                        responseObj.message = "User was created.";
+                        responseObj.param = {
+                            uid: user.uid
+                        };
+                    } else {
+                        responseObj.status = "error";
+                        responseObj.message = "Error on creating user in the database.";
+                        responseObj.param = {};
                     }
-                }
-
-                const req = https.request(options, res => {
-                    console.log(`statusCode: ${res.statusCode}`)
-
-                    res.on('data', d => {
-                        process.stdout.write(d)
-                    })
+                    res.send(responseObj);
                 })
-
-                req.on('error', error => {
-                    console.error(error)
-                })
-
-                req.write(user);
-                req.end();
+                res.send(responseObj);
             })
             .catch(function (error) {
-                console.log("error2");
-                responseObj.success = false;
                 responseObj.message = error;
+                responseObj.param = {};
                 res.send(responseObj);
             });
     });
@@ -85,24 +67,44 @@ module.exports = function (app, firebase) {
      * @returns Uid if the token was successfully verified otherwise return null
      */
     app.post("/verifyUser", function (req, res) {
-        let userResponse = {};
-        client.verifyUser(req.body).then((result) => {
-            console.log(result);
+        let responseObj = {};
+        client.verifyUser(req.body).then(result => {
             if(result.uid != null){
-                // todo get role of user
-                userResponse.success = true;
-                userResponse.role = 1;
-                res.send(userResponse);
+                let param = {
+                    uid: result.uid
+                }
+
+                userCtrl.findOne(param).then(databaseResult => {
+                    if(databaseResult != 'Not found'){
+                        responseObj.status = "success";
+                        responseObj.message = "Verified user";
+                        responseObj.param = {
+                            user: databaseResult.dataValues
+                        };
+                    } else {
+                        responseObj.status = "error";
+                        responseObj.message = "User could not found in the database.";
+                        responseObj.param = {
+                            user: null
+                        };
+                    }
+                    res.send(responseObj);
+                });
             } else {
-                userResponse.success = false;
-                userResponse.role = 0;
-                res.send(userResponse);
+                responseObj.status = "error";
+                responseObj.message = "User could not be verified.";
+                responseObj.param = {
+                    user: null
+                };
+                res.send(responseObj);
             }
         }).catch((error) => {
-            console.log(error);
-            userResponse.success = false;
-            userResponse.role = 0;
-            res.send(userResponse);
+            responseObj.status = "error";
+            responseObj.message = error;
+            responseObj.param = {
+                user: null
+            };
+            res.send(responseObj);
         });
     });
 
@@ -112,24 +114,49 @@ module.exports = function (app, firebase) {
      * @returns User record object or error message if not successful
      */
     app.post("/updateUser", function (req, res) {
-        let uid = req.body.uid;
-        //todo get more information about the user
-
+        let userObj = JSON.parse(req.body.user);
         let responseObj = {};
 
-        firebase.auth().updateUser(uid, {
-            //todo add properties to change here
-        })
-            .then(function(userRecord) {
-                responseObj.status = "success";
-                responseObj.message = userRecord.toJSON();
+        firebase.auth().updateUser(userObj.uid, {
+            email: userObj.email,
+            displayName: userObj.nickName
+        }).then(function(userRecord) {
+            const user = {
+                uid: userObj.uid,
+                gender: userObj.gender,
+                firstName: userObj.firstName,
+                lastName: userObj.lastName,
+                nickName: userObj.nickName,
+                email: userObj.email,
+                birthDate: userObj.birthDate,
+                streetAddress: userObj.streetAddress,
+                zipCode: userObj.zipCode,
+                city: 'Smart City',
+                phone: userObj.phone,
+                image: userObj.image,
+                isActive: userObj.isActive
+            };
+
+            userCtrl.update(user).then (databaseResult => {
+                if(databaseResult != 'Not updated'){
+                    responseObj.status = "success";
+                    responseObj.message = "Updated user";
+                    responseObj.param = {
+                        uid: user.uid
+                    };
+                } else {
+                    responseObj.status = "error";
+                    responseObj.message = "User could not updated in the database.";
+                    responseObj.param = {};
+                }
                 res.send(responseObj);
             })
-            .catch(function(error) {
-                responseObj.status = "error";
-                responseObj.message = error
-                res.send(responseObj);
-            });
+         }).catch(function(error) {
+             responseObj.status = "error";
+             responseObj.message = error;
+             responseObj.param = {};
+             res.send(responseObj);
+         });
     });
 
     /**
@@ -137,21 +164,35 @@ module.exports = function (app, firebase) {
      * @param uid Uid of of user the that should be deactivated
      * @returns User record object or error message if not successful
      */
-    app.post("/deactivateUser", function (req, res) {
+    app.post("/deactivate", function (req, res) {
         let uid = req.body.uid;
         let responseObj = {};
         firebase.auth().updateUser(uid, {
             deactivated: true
-        })
-            .then(function(userRecord) {
-                responseObj.status = "success";
-                responseObj.message = userRecord.toJSON();
-                res.send(responseObj);
-            })
-            .catch(function(error) {
-                responseObj.status = "error";
-                responseObj.message = error
+        }).then(function(userRecord) {
+            let param = {
+                uid: uid
+            }
+
+            userCtrl.deactivate(param).then(databaseResult => {
+                if(databaseResult != 'Not deactivated'){
+                    responseObj.status = "success";
+                    responseObj.message = "Deactivated user";
+                    responseObj.param = {
+                        user: user
+                    };
+                } else {
+                    responseObj.status = "error";
+                    responseObj.message = "User could not be deactivated in the database.";
+                    responseObj.param = {};
+                }
                 res.send(responseObj);
             });
+        }).catch(function(error) {
+            responseObj.status = "error";
+            responseObj.message = error;
+            responseObj.param = {};
+            res.send(responseObj);
+        });
     });
 };

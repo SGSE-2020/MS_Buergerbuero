@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  frontend:
+    build: client/.
+    ports:
+      - 8080:80
+  backend:
+    build: server/.
+    ports:
+      - 9000:9000
+      - 50051:50051
+    depends_on:
+      - db   
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: buergerbuero
+      POSTGRES_PASSWORD: sgse-ss2020
+      POSTGRES_DB: buergerbuero
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+volumes:
+  postgres_data:

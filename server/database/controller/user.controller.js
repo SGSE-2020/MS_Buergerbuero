@@ -1,112 +1,94 @@
 const db = require("../../components/database");
 const User = db.users;
-const Op = db.Sequelize.Op;
 
 /**
  * Create User in the database
+ * @param param Json object containing a user within the database
  */
-exports.create = (req, res) => {
-    User.create(req.user).then(data => {
-            console.log(data);
-            res.send(data);
+exports.create = (param) => {
+    return User.create(param).then(data => {
+        if(data){
+            return data;
+        } else {
+            return 'Not created';
+        }
     }).catch(err => {
-        console.log(err);
-        res.status(500).send({
-            message:
-            err.message || "Some error occurred while creating the User."
-            });
-        });
+        return 'Not created';
+    });
 };
 
 /**
  * Find a user by uid
+ * @param param Json object containing a uid of user to search in the database
+ * @returns User object
  */
-exports.findOne = (req, res) => {
-    const id = req.params.uid;
-    User.findByPk(id).then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: "Error retrieving Tutorial with id=" + id
-        });
-    });
-};
-
-/**
- * Retrieve all users in database
- */
-exports.findAll = (req, res) => {
-    User.findAll().then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving tutorials."
-        });
-    });
-};
-
-/**
- * Retrieve all active users
- */
-exports.findAllActive = (req, res) => {
-    User.findAll({ where: { isActive: true } }).then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving tutorials."
-        });
-    });
-};
-
-/**
- * Update a user by the uid of user
- */
-exports.update = (req, res) => {
-    const id = req.params.uid;
-
-    User.update(req.body, {
-        where: { uid: id }
-    }).then(num => {
-        if (num == 1) {
-            res.send({
-                message: "Tutorial was updated successfully."
-            });
+exports.findOne = (param) => {
+    const uid = param.uid;
+    return User.findByPk(uid).then(data => {
+        if(data){
+            return data;
         } else {
-            res.send({
-                message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
-            });
+            return 'Not found';
+        }
+        return data;
+    }).catch(err => {
+        return err;
+        return 'Not found';
+    });
+};
+
+/**
+ * Update a user within the database
+ * @param param Json object containing the user that should be updated in database
+ */
+exports.update = (param) => {
+    const uid = param.uid;
+    return User.update(param, {where: { uid: uid }}).then(data => {
+        if(data){
+            return data;
+        } else {
+            return 'Not updated';
         }
     }).catch(err => {
-        res.status(500).send({
-            message: "Error updating Tutorial with id=" + id
-        });
+        return 'Not updated';
     });
 };
 
 /**
- * Delete a user from the db by the uid
+ * Deactivate a user from the db by the uid of the user
+ * @param param Json object containing the uid of the user that should be deactivated
  */
-exports.delete = (req, res) => {
-    const id = req.params.uid;
+exports.deactivate = (param) => {
+    const uid = param.uid;
+    const updateParam = {
+        isActive: false
+    }
 
-    User.destroy({
-        where: { uid: id }
-    }).then(num => {
-        if (num == 1) {
-            res.send({
-                message: "Tutorial was deleted successfully!"
-            });
+    return User.update(updateParam, {where: { uid: uid }}).then(data => {
+        if(data){
+            return data;
         } else {
-            res.send({
-                message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
-            });
+            return 'Not deactivated';
         }
     }).catch(err => {
-        res.status(500).send({
-            message: "Could not delete Tutorial with id=" + id
-        });
+        return 'Not deactivated';
+    });
+};
+
+/**
+ * Delete a user from the db by the uid of the user
+ * @param param Json object containing the uid of the user that should be deleted
+ */
+exports.delete = (param) => {
+    const uid = param.uid;
+    return User.destroy({ where: { uid: uid }}).then(data => {
+        if(data){
+            return data;
+        } else {
+            return 'Not deleted';
+        }
+    }).catch(err => {
+        return 'Not deleted';
     });
 };
 

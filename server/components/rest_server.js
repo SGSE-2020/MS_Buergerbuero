@@ -2,7 +2,9 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const app = express();
 
-module.exports = function(firebase){
+const caller = require('grpc-caller')
+
+module.exports = function(config, firebase){
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -18,10 +20,8 @@ module.exports = function(firebase){
     let db = require('../components/database');
     db.sequelize.sync();
 
-    require('../components/database.routes')(app, express);
-
-    require('../modules/user')(app, firebase);
-    require('../modules/announcement');
+    require('../modules/user')(app, firebase, config, caller);
+    require('../modules/announcement')(app, firebase, config, caller);
 
     /*Launch REST server*/
     app.listen("9000", function () {

@@ -15,8 +15,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         nickName: {
-            type: Sequelize.STRING,
-            defaultValue: 'Anonym'
+            type: Sequelize.STRING
         },
         email: {
             type: Sequelize.STRING
@@ -24,10 +23,10 @@ module.exports = (sequelize, Sequelize) => {
         birthDate: {
             type: Sequelize.DATE
         },
-        streetAdress: {
+        streetAddress: {
             type: Sequelize.STRING
         },
-        zipcode: {
+        zipCode: {
             type: Sequelize.STRING
         },
         city: {
@@ -43,7 +42,11 @@ module.exports = (sequelize, Sequelize) => {
         isActive: {
             type: Sequelize.BOOLEAN,
             defaultValue: true
-        }
+        },
+        role: {
+            type: Sequelize.INTEGER,
+            defaultValue: 1
+        },
     });
 
     return User;

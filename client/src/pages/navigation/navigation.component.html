@@ -29,7 +29,7 @@
           Anmeldung
         </button >
         <div ngbDropdown class="d-inline-block" *ngIf="this.constants.userRole!=0">
-          <button class="btn btn-outline-light" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.currentUser.displayName}} <mat-icon>account_circle</mat-icon></button>
+          <button class="btn btn-outline-light" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.firebaseUser.displayName}} <mat-icon>account_circle</mat-icon></button>
           <div ngbDropdownMenu aria-labelledby="useraccount-dropdown">
             <button ngbDropdownItem (click)="performLogout()">Logout</button>
           </div>
@@ -85,8 +85,8 @@
           <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen...">
         </div>
         <div class="form-row" *ngIf="action=='register'">
-          <label for="nickname" class="control-label font-weight-bold">Spitzname</label>
-          <input type="text" id="nickname" class="form-control" formControlName="nickname" placeholder="Spitznamen eintragen...">
+          <label for="nickName" class="control-label font-weight-bold">Spitzname</label>
+          <input type="text" id="nickName" class="form-control" formControlName="nickName" placeholder="Spitznamen eintragen...">
         </div>
         <div class="form-row" *ngIf="action=='register'">
           <label for="birthDate" class="control-label font-weight-bold">Geburtsdatum</label>
@@ -104,8 +104,8 @@
         </div>
         <div class="form-row" *ngIf="action=='register'">
           <div class="form-group col-md-5">
-            <label for="zipcode" class="control-label font-weight-bold">PLZ</label>
-            <input type="text" id="zipcode" class="form-control" formControlName="zipcode"  placeholder="PLZ eintragen...">
+            <label for="zipCode" class="control-label font-weight-bold">PLZ</label>
+            <input type="text" id="zipCode" class="form-control" formControlName="zipCode"  placeholder="PLZ eintragen...">
           </div>
           <div class="form-group col-md-7">
             <label for="city" class="control-label font-weight-bold">Stadt</label>

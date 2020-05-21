@@ -19,12 +19,12 @@ message AnnouncementCreation {
 }
 
 message AnnouncementDeletion {
-    string aid = 1;
+    string id = 1;
     string service = 2;
 }
 
 message Announcement {
-    string aid = 1;
+    string id = 1;
     string title = 2;
     string text = 3;
     string type = 4;

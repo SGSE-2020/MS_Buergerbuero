@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators} from '@angular/forms';
 import { GlobalConstantsService } from '../../app/global-constants.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-navigation',
@@ -59,17 +60,17 @@ export class NavigationComponent implements OnInit {
           result.user.getIdToken(true).then((token) => {
             this.http.post('http://localhost:9000/verifyUser', {token}).subscribe(
               (val: any) => {
-                if (val.success){
-                  this.constants.userRole = val.role;
-                  this.constants.currentUser = result.user;
+                if (val.status === 'success'){
+                  this.constants.currentUser = val.param.user;
+                  this.constants.userRole = val.param.user.role;
+                  this.constants.firebaseUser = result.user;
                   this.modalService.dismissAll();
-                  // todo hide login button and show nickname of user
+                  this.action = 'login';
                 } else {
                   alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
                 }
               },
               error => {
-                console.log(error);
                 alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
               });
           });
@@ -82,30 +83,34 @@ export class NavigationComponent implements OnInit {
           }
         });
       } else {
-        const newUser = JSON.stringify({
+        const birthDateStr = new  Date (this.authForm.value.birthDate.year + '-' +
+           this.authForm.value.birthDate.month + '-' + this.authForm.value.birthDate.day);
+        const format = birthDateStr.toUTCString();
+        const locale = birthDateStr.toDateString();
+        const user = JSON.stringify({
           gender: Number(this.authForm.value.gender),
           firstName: this.authForm.value.firstName,
           lastName: this.authForm.value.lastName,
-          nickname: this.authForm.value.nickname,
+          nickName: this.authForm.value.nickName,
           email: this.authForm.value.email,
           password: this.authForm.value.password,
-          birthDate: this.authForm.value.birthDate,
+          birthDate: birthDateStr.toDateString(),
           streetAddress: this.authForm.value.streetAddress,
-          zipcode: this.authForm.value.zipcode,
+          zipCode: this.authForm.value.zipCode,
           phone: this.authForm.value.phone
         });
 
-        this.http.post('http://localhost:9000/registerUser', {newUser}).subscribe(
+        this.http.post('http://localhost:9000/registerUser', {user}).subscribe(
           (val: any) => {
-            if (val.success){
+            if (val.status === 'success'){
               alert('Bürgerkonto wurde erfolgreich erstellt.');
               this.modalService.dismissAll();
+              this.action = 'register';
             } else {
               alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
             }
           },
           error => {
-            console.log(error);
             alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
           });
       }
@@ -117,6 +122,7 @@ export class NavigationComponent implements OnInit {
    */
   performLogout() {
     this.firebaseAuth.signOut().then((result) => {
+      this.constants.firebaseUser = null;
       this.constants.currentUser = null;
       this.constants.userRole = 0;
     });
@@ -155,10 +161,10 @@ export class NavigationComponent implements OnInit {
         gender: ['2'],
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
-        nickname: [''],
+        nickName: [''],
         birthDate: ['', Validators.required],
         streetAddress: ['', Validators.required],
-        zipcode: ['', Validators.required],
+        zipCode: ['', Validators.required],
         city: ['Smart City'],
         phone: [''],
         email: ['', [Validators.required, Validators.email]],

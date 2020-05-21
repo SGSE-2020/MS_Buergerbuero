@@ -1,32 +1,29 @@
 const path = require('path');
 const mali = require('mali');
-const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-const gRpcServer = new mali(userProtoPath, 'UserService');
 
-module.exports = function(firebase){
+const gRpcServer = new mali();
+const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
+const announcementProtoPath = path.resolve(__dirname, '../proto/announcement.proto');
+gRpcServer.addService(userProtoPath, 'UserService');
+gRpcServer.addService(announcementProtoPath, 'AnnouncementService');
+
+const userCtrl = require("../database/controller/user.controller");
+const announcementCtrl = require("../database/controller/announcement.controller");
+
+module.exports = function(config, firebase){
     /**
      * Get user dataset by uid
      * @param param Parameter object containing the uid of requested user
      * @returns User dataset of requested user or null if not successful
      */
     function getUser (param){
-        //TODO get user from database by uid and return userdata
-        //TODO return null is not successful
-        let exampleUser = {};
-        exampleUser.uid = param.uid;
-        exampleUser.gender = 1;
-        exampleUser.firstName = "Max";
-        exampleUser.lastName = "Meyer";
-        exampleUser.nickname = "m.meyer";
-        exampleUser.email = "exampleuser@test.de";
-        exampleUser.birthDate = new Date();
-        exampleUser.streetAdress = "Birkenweg 12";
-        exampleUser.zipcode = "12345";
-        exampleUser.city = "Smart City";
-        exampleUser.phone = "01234/5678910";
-        exampleUser.image = "";
-        exampleUser.IsActive = true;
-        param.res = exampleUser;
+        userCtrl.findOne(param).then(databaseResult => {
+            if(databaseResult != 'Not found'){
+                param.res = databaseResult.dataValues;
+            } else {
+                param.res = null;
+            }
+        })
     }
 
     /**
@@ -35,7 +32,6 @@ module.exports = function(firebase){
      * @returns Uid of the verified user or null if not successful
      */
     async function verifyUser (param) {
-        console.log(param.req);
         let decodedToken = await firebase.auth().verifyIdToken(param.req.token);
         if(decodedToken != undefined){
             param.res = {
@@ -54,8 +50,9 @@ module.exports = function(firebase){
      * such as the service the announcement originates from
      * @returns Id of the created announcement or null if not successful
      */
-    async function sendAnnouncement (param) {
+    function sendAnnouncement (param) {
         //TODO create announcement in db and get the id from the inserted entry
+        //TODO replace example response after database result
         param.res = {
             id: '12345'
         };
@@ -67,8 +64,9 @@ module.exports = function(firebase){
      * announcement originates from
      * @returns Status object containing state and message
      */
-    async function deleteAnnouncement (param) {
+    function deleteAnnouncement (param) {
         //TODO delete the announcement from the database
+        //TODO replace example response after database result
         param.res = {
             status: 'Success',
             message: 'Aushang wurde vom schwarzen Brett gelöscht.'
@@ -76,8 +74,8 @@ module.exports = function(firebase){
     }
 
     /*Launch gRPC server*/
-    gRpcServer.use({ verifyUser, getUser})
-    gRpcServer.start('127.0.0.1:50051');
+    gRpcServer.use({ verifyUser, getUser, sendAnnouncement, deleteAnnouncement});
+    gRpcServer.start(config.BACKEND_HOST + ':50051');
     console.log("gRPC Server running on port: 50051");
 }
 

@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class GlobalConstantsService {
+  public firebaseUser = null;
   public currentUser = null;
   public userRole = 0;
 

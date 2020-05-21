@@ -4,7 +4,7 @@
   "description": "Backend Server of MS Buergerbuero of Smart City",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "Pia Schreiner",
@@ -16,7 +16,6 @@
     "firebase-admin": "^8.10.0",
     "grpc": "^1.24.2",
     "grpc-caller": "^0.13.0",
-    "https": "^1.0.0",
     "mali": "^0.20.0",
     "pg": "^8.1.0",
     "pg-hstore": "^2.3.3",
