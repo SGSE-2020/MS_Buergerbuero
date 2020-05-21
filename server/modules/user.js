@@ -52,7 +52,6 @@ module.exports = function (app, firebase, config, caller) {
                     }
                     res.send(responseObj);
                 })
-                res.send(responseObj);
             })
             .catch(function (error) {
                 responseObj.message = error;

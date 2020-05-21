@@ -3,10 +3,164 @@
     <h4 class="alert-heading">Keine Berechtigung!</h4>
     <p>Sie haben keine Berechtigung auf diese Seite zuzugreifen</p>
   </div>
-  <div id="content" *ngIf="this.constants.userRole != 1">
-    <h3>Deine Daten:</h3>
-   
-    <h3>Was möchtest du tun?</h3>
-
+  <div id="content" *ngIf="this.constants.userRole == 1">
+    <h4 class="card-title headerFont" id="userFullName">Nutzerdaten</h4>
+    <div class="card">
+      <h5 class="card-subtitle text-muted headerFont">{{constants.currentUser.firstName}} {{constants.currentUser.lastName}}</h5>
+      <div class="card-body">
+        <div class="box box-info col-sm-4 float-right">
+          <div class="box-body">
+            <img src="../../assets/img/avatar.png"  alt="Avatar" class="avatar">
+            <button type="button" class="btn btn-outline-info" (click)="uploadImage()">Bild aktualisieren</button>
+          </div>
+        </div>
+        <div class="box box-info col-sm-6 float-left">
+          <div class="box-body">
+            <div class="title">Geschlecht</div><div class="col-sm-7 col-xs-6">{{constants.currentUser.gender == 0 ? 'Divers' : (constants.currentUser.gender == 1 ? 'Männlich' : (constants.currentUser.gender == 2 ? 'Weiblich' : ''))}}</div>
+            <div class="bot-border"></div>
+            <div class="title">Spitzname:</div><div class="col-sm-7">{{constants.currentUser.nickName}}</div>
+            <div class="bot-border"></div>
+            <div class="title">Adresse:</div><div class="col-sm-7">{{constants.currentUser.streetAddress}}</div><div class="col-sm-7">{{constants.currentUser.zipCode}} {{constants.currentUser.city}}</div>
+            <div class="bot-border"></div>
+            <div class="title">E-Mail:</div><div class="col-sm-7">{{constants.currentUser.email}}</div>
+            <div class="bot-border"></div>
+            <div class="title">Telefon:</div><div class="col-sm-7">{{constants.currentUser.phone}}</div>
+            <div class="bot-border"></div>
+            <div class="title">Geburtsdatum:</div><div class="col-sm-7">{{constants.currentUser.birthDate}}</div>
+            <div class="bot-border"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h4 class="card-title headerFont" id="actions">Aktionen</h4>
+    <div class="row">
+      <div class="card col-md-6 float-left">
+        <h5 class="card-subtitle text-muted headerFont">Persönlich</h5>
+        <div class="card-body">
+          <button type="button" class="btn btn-outline-info actionBtn" (click)="openModal(dataUpdateModal)">Daten ändern</button>
+          <button type="button" class="btn btn-outline-info actionBtn">Passwort ändern</button>
+          <button type="button" class="btn btn-outline-info actionBtn" (click)="openModal(deactivateConfirmation)">Wegziehen</button>
+        </div>
+      </div>
+      <div class="card col-md-6 float-right">
+        <h5 class="card-subtitle text-muted headerFont">Aushänge</h5>
+        <div class="card-body">
+          <button type="button" class="btn btn-outline-info actionBtn" (click)="openModal(createAnnouncementModal)">Aushang erstellen</button>
+          <button type="button" class="btn btn-outline-info actionBtn" (click)="openModal(createFoundObjectModal)">Fundgegenstand abgeben</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<ng-template #deactivateConfirmation let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Wirklich wegziehen?</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <span>Bist du sicher, dass du wegziehen möchtest? Dein Konto wird damit deaktiviert und du wirst abgemeldet.</span>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn btn-info" (click)="deactivateUserAndLogout()">Wegziehen</button>
+  </div>
+</ng-template>
+
+<ng-template #createAnnouncementModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Neuen Aushang erstellen</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="createAnnouncementForm" id="createAnnouncementModalId" (ngSubmit)="createNewAnnouncement()">
+      <span>To be designed...</span>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button form="createAnnouncementModalId" type="submit" class="btn btn btn-info">Erstellen</button>
+  </div>
+</ng-template>
+
+<ng-template #createFoundObjectModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Fundgegenstand abgeben</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="createFoundObjectForm" id="createFoundObjectModalId" (ngSubmit)="createNewFoundItem()">
+      <span>To be designed...</span>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button form="createFoundObjectModalId" type="submit" class="btn btn btn-info">Abgeben</button>
+  </div>
+</ng-template>
+
+<ng-template #dataUpdateModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Daten ändern</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="dataUpdateForm" id="dataUpdateModalId" (ngSubmit)="updateData()">
+      <div class="form-group" [ngClass]="">
+        <div class="form-row">
+          <label for="firstName" class="control-label font-weight-bold">Vorname</label>
+          <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Vornamen eintragen...">
+        </div>
+        <div class="form-row">
+          <label for="lastName" class="control-label font-weight-bold">Nachname</label>
+          <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen...">
+        </div>
+        <div class="form-row">
+          <label for="nickName" class="control-label font-weight-bold">Spitzname</label>
+          <input type="text" id="nickName" class="form-control" formControlName="nickName" placeholder="Spitznamen eintragen...">
+        </div>
+        <div class="form-row">
+          <label for="birthDate" class="control-label font-weight-bold">Geburtsdatum</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd" id="birthDate"
+                   name="dp" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker" [minDate]="{year:1920, month:1, day:1}">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-info" (click)="d.toggle()"><mat-icon>event</mat-icon></button>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="streetAddress" class="control-label font-weight-bold">Straße / Hausnummer</label>
+          <input type="text" id="streetAddress" class="form-control" formControlName="streetAddress" placeholder="Straße und Hausnummer eintragen...">
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-5">
+            <label for="zipCode" class="control-label font-weight-bold">PLZ</label>
+            <input type="text" id="zipCode" class="form-control" formControlName="zipCode"  placeholder="PLZ eintragen...">
+          </div>
+          <div class="form-group col-md-7">
+            <label for="city" class="control-label font-weight-bold">Stadt</label>
+            <input type="text" id="city" class="form-control" readonly="readonly" value="Smart City">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="phone" class="control-label font-weight-bold">Telefon</label>
+          <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Telefonnr eintragen...">
+        </div>
+        <div class="form-row">
+          <label for="email" class="control-label font-weight-bold">E-Mail</label>
+          <input type="text" id="email" class="form-control" formControlName="email" placeholder="E-Mail eintragen...">
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button form="dataUpdateModalId" type="submit" class="btn btn btn-info">Aktualisieren</button>
+  </div>
+</ng-template>
+

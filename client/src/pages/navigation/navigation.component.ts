@@ -62,6 +62,7 @@ export class NavigationComponent implements OnInit {
               (val: any) => {
                 if (val.status === 'success'){
                   this.constants.currentUser = val.param.user;
+                  this.constants.currentUser.birthDate = new Date(this.constants.currentUser.birthDate).toDateString();
                   this.constants.userRole = val.param.user.role;
                   this.constants.firebaseUser = result.user;
                   this.modalService.dismissAll();
@@ -83,7 +84,7 @@ export class NavigationComponent implements OnInit {
           }
         });
       } else {
-        const birthDateStr = new  Date (this.authForm.value.birthDate.year + '-' +
+        const birthDateStr = new Date (this.authForm.value.birthDate.year + '-' +
            this.authForm.value.birthDate.month + '-' + this.authForm.value.birthDate.day);
         const format = birthDateStr.toUTCString();
         const locale = birthDateStr.toDateString();
