@@ -31,7 +31,7 @@
         <div ngbDropdown class="d-inline-block" *ngIf="this.constants.userRole!=0">
           <button class="btn btn-outline-light" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.firebaseUser.displayName}} <mat-icon>account_circle</mat-icon></button>
           <div ngbDropdownMenu aria-labelledby="useraccount-dropdown">
-            <button ngbDropdownItem (click)="performLogout()">Logout</button>
+            <button ngbDropdownItem (click)="this.constants.performLogout()">Logout</button>
           </div>
         </div>
       </ul>
@@ -41,16 +41,16 @@
 
 <ng-template #authModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" *ngIf="action=='login'">Anmeldung</h4>
-    <h4 class="modal-title" *ngIf="action=='register'">Registrierung</h4>
+    <h4 class="modal-title" *ngIf="this.constants.authAction=='login'">Anmeldung</h4>
+    <h4 class="modal-title" *ngIf="this.constants.authAction=='register'">Registrierung</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')" (click)="modalClosed()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <form [formGroup]="authForm" id="authFormId" (ngSubmit)="performLoginOrRegister()">
-      <div class="form-group" [ngClass]="">
-        <div class="form-row gender" *ngIf="action=='register'">
+      <div class="form-group">
+        <div class="form-row gender" *ngIf="this.constants.authAction=='register'">
           <div class="col-auto my-1">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="gender" formControlName="gender" id="genderFemale" value="2" checked>
@@ -76,19 +76,19 @@
             </div>
           </div>
         </div>
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="firstName" class="control-label font-weight-bold">Vorname</label>
           <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Vornamen eintragen...">
         </div>
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="lastName" class="control-label font-weight-bold">Nachname</label>
           <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen...">
         </div>
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="nickName" class="control-label font-weight-bold">Spitzname</label>
           <input type="text" id="nickName" class="form-control" formControlName="nickName" placeholder="Spitznamen eintragen...">
         </div>
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="birthDate" class="control-label font-weight-bold">Geburtsdatum</label>
           <div class="input-group">
             <input class="form-control" placeholder="yyyy-mm-dd" id="birthDate"
@@ -98,11 +98,11 @@
             </div>
           </div>
         </div>
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="streetAddress" class="control-label font-weight-bold">Straße / Hausnummer</label>
           <input type="text" id="streetAddress" class="form-control" formControlName="streetAddress" placeholder="Straße und Hausnummer eintragen...">
         </div>
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <div class="form-group col-md-5">
             <label for="zipCode" class="control-label font-weight-bold">PLZ</label>
             <input type="text" id="zipCode" class="form-control" formControlName="zipCode"  placeholder="PLZ eintragen...">
@@ -112,7 +112,7 @@
             <input type="text" id="city" class="form-control" readonly="readonly" value="Smart City">
           </div>
         </div>
-        <div class="form-row" *ngIf="action=='register'">
+        <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="phone" class="control-label font-weight-bold">Telefon</label>
           <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Telefonnr eintragen...">
         </div>
@@ -126,13 +126,13 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn-link" *ngIf="action=='login'" (click)="setAction('register')">Noch kein Bürger der Smart City? Jetzt registrieren!</button>
-      <button type="button" class="btn btn-link" *ngIf="action=='register'" (click)="setAction('login')">Bereits Bürger der Smart City? Jetzt anmelden!</button>
+      <button type="button" class="btn btn-link" *ngIf="this.constants.authAction=='login'" (click)="setAction('register')">Noch kein Bürger der Smart City? Jetzt registrieren!</button>
+      <button type="button" class="btn btn-link" *ngIf="this.constants.authAction=='register'" (click)="setAction('login')">Bereits Bürger der Smart City? Jetzt anmelden!</button>
     </form>
   </div>
   <div class="modal-footer">
-    <button form="authFormId" type="submit" *ngIf="action=='login'" class="btn btn btn-info">Anmelden</button>
-    <button form="authFormId" type="submit" *ngIf="action=='register'" class="btn btn btn-info">Registrierung</button>
+    <button form="authFormId" type="submit" *ngIf="this.constants.authAction=='login'" class="btn btn btn-info">Anmelden</button>
+    <button form="authFormId" type="submit" *ngIf="this.constants.authAction=='register'" class="btn btn btn-info">Registrierung</button>
   </div>
 </ng-template>
 

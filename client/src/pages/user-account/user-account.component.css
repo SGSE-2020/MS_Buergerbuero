@@ -1,3 +1,5 @@
+/*#region Alert*/
+
 .alert-danger{
   margin-top: 4%;
 }
@@ -7,19 +9,25 @@ input.hidden {
   left: -9999px;
 }
 
-#userFullName{
-  color:#17a2b8;
-}
+/*#endregion */
 
+/*#region Fonts*/
 .headerFont{
   padding-top: 15px;
   padding-left: 10px;
+}
+
+#userFullName{
+  color:#17a2b8;
 }
 
 #actions{
   color:#17a2b8;
 }
 
+/*#endregion */
+
+/*#region User Data*/
 #userDataPanel{
   margin-top:5%;
 }
@@ -39,7 +47,12 @@ input.hidden {
   margin:5px 0  5px 0
 }
 
+/*#endregion */
+
+/*#region Buttons*/
 .actionBtn{
   margin-top: 5px;
   width: 100%;
 }
+
+/*#endregion */

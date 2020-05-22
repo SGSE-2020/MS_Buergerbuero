@@ -16,7 +16,7 @@ exports.create = (param) => {
             return 'Not created';
         }
     }).catch(err => {
-        console.log("Error on storing new announcement in database.");
+        console.log('ERROR');
         console.log(err);
         return 'Not created';
     });
@@ -36,7 +36,7 @@ exports.findOne = (param) => {
             return 'Not found';
         }
     }).catch(err => {
-        console.log('Error on searching for announcement in database.');
+        console.log('ERROR');
         console.log(err);
         return 'Not found';
     });
@@ -54,7 +54,7 @@ exports.getAllActive = () => {
             return 'Not found';
         }
     }).catch(err => {
-        console.log('Error on searching for announcements in database.');
+        console.log('ERROR');
         console.log(err);
         return 'Not found';
     });
@@ -82,7 +82,7 @@ exports.changeStatus = (param) => {
             return 'Status not changed';
         }
     }).catch(err => {
-        console.log("Error on change status of announcement in database.");
+        console.log('ERROR');
         console.log(err);
         return 'Status not changed';
     });
@@ -105,7 +105,7 @@ exports.delete = (param) => {
             return 'Not deleted';
         }
     }).catch(err => {
-        console.log("Error on deleting user from database.");
+        console.log('ERROR');
         console.log(err);
         return 'Not deleted';
     });

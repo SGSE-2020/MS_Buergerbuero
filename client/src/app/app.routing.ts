@@ -6,14 +6,16 @@ import { UserAccountComponent } from '../pages/user-account/user-account.compone
 import { WorkComponent } from '../pages/work/work.component';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'black-board', component: BlackBoardComponent },
-  { path: 'user-account', component: UserAccountComponent },
-  { path: 'work', component: WorkComponent }
+  { path: 'home', component: HomeComponent, runGuardsAndResolvers: 'always' },
+  { path: 'black-board', component: BlackBoardComponent, runGuardsAndResolvers: 'always'  },
+  { path: 'user-account', component: UserAccountComponent, runGuardsAndResolvers: 'always'  },
+  { path: 'work', component: WorkComponent, runGuardsAndResolvers: 'always'  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    onSameUrlNavigation: 'reload'
+  })],
   exports: [RouterModule]
 })
 export class RoutingModule { }

@@ -1,10 +1,10 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
-import { FormBuilder, Validators} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { GlobalConstantsService } from '../../app/global-constants.service';
-import { formatDate } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
@@ -14,11 +14,10 @@ import { formatDate } from '@angular/common';
 
 export class NavigationComponent implements OnInit {
   public isMenuCollapsed = true;
-  action: string;
   authForm: any;
 
   constructor(private http: HttpClient, public modalService: NgbModal, public constants: GlobalConstantsService,
-              private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder) {
+              private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder, private router: Router) {
   }
 
   /**
@@ -27,7 +26,7 @@ export class NavigationComponent implements OnInit {
    */
   ngOnInit(): void {
     this.constants.userRole = 0;
-    this.action = 'login';
+    this.constants.authAction = 'login';
     this.authForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -55,18 +54,23 @@ export class NavigationComponent implements OnInit {
    */
   performLoginOrRegister() {
     if (this.authForm.valid) {
-      if (this.action === 'login'){
+      if (this.constants.authAction === 'login'){
         this.firebaseAuth.signInWithEmailAndPassword(this.authForm.value.email, this.authForm.value.password).then((result) => {
           result.user.getIdToken(true).then((token) => {
-            this.http.post('http://localhost:9000/verifyUser', {token}).subscribe(
+            this.http.post('http://' + this.constants.host + ':9000/verifyUser', {token}).subscribe(
               (val: any) => {
                 if (val.status === 'success'){
                   this.constants.currentUser = val.param.user;
-                  this.constants.currentUser.birthDate = new Date(this.constants.currentUser.birthDate).toDateString();
+                  const birthDateResponse = new Date(this.constants.currentUser.birthDate);
+                  this.constants.currentUser.birthDate = {
+                    year: birthDateResponse.getFullYear(),
+                    month: birthDateResponse.getMonth() + 1,
+                    day: birthDateResponse.getDate()
+                  };
                   this.constants.userRole = val.param.user.role;
                   this.constants.firebaseUser = result.user;
                   this.modalService.dismissAll();
-                  this.action = 'login';
+                  this.router.navigate([this.router.url]);
                 } else {
                   alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
                 }
@@ -86,8 +90,6 @@ export class NavigationComponent implements OnInit {
       } else {
         const birthDateStr = new Date (this.authForm.value.birthDate.year + '-' +
            this.authForm.value.birthDate.month + '-' + this.authForm.value.birthDate.day);
-        const format = birthDateStr.toUTCString();
-        const locale = birthDateStr.toDateString();
         const user = JSON.stringify({
           gender: Number(this.authForm.value.gender),
           firstName: this.authForm.value.firstName,
@@ -101,12 +103,12 @@ export class NavigationComponent implements OnInit {
           phone: this.authForm.value.phone
         });
 
-        this.http.post('http://localhost:9000/registerUser', {user}).subscribe(
+        this.http.post('http://' + this.constants.host + ':9000/registerUser', {user}).subscribe(
           (val: any) => {
             if (val.status === 'success'){
               alert('Bürgerkonto wurde erfolgreich erstellt.');
               this.modalService.dismissAll();
-              this.action = 'register';
+              this.setAction('login');
             } else {
               alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
             }
@@ -116,17 +118,6 @@ export class NavigationComponent implements OnInit {
           });
       }
     }
-  }
-
-  /**
-   * Logout the current signed in user and set the role to guest
-   */
-  performLogout() {
-    this.firebaseAuth.signOut().then((result) => {
-      this.constants.firebaseUser = null;
-      this.constants.currentUser = null;
-      this.constants.userRole = 0;
-    });
   }
 
   // </editor-fold>
@@ -143,8 +134,11 @@ export class NavigationComponent implements OnInit {
     });
   }
 
+  /**
+   * Set authAction to login if modal was closed
+   */
   modalClosed(){
-    this.action = 'login';
+    this.constants.authAction = 'login';
   }
 
   /**
@@ -172,7 +166,7 @@ export class NavigationComponent implements OnInit {
         password: ['', [Validators.required, Validators.minLength(6)]]
       });
     }
-    this.action = givenAction;
+    this.constants.authAction = givenAction;
   }
 
   // </editor-fold>

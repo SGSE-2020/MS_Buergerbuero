@@ -1,9 +1,23 @@
+/*#region General*/
+
 mat-icon{
   vertical-align: middle;
 }
 
 button{
   margin-left: 10px;
+}
+
+/*#endregion */
+
+/*#region Nav Bar*/
+#logo_img{
+  width: 55px;
+  margin-bottom: 5px;
+}
+
+#nav_brand{
+  margin-left: 15px;
 }
 
 .form-row{
@@ -13,13 +27,8 @@ button{
 .form-row.gender{
   margin-top: 0;
 }
+/*#endregion */
 
-#logo_img{
-  width: 55px;
-  margin-bottom: 5px;
-}
 
-#nav_brand{
-  margin-left: 15px;
-}
+
 

@@ -13,6 +13,8 @@ exports.create = (param) => {
             return 'Not created';
         }
     }).catch(err => {
+        console.log('ERROR');
+        console.log(err);
         return 'Not created';
     });
 };
@@ -32,7 +34,8 @@ exports.findOne = (param) => {
         }
         return data;
     }).catch(err => {
-        return err;
+        console.log('ERROR');
+        console.log(err);
         return 'Not found';
     });
 };
@@ -50,6 +53,8 @@ exports.update = (param) => {
             return 'Not updated';
         }
     }).catch(err => {
+        console.log('ERROR');
+        console.log(err);
         return 'Not updated';
     });
 };
@@ -71,6 +76,8 @@ exports.deactivate = (param) => {
             return 'Not deactivated';
         }
     }).catch(err => {
+        console.log('ERROR');
+        console.log(err);
         return 'Not deactivated';
     });
 };
@@ -88,6 +95,8 @@ exports.delete = (param) => {
             return 'Not deleted';
         }
     }).catch(err => {
+        console.log('ERROR');
+        console.log(err);
         return 'Not deleted';
     });
 };

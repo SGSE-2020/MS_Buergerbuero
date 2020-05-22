@@ -13,5 +13,6 @@ db.sequelize = sequelize;
 
 db.users = require("../database/model/user.model")(sequelize, Sequelize);
 db.announcements = require("../database/model/announcement.model")(sequelize, Sequelize);
+db.announcement_verification = require("../database/model/announcement_verification.model")(sequelize, Sequelize);
 
 module.exports = db;

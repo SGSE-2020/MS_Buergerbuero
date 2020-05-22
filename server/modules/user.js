@@ -8,12 +8,12 @@ module.exports = function (app, firebase, config, caller) {
     /**
      * Register new user
      * @param user Complete json object with all user data
-     * @returns Uid of the user or null if registering has failed
+     * @returns Status object with uid param if successful
      */
     app.post("/registerUser", async function (req, res) {
         let responseObj = {};
         let userObj = JSON.parse(req.body.user);
-        let displayName = (userObj.nickName == undefined || userObj.nickName == '') ? userObj.firstName + " " + userObj.lastName : userObj.nickName;
+        let displayName = (userObj.nickName === undefined || userObj.nickName === '') ? userObj.firstName + " " + userObj.lastName : userObj.nickName;
         firebase.auth().createUser({
             email: userObj.email,
             emailVerified: true,
@@ -39,22 +39,26 @@ module.exports = function (app, firebase, config, caller) {
                 };
 
                 userCtrl.create(user).then(databaseResult => {
-                    if(databaseResult != 'Not created'){
+                    if(databaseResult !== "Not created"){
                         responseObj.status = "success";
+                        responseObj.code = "";
                         responseObj.message = "User was created.";
                         responseObj.param = {
                             uid: user.uid
                         };
                     } else {
                         responseObj.status = "error";
+                        responseObj.code = "";
                         responseObj.message = "Error on creating user in the database.";
                         responseObj.param = {};
                     }
                     res.send(responseObj);
                 })
             })
-            .catch(function (error) {
-                responseObj.message = error;
+            .catch(function (err) {
+                responseObj.status = "error";
+                responseObj.code = err.code;
+                responseObj.message = err.message;
                 responseObj.param = {};
                 res.send(responseObj);
             });
@@ -63,7 +67,7 @@ module.exports = function (app, firebase, config, caller) {
     /**
      * Verify user token
      * @param token User token from the current authenticated user
-     * @returns Uid if the token was successfully verified otherwise return null
+     * @returns Status object with uid param if successful
      */
     app.post("/verifyUser", function (req, res) {
         let responseObj = {};
@@ -74,35 +78,33 @@ module.exports = function (app, firebase, config, caller) {
                 }
 
                 userCtrl.findOne(param).then(databaseResult => {
-                    if(databaseResult != 'Not found'){
+                    if(databaseResult !== "Not found"){
                         responseObj.status = "success";
+                        responseObj.code = "";
                         responseObj.message = "Verified user";
                         responseObj.param = {
                             user: databaseResult.dataValues
                         };
                     } else {
                         responseObj.status = "error";
+                        responseObj.code = "";
                         responseObj.message = "User could not found in the database.";
-                        responseObj.param = {
-                            user: null
-                        };
+                        responseObj.param = {};
                     }
                     res.send(responseObj);
                 });
             } else {
                 responseObj.status = "error";
+                responseObj.code = "";
                 responseObj.message = "User could not be verified.";
-                responseObj.param = {
-                    user: null
-                };
+                responseObj.param = {};
                 res.send(responseObj);
             }
-        }).catch((error) => {
+        }).catch((err) => {
             responseObj.status = "error";
-            responseObj.message = error;
-            responseObj.param = {
-                user: null
-            };
+            responseObj.code = err.code;
+            responseObj.message = err.message;
+            responseObj.param = {};
             res.send(responseObj);
         });
     });
@@ -110,7 +112,7 @@ module.exports = function (app, firebase, config, caller) {
     /**
      * Update existing user
      * @param uid Uid of of user the that should be registered
-     * @returns User record object or error message if not successful
+     * @returns Status object with user param if successful
      */
     app.post("/updateUser", function (req, res) {
         let userObj = JSON.parse(req.body.user);
@@ -122,7 +124,6 @@ module.exports = function (app, firebase, config, caller) {
         }).then(function(userRecord) {
             const user = {
                 uid: userObj.uid,
-                gender: userObj.gender,
                 firstName: userObj.firstName,
                 lastName: userObj.lastName,
                 nickName: userObj.nickName,
@@ -130,66 +131,77 @@ module.exports = function (app, firebase, config, caller) {
                 birthDate: userObj.birthDate,
                 streetAddress: userObj.streetAddress,
                 zipCode: userObj.zipCode,
-                city: 'Smart City',
-                phone: userObj.phone,
-                image: userObj.image,
-                isActive: userObj.isActive
+                phone: userObj.phone
             };
 
             userCtrl.update(user).then (databaseResult => {
-                if(databaseResult != 'Not updated'){
+                if(databaseResult !== "Not updated"){
                     responseObj.status = "success";
+                    responseObj.code = "";
                     responseObj.message = "Updated user";
                     responseObj.param = {
-                        uid: user.uid
+                        result: databaseResult.dataValues
                     };
                 } else {
                     responseObj.status = "error";
+                    responseObj.code = "";
                     responseObj.message = "User could not updated in the database.";
                     responseObj.param = {};
                 }
                 res.send(responseObj);
             })
-         }).catch(function(error) {
-             responseObj.status = "error";
-             responseObj.message = error;
-             responseObj.param = {};
-             res.send(responseObj);
+         }).catch(function(err) {
+            responseObj.status = "error";
+            responseObj.code = err.code;
+            responseObj.message = err.message;
+            responseObj.param = {};
+            res.send(responseObj);
          });
     });
 
     /**
      * Deactivate the given user
      * @param uid Uid of of user the that should be deactivated
-     * @returns User record object or error message if not successful
+     * @returns Status object with user param if successful
      */
-    app.post("/deactivate", function (req, res) {
+    app.post("/deactivateUser", function (req, res) {
         let uid = req.body.uid;
+        console.log(req.body);
         let responseObj = {};
         firebase.auth().updateUser(uid, {
-            deactivated: true
+            disabled: true
         }).then(function(userRecord) {
-            let param = {
-                uid: uid
-            }
-
-            userCtrl.deactivate(param).then(databaseResult => {
-                if(databaseResult != 'Not deactivated'){
-                    responseObj.status = "success";
-                    responseObj.message = "Deactivated user";
-                    responseObj.param = {
-                        user: user
-                    };
-                } else {
-                    responseObj.status = "error";
-                    responseObj.message = "User could not be deactivated in the database.";
-                    responseObj.param = {};
+            console.log(userRecord);
+            if(userRecord.disabled === true){
+                let param = {
+                    uid: uid
                 }
-                res.send(responseObj);
-            });
-        }).catch(function(error) {
+                userCtrl.deactivate(param).then(databaseResult => {
+                    if(databaseResult !== "Not deactivated"){
+                        responseObj.status = "success";
+                        responseObj.code = "";
+                        responseObj.message = "Deactivated user";
+                        responseObj.param = {
+                            result: databaseResult.dataValues
+                        };
+                    } else {
+                        responseObj.status = "error";
+                        responseObj.code = "";
+                        responseObj.message = "User could not be deactivated in the database.";
+                        responseObj.param = {};
+                    }
+                    res.send(responseObj);
+                });
+            } else {
+                responseObj.status = "error";
+                responseObj.code = "";
+                responseObj.message = "User could not be deactivated in firebase.";
+                responseObj.param = {};
+            }
+        }).catch(function(err) {
             responseObj.status = "error";
-            responseObj.message = error;
+            responseObj.code = err.code;
+            responseObj.message = err.message;
             responseObj.param = {};
             res.send(responseObj);
         });
