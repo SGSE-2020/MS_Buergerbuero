@@ -8,14 +8,11 @@
     <div class="card">
       <h5 class="card-subtitle text-muted headerFont">{{constants.currentUser.firstName}} {{constants.currentUser.lastName}}</h5>
       <div class="card-body">
-        <div class="box box-info col-sm-4 float-right">
-          <div class="box-body">
+        <div class="col-sm-5 float-right" id="imageContainer">
             <img src="../../assets/img/avatar.png"  alt="Avatar" class="avatar">
             <button type="button" class="btn btn-outline-info" (click)="uploadImage()">Bild aktualisieren</button>
-          </div>
         </div>
-        <div class="box box-info col-sm-6 float-left">
-          <div class="box-body">
+        <div class="col-sm-5 float-left">
             <div class="title">Geschlecht</div><div class="col-sm-7 col-xs-6">{{constants.currentUser.gender == 0 ? 'Divers' : (constants.currentUser.gender == 1 ? 'Männlich' : (constants.currentUser.gender == 2 ? 'Weiblich' : ''))}}</div>
             <div class="bot-border"></div>
             <div class="title">Spitzname:</div><div class="col-sm-7">{{constants.currentUser.nickName}}</div>
@@ -28,7 +25,6 @@
             <div class="bot-border"></div>
             <div class="title">Geburtsdatum:</div><div class="col-sm-7">{{constants.currentUser.birthDate.day}}.{{constants.currentUser.birthDate.month}}.{{constants.currentUser.birthDate.year}}</div>
             <div class="bot-border"></div>
-          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Announcement = sequelize.define("announcement_verification", {
+    const Announcement = sequelize.define("announcement", {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
