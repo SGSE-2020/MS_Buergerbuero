@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
-import { GlobalConstantsService } from '../../app/global-constants.service';
 import { Router } from '@angular/router';
+import { GlobalConstantService } from '../../services/global-constant.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-navigation',
@@ -15,9 +16,11 @@ import { Router } from '@angular/router';
 export class NavigationComponent implements OnInit {
   public isMenuCollapsed = true;
   authForm: any;
+  isSubmitted = false;
 
-  constructor(private http: HttpClient, public modalService: NgbModal, public constants: GlobalConstantsService,
-              private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder, private router: Router) {
+  constructor(private http: HttpClient, private modalService: NgbModal, public constants: GlobalConstantService,
+              private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder, private router: Router,
+              private notificationService: NotificationService) {
   }
 
   /**
@@ -53,44 +56,44 @@ export class NavigationComponent implements OnInit {
    * Perform login or register depending on current action when the form is valid
    */
   performLoginOrRegister() {
+    this.isSubmitted = true;
     if (this.authForm.valid) {
       if (this.constants.authAction === 'login'){
         this.firebaseAuth.signInWithEmailAndPassword(this.authForm.value.email, this.authForm.value.password).then((result) => {
           result.user.getIdToken(true).then((token) => {
-            this.http.post('http://' + this.constants.host + ':9000/verifyUser', {token}).subscribe(
+            this.http.post('http://' + this.constants.host + ':9000/user/verify/' + token, {}).subscribe(
               (val: any) => {
                 if (val.status === 'success'){
-                  this.constants.currentUser = val.param.user;
-                  const birthDateResponse = new Date(this.constants.currentUser.birthDate);
-                  this.constants.currentUser.birthDate = {
-                    year: birthDateResponse.getFullYear(),
-                    month: birthDateResponse.getMonth() + 1,
-                    day: birthDateResponse.getDate()
-                  };
-                  this.constants.userRole = val.param.user.role;
+                  this.constants.userRole = val.param.role;
                   this.constants.firebaseUser = result.user;
                   this.modalService.dismissAll();
+                  this.isSubmitted = false;
+                  this.constants.getCurrentUserData();
                   this.router.navigate([this.router.url]);
                 } else {
-                  alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+                  this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+                    'toast-top-center');
                 }
               },
               error => {
-                alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+                this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+                  'toast-top-center');
               });
           });
         }, (error) => {
           if (error.code === 'auth/invalid-email' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found'
             || error.code === 'auth/user-disabled'){
-            alert('Anmeldung fehlgeschlagen. Nutzerdaten fehlerhaft oder Nutzer existiert nicht.');
+            this.notificationService.showError('Anmeldung fehlgeschlagen. Nutzerdaten fehlerhaft oder Nutzer existiert nicht.',
+              'toast-top-center');
           } else{
-            alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+            this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+              'toast-top-center');
           }
         });
       } else {
         const birthDateStr = new Date (this.authForm.value.birthDate.year + '-' +
            this.authForm.value.birthDate.month + '-' + this.authForm.value.birthDate.day);
-        const user = JSON.stringify({
+        const user = {
           gender: Number(this.authForm.value.gender),
           firstName: this.authForm.value.firstName,
           lastName: this.authForm.value.lastName,
@@ -101,20 +104,24 @@ export class NavigationComponent implements OnInit {
           streetAddress: this.authForm.value.streetAddress,
           zipCode: this.authForm.value.zipCode,
           phone: this.authForm.value.phone
-        });
+        };
 
-        this.http.post('http://' + this.constants.host + ':9000/registerUser', {user}).subscribe(
+        this.http.post('http://' + this.constants.host + ':9000/user/register', user).subscribe(
           (val: any) => {
             if (val.status === 'success'){
-              alert('Bürgerkonto wurde erfolgreich erstellt.');
+              this.notificationService.showSuccess('Nutzerkonto wurde erfolgreich erstellt',
+                'toast-top-left');
               this.modalService.dismissAll();
+              this.isSubmitted = false;
               this.setAction('login');
             } else {
-              alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+              this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+                'toast-top-center');
             }
           },
           error => {
-            alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+            this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+              'toast-top-center');
           });
       }
     }
@@ -168,6 +175,6 @@ export class NavigationComponent implements OnInit {
     }
     this.constants.authAction = givenAction;
   }
-
   // </editor-fold>
+
 }

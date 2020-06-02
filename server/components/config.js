@@ -8,4 +8,6 @@ module.exports = {
 
     //BACKEND_HOST: "backend",
     BACKEND_HOST: "localhost",
+
+    MESSAGE_QUEUE: 'queue-test'
 };

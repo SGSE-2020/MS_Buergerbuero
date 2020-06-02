@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { GlobalConstantsService } from '../../app/global-constants.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-user-account',
@@ -13,20 +14,43 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./user-account.component.css']
 })
 export class UserAccountComponent implements OnInit {
+  @ViewChild('imageInput') imageInput: ElementRef;
+  @ViewChild('userImage') userImage: ElementRef;
+
   dataUpdateForm: any;
   createFoundObjectForm: any;
   createAnnouncementForm: any;
   private navigationSubscription: Subscription;
 
-  constructor(private http: HttpClient, public constants: GlobalConstantsService, public modalService: NgbModal,
+  constructor(private http: HttpClient, public constants: GlobalConstantService, private modalService: NgbModal,
               private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder,
-              private router: Router) { }
+              private router: Router, private notificationService: NotificationService) { }
 
   /**
    * Initialization of Component. Sets current role to guest and current action th login.
    * Subscribes the router action to get current modal
    */
   ngOnInit(): void {
+    this.createFoundObjectForm = this.formBuilder.group({
+      // todo to be defined
+    });
+
+    this.createAnnouncementForm = this.formBuilder.group({
+      // todo to be defined
+    });
+
+    this.dataUpdateForm = this.formBuilder.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      nickName: [''],
+      birthDate: ['', Validators.required],
+      streetAddress: ['', Validators.required],
+      zipCode: ['', Validators.required],
+      city: ['Smart City'],
+      phone: [''],
+      email: ['', [Validators.required, Validators.email]]
+    });
+
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.refreshData();
@@ -40,30 +64,22 @@ export class UserAccountComponent implements OnInit {
    * Refreshes the form validation depending on the current user -> Reset if no user is logged in
    */
   refreshData() {
+    if (this.constants.userHasError){
+      this.constants.getCurrentUserData();
+    }
+
     if (this.constants.currentUser != null) {
-      this.dataUpdateForm = this.formBuilder.group({
-        firstName: [this.constants.currentUser.firstName, Validators.required],
-        lastName: [this.constants.currentUser.lastName, Validators.required],
-        nickName: [this.constants.currentUser.nickName],
-        birthDate: [this.constants.currentUser.birthDate, Validators.required],
-        streetAddress: [this.constants.currentUser.streetAddress, Validators.required],
-        zipCode: [this.constants.currentUser.zipCode, Validators.required],
-        city: ['Smart City'],
-        phone: [this.constants.currentUser.phone],
-        email: [this.constants.currentUser.email, [Validators.required, Validators.email]]
+      this.dataUpdateForm.setValue({
+        firstName: this.constants.currentUser.firstName,
+        lastName: this.constants.currentUser.lastName,
+        nickName: this.constants.currentUser.nickName,
+        birthDate: this.constants.currentUser.birthDate,
+        streetAddress: this.constants.currentUser.streetAddress,
+        zipCode: this.constants.currentUser.zipCode,
+        city: 'Smart City',
+        phone: this.constants.currentUser.phone,
+        email: this.constants.currentUser.email
       });
-
-      this.createFoundObjectForm = this.formBuilder.group({
-        // todo to be defined
-      });
-
-      this.createAnnouncementForm = this.formBuilder.group({
-        // todo to be defined
-      });
-    } else {
-      this.dataUpdateForm = this.formBuilder.group({});
-      this.createFoundObjectForm = this.formBuilder.group({});
-      this.createAnnouncementForm = this.formBuilder.group({});
     }
   }
 
@@ -90,7 +106,7 @@ export class UserAccountComponent implements OnInit {
       const birthDateStr = new Date (this.dataUpdateForm.value.birthDate.year + '-' +
         this.dataUpdateForm.value.birthDate.month + '-' + this.dataUpdateForm.value.birthDate.day);
 
-      const user = JSON.stringify({
+      const user = {
         uid: this.constants.firebaseUser.uid,
         firstName: this.dataUpdateForm.value.firstName,
         lastName: this.dataUpdateForm.value.lastName,
@@ -100,11 +116,13 @@ export class UserAccountComponent implements OnInit {
         streetAddress: this.dataUpdateForm.value.streetAddress,
         zipCode: this.dataUpdateForm.value.zipCode,
         phone: this.dataUpdateForm.value.phone
-      });
+      };
 
-      this.http.post('http://' + this.constants.host + ':9000/updateUser', {user}).subscribe(
+      this.http.post('http://' + this.constants.host + ':9000/user/update/' + this.constants.firebaseUser.uid, user).subscribe(
         (val: any) => {
           if (val.status === 'success'){
+            this.notificationService.showSuccess('Nutzerdaten wurden erfolgreich aktualisiert',
+              'toast-top-left');
             this.modalService.dismissAll();
             this.constants.currentUser.firstName = this.dataUpdateForm.value.firstName;
             this.constants.currentUser.lastName = this.dataUpdateForm.value.lastName;
@@ -116,11 +134,13 @@ export class UserAccountComponent implements OnInit {
             this.constants.currentUser.phone = this.dataUpdateForm.value.phone;
             this.refreshData();
           } else {
-            alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+            this.notificationService.showError('Nutzerdaten konnten nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+              'toast-top-center');
           }
         },
         error => {
-          alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+          this.notificationService.showError('Nutzerdaten konnten nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+            'toast-top-center');
         });
     }
   }
@@ -129,7 +149,7 @@ export class UserAccountComponent implements OnInit {
    * Deactivated the user account and signs out the currently logged in user
    */
   deactivateUserAndLogout() {
-    this.http.post('http://' + this.constants.host + ':9000/deactivateUser', {uid: this.constants.firebaseUser.uid}).subscribe(
+    this.http.post('http://' + this.constants.host + ':9000/user/deactivate/' + this.constants.firebaseUser.uid, {}).subscribe(
       (val: any) => {
         if (val.status === 'success'){
           this.modalService.dismissAll();
@@ -138,12 +158,27 @@ export class UserAccountComponent implements OnInit {
           this.constants.authAction = 'login';
           this.router.navigate(['/home']);
         } else {
-          alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+          this.notificationService.showError('Abmeldung ist fehlgeschlagen. Bitte versuchen sie es später erneut.',
+            'toast-top-center');
         }
       },
       error => {
-        alert('Es ist ein Fehler aufgetregen. Bitte versuchen sie es später erneut.');
+        this.notificationService.showError('Abmeldung ist fehlgeschlagen. Bitte versuchen sie es später erneut.',
+          'toast-top-center');
       });
+  }
+
+  /**
+   * Send a password reset mail to the user
+   */
+  resetPassword() {
+    if (this.constants.firebaseUser != null) {
+      this.firebaseAuth.sendPasswordResetEmail(this.constants.firebaseUser.email).then( result => {
+        this.notificationService.showSuccess('Passwortreset E-Mail wurde versendet. Bitte prüfen Sie Ihre Mails', 'toast-top-left');
+      }).catch(err => {
+        this.notificationService.showError('Passwortreset E-Mail konnte nicht versendet werden', 'toast-top-left');
+      });
+    }
   }
 
   /**
@@ -167,8 +202,36 @@ export class UserAccountComponent implements OnInit {
   /**
    * Upload a new image for the current logged in user
    */
-  uploadImage() {
+  uploadImage(file: any) {
     // todo upload image for current user
+    if (file.type === 'image/jpeg' || 'image/png'){
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const updateObj = {
+          image: reader.result
+        };
+
+        this.http.post('http://' + this.constants.host + ':9000/user/image/' + this.constants.firebaseUser.uid, updateObj).subscribe(
+          (val: any) => {
+            if (val.status === 'success'){
+              this.notificationService.showSuccess('Nutzerbild wurde aktualisiert',
+                'toast-top-left');
+              this.userImage.nativeElement.src = reader.result;
+            } else {
+              this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+                'toast-top-left');
+            }
+          },
+          error => {
+            this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+              'toast-top-left');
+          });
+      };
+    } else {
+      this.notificationService.showError('Falsches Bildformat. Es werden nur JPEG und PNG Bilder unterstützt',
+        'toast-top-left');
+    }
   }
 
   // </editor-fold>

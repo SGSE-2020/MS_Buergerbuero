@@ -1,35 +1,35 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
   <div class="container">
-    <img id="image" src="../../assets/img/skyline_color.png" id="logo_img" alt="Responsive image">
-    <span class="navbar-brand mb-0 h1" id="nav_brand">Bürgerbüro</span>
+    <img id="image" src="../../assets/img/skyline_color.png" class="logo-img" alt="Responsive image">
+    <span class="navbar-brand mb-0 h1 ml-3" id="nav_brand">Bürgerbüro</span>
 
     <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       &#9776;
     </button>
     <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
-        <button type="button" class="btn btn-outline-info" [routerLink]="'home'">
+        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'home'">
           <mat-icon>home</mat-icon>
           Home
         </button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'black-board'">
+        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'black-board'">
           <mat-icon>assignment</mat-icon>
           Aushänge
         </button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'user-account'" *ngIf="this.constants.userRole==1">
+        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'user-account'" *ngIf="this.constants.userRole==1">
           <mat-icon>settings</mat-icon>
           Konto
         </button>
-        <button type="button" class="btn btn-outline-info" [routerLink]="'work'" *ngIf="this.constants.userRole==2">
+        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'work'" *ngIf="this.constants.userRole==2">
           <mat-icon>work</mat-icon>
           Arbeit
         </button>
-        <button type="button" class="btn btn-outline-light" (click)="openModal(authModal)" *ngIf="this.constants.userRole==0">
+        <button type="button" class="btn btn-outline-light mr-1 ml-1" (click)="openModal(authModal)" *ngIf="this.constants.userRole==0">
           <mat-icon>account_circle</mat-icon>
           Anmeldung
         </button >
-        <div ngbDropdown class="d-inline-block" *ngIf="this.constants.userRole!=0">
-          <button class="btn btn-outline-light" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.firebaseUser.displayName}} <mat-icon>account_circle</mat-icon></button>
+        <div ngbDropdown *ngIf="this.constants.userRole!=0">
+          <button class="btn btn-outline-light mr-1 ml-1" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.firebaseUser.displayName}} <mat-icon>account_circle</mat-icon></button>
           <div ngbDropdownMenu aria-labelledby="useraccount-dropdown">
             <button ngbDropdownItem (click)="this.constants.performLogout()">Logout</button>
           </div>
@@ -48,7 +48,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="authForm" id="authFormId" (ngSubmit)="performLoginOrRegister()">
+    <form [formGroup]="authForm" id="authFormId" (ngSubmit)="performLoginOrRegister()" >
       <div class="form-group">
         <div class="form-row gender" *ngIf="this.constants.authAction=='register'">
           <div class="col-auto my-1">
@@ -77,52 +77,61 @@
           </div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
-          <label for="firstName" class="control-label font-weight-bold">Vorname</label>
-          <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Vornamen eintragen...">
+          <label for="firstName" class="control-label font-weight-bold mt-1">Vorname</label>
+          <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Vornamen eintragen..." [ngClass]="isSubmitted && authForm.controls['firstName']?.errors ? 'is-invalid' : ''">
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['firstName']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
-          <label for="lastName" class="control-label font-weight-bold">Nachname</label>
-          <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen...">
+          <label for="lastName" class="control-label font-weight-bold mt-1">Nachname</label>
+          <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen..." [ngClass]="isSubmitted && authForm.controls['lastName']?.errors ? 'is-invalid' : ''">
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['lastName']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
-          <label for="nickName" class="control-label font-weight-bold">Spitzname</label>
+          <label for="nickName" class="control-label font-weight-bold mt-1">Spitzname</label>
           <input type="text" id="nickName" class="form-control" formControlName="nickName" placeholder="Spitznamen eintragen...">
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
-          <label for="birthDate" class="control-label font-weight-bold">Geburtsdatum</label>
+          <label for="birthDate" class="control-label font-weight-bold mt-1">Geburtsdatum</label>
           <div class="input-group">
             <input class="form-control" placeholder="yyyy-mm-dd" id="birthDate"
-                   name="dp" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker" [minDate]="{year:1920, month:1, day:1}">
+                   name="dp" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker" [minDate]="{year:1920, month:1, day:1}" [ngClass]="isSubmitted && authForm.controls['birthDate']?.errors? 'is-invalid' : ''">
             <div class="input-group-append">
               <button type="button" class="btn btn-info" (click)="d.toggle()"><mat-icon>event</mat-icon></button>
             </div>
+            <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['birthDate']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
           </div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
-          <label for="streetAddress" class="control-label font-weight-bold">Straße / Hausnummer</label>
-          <input type="text" id="streetAddress" class="form-control" formControlName="streetAddress" placeholder="Straße und Hausnummer eintragen...">
+          <label for="streetAddress" class="control-label font-weight-bold mt-1">Straße / Hausnummer</label>
+          <input type="text" id="streetAddress" class="form-control" formControlName="streetAddress" placeholder="Straße und Hausnummer eintragen..." [ngClass]="isSubmitted && authForm.controls['streetAddress']?.errors ? 'is-invalid' : ''">
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['streetAddress']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
-          <div class="form-group col-md-5">
-            <label for="zipCode" class="control-label font-weight-bold">PLZ</label>
-            <input type="text" id="zipCode" class="form-control" formControlName="zipCode"  placeholder="PLZ eintragen...">
+          <div class="form-group col-xl-5 pl-0 mb-0">
+            <label for="zipCode" class="control-label font-weight-bold mt-1">PLZ</label>
+            <input type="text" id="zipCode" class="form-control" formControlName="zipCode"  placeholder="PLZ eintragen..." [ngClass]="isSubmitted && authForm.controls['zipCode']?.errors ? 'is-invalid' : ''">
+            <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['zipCode']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
           </div>
-          <div class="form-group col-md-7">
-            <label for="city" class="control-label font-weight-bold">Stadt</label>
+          <div class="form-group col-xl-7 pr-0 mb-0">
+            <label for="city" class="control-label font-weight-bold mt-1">Stadt</label>
             <input type="text" id="city" class="form-control" readonly="readonly" value="Smart City">
           </div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
-          <label for="phone" class="control-label font-weight-bold">Telefon</label>
+          <label for="phone" class="control-label font-weight-bold mt-1">Telefon</label>
           <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Telefonnr eintragen...">
         </div>
         <div class="form-row">
-          <label for="email" class="control-label font-weight-bold">E-Mail</label>
-          <input type="text" id="email" class="form-control" formControlName="email" placeholder="E-Mail eintragen...">
+          <label for="email" class="control-label font-weight-bold mt-1">E-Mail</label>
+          <input type="text" id="email" class="form-control" formControlName="email" placeholder="E-Mail eintragen..." [ngClass]="isSubmitted && authForm.controls['email']?.errors ? 'is-invalid' : ''">
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['email']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['email']?.errors?.email">Ungültiges Format.</div>
         </div>
         <div class="form-row">
-          <label for="password" class="control-label font-weight-bold">Passwort</label>
-          <input type="password" id="password" class="form-control" formControlName="password" placeholder="Passwort eintragen...">
+          <label for="password" class="control-label font-weight-bold mt-1">Passwort</label>
+          <input type="password" id="password" class="form-control" formControlName="password" placeholder="Passwort eintragen..." [ngClass]="isSubmitted && authForm.controls['password']?.errors ? 'is-invalid' : ''">
+          <div class="invalid-feedback ml-1" *ngIf="authForm.controls['password']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
+          <div class="invalid-feedback ml-1" *ngIf="authForm.controls['password']?.errors?.minLength">Passwort muss mindestens 6 Zeichen lang sein.</div>
         </div>
       </div>
 

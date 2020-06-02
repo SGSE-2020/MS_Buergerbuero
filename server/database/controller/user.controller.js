@@ -1,3 +1,4 @@
+const rb = require('../../components/response_builder');
 const db = require("../../components/database");
 const User = db.users;
 
@@ -13,8 +14,6 @@ exports.create = (param) => {
             return 'Not created';
         }
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
         return 'Not created';
     });
 };
@@ -24,19 +23,19 @@ exports.create = (param) => {
  * @param param Json object containing a uid of user to search in the database
  * @returns User object
  */
-exports.findOne = (param) => {
-    const uid = param.uid;
-    return User.findByPk(uid).then(data => {
+exports.findOne = (req, res) => {
+    console.log("REST CALL: /user/:uid");
+    let responseObj = {};
+    return User.findByPk(req.params.uid).then(data => {
         if(data){
-            return data;
+            responseObj = rb.success("User", "found", data);
         } else {
-            return 'Not found';
+            responseObj = rb.failure("user", "finding");
         }
-        return data;
+        res.send(responseObj);
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
-        return 'Not found';
+        responseObj = rb.error(err);
+        res.send(responseObj);
     });
 };
 
@@ -53,9 +52,29 @@ exports.update = (param) => {
             return 'Not updated';
         }
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
         return 'Not updated';
+    });
+};
+
+/**
+ * Update an image of an user in the database
+ * @param Uid Uid of the user in the database
+ * @param body.image Json object containing the image that should be updated
+ */
+exports.updateImageFromUser = (req, res) => {
+    console.log("REST CALL: /user/image/:uid");
+
+    let responseObj = {};
+    return User.update(req.body, {where: { uid: req.params.uid }}).then(data => {
+        if(data){
+            responseObj = rb.success("Image", "updated");
+        } else {
+            responseObj = rb.failure("image", "updating");
+        }
+        res.send(responseObj);
+    }).catch(err => {
+        responseObj = rb.error(err);
+        res.send(responseObj);
     });
 };
 
@@ -76,8 +95,6 @@ exports.deactivate = (param) => {
             return 'Not deactivated';
         }
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
         return 'Not deactivated';
     });
 };
@@ -95,8 +112,6 @@ exports.delete = (param) => {
             return 'Not deleted';
         }
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
         return 'Not deleted';
     });
 };

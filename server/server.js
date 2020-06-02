@@ -11,8 +11,20 @@ firebase.initializeApp({
 });
 
 /*Start all components*/
-require('./components/rest_server')(config, firebase);
+
+
+console.log("Initial start up Bürgerbüro Server!");
+console.log("-----------------------------------");
+
+/*Routes*/
+let channel = require('./components/messages');
+require('./components/rest_server')(config, firebase, channel);
 require('./components/grpc_server')(config, firebase);
+
+
+let db = require('./components/database');
+db.sequelize.sync();
+
 
 
 

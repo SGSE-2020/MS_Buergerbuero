@@ -1,44 +1,20 @@
+const rb = require('../../components/response_builder');
 const db = require("../../components/database");
 const Announcement = db.announcements;
 
 /**
  * Create Announcement in the database
- * @param param Json object containing a announcement within the database
+ * @param announcement Json object containing a announcement within the database
  */
-exports.create = (param) => {
-    console.log("Store new announcement!");
-    return Announcement.create(param).then(data => {
+exports.create = (announcement) => {
+    return Announcement.create(announcement).then(data => {
         if(data){
-            console.log("Stored new announcement with id: '"+ param.id +"' in database.");
             return data;
         } else {
-            console.log("Error on storing new announcement with id: '"+ param.id +"' in database.");
-            return 'Not created';
+           return 'Not created';
         }
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
         return 'Not created';
-    });
-};
-
-/**
- * Find a announcement by id
- * @param param Json object containing a id of announcement to search in the database
- * @returns Announcement object
- */
-exports.findOne = (param) => {
-    const id = param.id;
-    return Announcement.findByPk(id).then(data => {
-        if(data){
-            return data;
-        } else {
-            return 'Not found';
-        }
-    }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
-        return 'Not found';
     });
 };
 
@@ -46,69 +22,91 @@ exports.findOne = (param) => {
  * Get all active announcements
  * @returns List of Announcement objects
  */
-exports.getAllActive = () => {
-    return Announcement.findAll({where: { isActive: true }}).then(data => {
+exports.getAllActive = (req, res) => {
+    console.log("REST CALL: /announcement/active");
+
+    let responseObj = {};
+    Announcement.findAll({where: { isActive: true }}).then(data => {
         if(data){
-            return data;
+            responseObj = rb.success("Active announcements", "found", { announcements: data });
         } else {
-            return 'Not found';
+            responseObj = rb.failure("Active announcements", "finding");
         }
+        res.send(responseObj);
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
-        return 'Not found';
+        responseObj = rb.error(err);
+        res.send(responseObj);
     });
 };
 
 /**
- * Deactivate or activate a announcement from the db by the id of the announcement
- * @param param Json object containing the id of the announcement and a value of isActive value
+ * Get all inactive announcements
+ * @returns List of Announcement objects
  */
-exports.changeStatus = (param) => {
-    console.log("Change status of an existent announcement!");
+exports.getAllInactive = (req, res) => {
+    console.log("REST CALL: /announcement/inactive");
 
-    const id = param.id;
+    let responseObj = {};
+    Announcement.findAll({where: { isActive: false }}).then(data => {
+        if(data){
+            responseObj = rb.success("Inactive announcements", "found", { announcements: data });
+        } else {
+            responseObj = rb.failure("Inactive announcements", "finding");
+        }
+        res.send(responseObj);
+    }).catch(err => {
+        responseObj = rb.error(err);
+        res.send(responseObj);
+    });
+};
+
+/**
+ * Activate  a announcement from the db by the id of the announcement
+ * @param id Id of the announcement that should be activated
+ */
+exports.activate = (req, res) => {
+    console.log("REST CALL: /announcement/activate/:id");
+
     const updateParam = {
-        isActive: param.isActive
+        isActive: true
     }
-
-    return Announcement.update(updateParam, {where: { id: id }}).then(data => {
+    let responseObj = {};
+    return Announcement.update(updateParam, {where: { id: req.params.id }}).then(data => {
         if(data){
-            let activateString = param.isActive ? 'active' : 'inactive';
-            console.log("Change status of announcement with id: '"+ param.id +"' in database to '"+ activateString +"'.");
-            return data;
+            responseObj = rb.success("Announcement", "activated");
         } else {
-            console.log("Could not change status of announcement with id: '"+ param.id +"' in database.");
-            return 'Status not changed';
+            responseObj = rb.failure("Announcement", "activating");
         }
+        res.send(responseObj);
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
-        return 'Status not changed';
+        responseObj = rb.error(err);
+        res.send(responseObj);
     });
 };
 
 /**
- * Delete a announcement from the db by the id of the announcement
- * @param param Json object containing the id of the announcement that should be deleted
+ * Deactivate a announcement from the db by the id of the announcement
+ * @param id Id of the announcement that should be deactivated
  */
-exports.delete = (param) => {
-    console.log("Delete an existent announcement!");
+exports.deactivate = (req, res) => {
+    console.log("REST CALL: /announcement/deactivate/:id");
 
-    const uid = param.uid;
-    return Announcement.destroy({ where: { uid: uid }}).then(data => {
+    const updateParam = {
+        isActive: false
+    }
+    let responseObj = {};
+    return Announcement.update(updateParam, {where: { id: req.params.id }}).then(data => {
         if(data){
-            console.log("Deleted announcement with id: '"+ param.id +"' in database.");
-            return data;
+            responseObj = rb.success("Announcement", "deactivated");
         } else {
-            console.log("Could not delete announcement with id: '"+ param.id +"' in database.");
-            return 'Not deleted';
+            responseObj = rb.failure("Announcement", "deactivating");
         }
+        res.send(responseObj);
     }).catch(err => {
-        console.log('ERROR');
-        console.log(err);
-        return 'Not deleted';
+        responseObj = rb.error(err);
+        res.send(responseObj);
     });
 };
+
 
 

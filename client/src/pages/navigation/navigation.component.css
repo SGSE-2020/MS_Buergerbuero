@@ -1,33 +1,13 @@
-/*#region General*/
-
-mat-icon{
-  vertical-align: middle;
+.mat-icon{
+  height: 20px;
+  width: 20px;
+  vertical-align: middle
 }
 
-button{
-  margin-left: 10px;
-}
-
-/*#endregion */
-
-/*#region Nav Bar*/
-#logo_img{
+.logo-img{
   width: 55px;
-  margin-bottom: 5px;
 }
 
-#nav_brand{
-  margin-left: 15px;
-}
-
-.form-row{
-  margin-top: 5%;
-}
-
-.form-row.gender{
-  margin-top: 0;
-}
-/*#endregion */
 
 
 
