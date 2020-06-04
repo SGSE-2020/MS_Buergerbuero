@@ -22,8 +22,8 @@ module.exports = function(config, firebase, channel){
     require('../rest_modules/announcement.routes')(app);
 
     /*Launch REST server*/
-    app.listen("9000", function () {
-        console.log("REST Server running on port: 9000");
+    app.listen("8080", function () {
+        console.log("REST Server running on port: 8080");
     });
 }
 

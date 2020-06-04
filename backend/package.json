@@ -1,11 +1,8 @@
 {
-  "name": "ms_buergerbuero_server",
+  "name": "ms_buergerbuero_backend",
   "version": "1.0.0",
   "description": "Backend Server of MS Buergerbuero of Smart City",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
   "keywords": [],
   "author": "Pia Schreiner",
   "license": "ISC",

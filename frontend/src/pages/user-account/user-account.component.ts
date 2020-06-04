@@ -118,8 +118,8 @@ export class UserAccountComponent implements OnInit {
         phone: this.dataUpdateForm.value.phone
       };
 
-      this.http.post('http://' + this.constants.host + ':9000/user/update/' + this.constants.firebaseUser.uid, user).subscribe(
-        (val: any) => {
+      this.http.post('http://' + this.constants.host + ':' + this.constants.backendPort + '/user/update/' + this.constants.firebaseUser.uid,
+        user).subscribe((val: any) => {
           if (val.status === 'success'){
             this.notificationService.showSuccess('Nutzerdaten wurden erfolgreich aktualisiert',
               'toast-top-left');
@@ -149,8 +149,8 @@ export class UserAccountComponent implements OnInit {
    * Deactivated the user account and signs out the currently logged in user
    */
   deactivateUserAndLogout() {
-    this.http.post('http://' + this.constants.host + ':9000/user/deactivate/' + this.constants.firebaseUser.uid, {}).subscribe(
-      (val: any) => {
+    this.http.post('http://' + this.constants.host + ':' + this.constants.backendPort + '/user/deactivate/' + this.constants.firebaseUser.uid,
+      {}).subscribe((val: any) => {
         if (val.status === 'success'){
           this.modalService.dismissAll();
           this.constants.performLogout();
@@ -212,8 +212,8 @@ export class UserAccountComponent implements OnInit {
           image: reader.result
         };
 
-        this.http.post('http://' + this.constants.host + ':9000/user/image/' + this.constants.firebaseUser.uid, updateObj).subscribe(
-          (val: any) => {
+        this.http.post('http://' + this.constants.host + ':' + this.constants.backendPort + '/user/image/' + this.constants.firebaseUser.uid,
+          updateObj).subscribe((val: any) => {
             if (val.status === 'success'){
               this.notificationService.showSuccess('Nutzerbild wurde aktualisiert',
                 'toast-top-left');

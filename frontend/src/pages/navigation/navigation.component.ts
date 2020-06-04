@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +14,7 @@ import { NotificationService } from '../../services/notification.service';
 })
 
 export class NavigationComponent implements OnInit {
-  public isMenuCollapsed = true;
+  isMenuCollapsed = true;
   authForm: any;
   isSubmitted = false;
 
@@ -61,8 +61,8 @@ export class NavigationComponent implements OnInit {
       if (this.constants.authAction === 'login'){
         this.firebaseAuth.signInWithEmailAndPassword(this.authForm.value.email, this.authForm.value.password).then((result) => {
           result.user.getIdToken(true).then((token) => {
-            this.http.post('http://' + this.constants.host + ':9000/user/verify/' + token, {}).subscribe(
-              (val: any) => {
+            this.http.post('http://' + this.constants.host + ':' + this.constants.backendPort + '/user/verify/' +
+              token, {}).subscribe((val: any) => {
                 if (val.status === 'success'){
                   this.constants.userRole = val.param.role;
                   this.constants.firebaseUser = result.user;
@@ -106,8 +106,8 @@ export class NavigationComponent implements OnInit {
           phone: this.authForm.value.phone
         };
 
-        this.http.post('http://' + this.constants.host + ':9000/user/register', user).subscribe(
-          (val: any) => {
+        this.http.post('http://' + this.constants.host + ':' + this.constants.backendPort + '/user/register',
+          user).subscribe((val: any) => {
             if (val.status === 'success'){
               this.notificationService.showSuccess('Nutzerkonto wurde erfolgreich erstellt',
                 'toast-top-left');

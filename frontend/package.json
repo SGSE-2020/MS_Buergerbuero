@@ -1,6 +1,6 @@
 {
-  "name": "client",
-  "version": "0.0.0",
+  "name": "ms_buergerbuero_frontend",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

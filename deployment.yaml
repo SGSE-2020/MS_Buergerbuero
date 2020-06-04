@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: ms-buergerbuero
+  name: ms-buergerbuero
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ms-buergerbuero
+    spec:
+      containers:
+      - image: ms-buergerbuero-frontend
+        name: ms-buergerbuero-frontend
+        ports:
+        - containerPort: 80
+      - image: ms-buergerbuero-backend
+        name: ms-buergerbuero-backend
+        ports:
+        - containerPort: 8080
+        - containerPort: 50051
+      restartPolicy: Always
+status: {}
