@@ -8,6 +8,7 @@
 - Bietet ein schwarzes Brett(digitale Pinnwand) um aktuelle Informationen darzustellen
 
 ## Use Cases:
+
 - Unterteilen sich in vier Benutzergruppen
   - Interessent
     - Können sich registrieren
@@ -26,6 +27,7 @@
     - Aushang wieder entfernen
             
 ## Technologie:
+
 - Node JS Backend Server (mit mehreren Komponenten)
   - Mali Framework für grpc
   - Nutzerverwaltung/Authentifizierung mit Google Firebase
