@@ -90,6 +90,8 @@ module.exports = function (app, firebase, config, caller, channel) {
             res.send(responseObj);
         }).catch((err) => {
             responseObj = rb.error(err);
+            responseObj.err = err;
+            responseObj.location = "firebase";
             res.send(responseObj);
         });
     });
@@ -134,6 +136,8 @@ module.exports = function (app, firebase, config, caller, channel) {
             })
          }).catch(function(err) {
             responseObj = rb.error(err);
+            responseObj.err = err;
+            responseObj.location = "firebase";
             res.send(responseObj);
          });
     });
@@ -166,6 +170,8 @@ module.exports = function (app, firebase, config, caller, channel) {
             }
         }).catch(function(err) {
             responseObj = rb.error(err);
+            responseObj.err = err;
+            responseObj.location = "firebase";
             res.send(responseObj);
         });
     });
