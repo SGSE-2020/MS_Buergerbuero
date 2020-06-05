@@ -19,51 +19,43 @@ module.exports = function (app, firebase, config, caller, channel) {
         let userObj = req.body;
         let displayName = (userObj.nickName === undefined || userObj.nickName === '') ? userObj.firstName + " " + userObj.lastName : userObj.nickName;
 
-        db.sequelize.authenticate().then(() => {
-            firebase.auth().createUser({
+        firebase.auth().createUser({
+            email: userObj.email,
+            emailVerified: true,
+            password: userObj.password,
+            displayName: displayName,
+            disabled: false,
+        }).then(function (userRecord) {
+            const user = {
+                uid: userRecord.uid,
+                gender: userObj.gender,
+                firstName: userObj.firstName,
+                lastName: userObj.lastName,
+                nickName: displayName,
                 email: userObj.email,
-                emailVerified: true,
-                password: userObj.password,
-                displayName: displayName,
-                disabled: false,
-            }).then(function (userRecord) {
-                const user = {
-                    uid: userRecord.uid,
-                    gender: userObj.gender,
-                    firstName: userObj.firstName,
-                    lastName: userObj.lastName,
-                    nickName: displayName,
-                    email: userObj.email,
-                    birthDate: userObj.birthDate,
-                    streetAddress: userObj.streetAddress,
-                    zipCode: userObj.zipCode,
-                    city: 'Smart City',
-                    phone: userObj.phone,
-                    image: '',
-                    isActive: true
-                };
+                birthDate: userObj.birthDate,
+                streetAddress: userObj.streetAddress,
+                zipCode: userObj.zipCode,
+                city: 'Smart City',
+                phone: userObj.phone,
+                image: '',
+                isActive: true
+            };
 
-                userCtrl.create(user).then(databaseResult => {
-                    if(databaseResult !== "Not created"){
-                        responseObj = rb.success("User", "was created", {
-                            uid: user.uid
-                        });
-                    } else {
-                        responseObj = rb.failure("creating", "user");
-                    }
-                    res.send(responseObj);
-                });
-            }).catch(function (err) {
-                responseObj = rb.error(err);
-                responseObj.err = err;
-                responseObj.location = "firebase";
+            userCtrl.create(user).then(databaseResult => {
+                if(databaseResult !== "Not created"){
+                    responseObj = rb.success("User", "was created", {
+                        uid: user.uid
+                    });
+                } else {
+                    responseObj = rb.failure("creating", "user");
+                }
                 res.send(responseObj);
             });
-        }).catch(err => {
-            responseObj.status = "error";
-            responseObj.code = "";
-            responseObj.message = "Database is not available.";
-            responseObj.param = {};
+        }).catch(function (err) {
+            responseObj = rb.error(err);
+            responseObj.err = err;
+            responseObj.location = "firebase";
             res.send(responseObj);
         });
 
