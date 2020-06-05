@@ -26,4 +26,3 @@ module.exports = function(config, firebase, channel){
         console.log("REST Server running on port: 8080");
     });
 }
-

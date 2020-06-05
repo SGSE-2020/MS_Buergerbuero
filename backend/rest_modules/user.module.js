@@ -6,6 +6,16 @@ module.exports = function (app, firebase, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
     const client = caller(config.BACKEND_HOST + ':50051', userProtoPath, 'UserService');
 
+    app.get("/api/", function (req, res) {
+        console.log('CALL API Route');
+        res.send("API Route successfully called.");
+    });
+
+    app.post("/api/hello/:user", function (req, res) {
+        console.log('CALL Hello Route');
+        res.send("Hello User: ", req.params.user + "!");
+    });
+
     /**
      * Register new user
      * @param body Complete json object with all user data
