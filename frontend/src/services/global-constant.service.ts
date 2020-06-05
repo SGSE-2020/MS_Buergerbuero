@@ -7,8 +7,8 @@ import {NotificationService} from './notification.service';
   providedIn: 'root'
 })
 export class GlobalConstantService {
-  public host = 'localhost';
-  public backendPort = '8080';
+  // public host = 'localhost:8080';
+  public host = '/api';
 
   public authAction = 'login';
   public firebaseUser = null;
@@ -34,7 +34,7 @@ export class GlobalConstantService {
    * Get current userdata
    */
   getCurrentUserData(){
-    this.http.get('http://' + this.host + ': ' + this.backendPort + '/user/' + this.firebaseUser.uid, {}).subscribe(
+    this.http.get(this.host + '/user/' + this.firebaseUser.uid, {}).subscribe(
       (val: any) => {
         if (val.status === 'success'){
           this.userHasError = false;

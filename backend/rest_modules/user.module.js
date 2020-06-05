@@ -59,7 +59,7 @@ module.exports = function (app, firebase, config, caller, channel) {
                     responseObj = rb.failure("creating", "user");
                 }
                 res.send(responseObj);
-            })
+            });
         }).catch(function (err) {
             responseObj = rb.error(err);
             res.send(responseObj);
