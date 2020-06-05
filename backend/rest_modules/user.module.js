@@ -5,7 +5,7 @@ const db = require("../components/database");
 
 module.exports = function (app, firebase, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    const client = caller(config.BACKEND_HOST + ':50051', userProtoPath, 'UserService');
+    const client = caller('localhost:50051', userProtoPath, 'UserService');
 
     /**
      * Register new user
