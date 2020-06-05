@@ -1,6 +1,5 @@
 # MS_Buergerbuero
 
-
 ## Kurzbeschreibung
 
 - Zentraler Service innerhalb der Smart City
