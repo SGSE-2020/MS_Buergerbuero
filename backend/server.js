@@ -23,7 +23,13 @@ require('./components/grpc_server')(config, firebase);
 
 
 let db = require('./components/database');
-db.sequelize.sync();
+
+db.sequelize.sync().then(function(){
+    console.log('DB connection sucessful.');
+}, function(err){
+    // catch error here
+    console.log('DB connection not sucessful.');
+});
 
 
 
