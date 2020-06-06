@@ -60,11 +60,6 @@ jobs:
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" ./backend
           
-    # Do testings
-    - name: Test
-      working-directory: ./backend
-      run: ./node_modules/.bin/mocha ../../
-
     # Push the Docker image to Google Container Registry
     - name: Publish
       run: |
