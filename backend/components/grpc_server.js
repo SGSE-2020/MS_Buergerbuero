@@ -19,7 +19,7 @@ module.exports = function(config, firebase){
     function getUser (param){
         userCtrl.findOne(param).then(databaseResult => {
             if(databaseResult != 'Not found'){
-                param.res = databaseResult.dataValues;
+                param.res = databaseResult;
             } else {
                 param.res = null;
             }
@@ -75,7 +75,6 @@ module.exports = function(config, firebase){
 
     /*Launch gRPC server*/
     gRpcServer.use({ verifyUser, getUser, sendAnnouncement, deleteAnnouncement});
-    //gRpcServer.start(config.BACKEND_HOST + ':50051');
     gRpcServer.start("0.0.0.0:50051");
     console.log("gRPC Server running on port: 50051");
 }

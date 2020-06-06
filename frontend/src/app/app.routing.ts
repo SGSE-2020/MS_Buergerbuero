@@ -6,6 +6,11 @@ import { UserAccountComponent } from '../pages/user-account/user-account.compone
 import { WorkComponent } from '../pages/work/work.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
   { path: 'home', component: HomeComponent, runGuardsAndResolvers: 'always' },
   { path: 'black-board', component: BlackBoardComponent, runGuardsAndResolvers: 'always'  },
   { path: 'user-account', component: UserAccountComponent, runGuardsAndResolvers: 'always'  },

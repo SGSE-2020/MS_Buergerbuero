@@ -2,16 +2,15 @@
   <div class="container">
     <img id="image" src="../../assets/img/skyline_color.png" class="logo-img" alt="Responsive image">
     <span class="navbar-brand mb-0 h1 ml-3" id="nav_brand">Bürgerbüro</span>
-
+    <button type="button" class="btn btn-secondary ml-3" (click)="backToPortal()">
+      <mat-icon>dashboard</mat-icon>
+      Portal
+    </button>
     <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       &#9776;
     </button>
     <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
-        <button type="button" class="btn btn-outline-info mr-1 ml-1" (click)="backToPortal()">
-          <mat-icon>dashboard</mat-icon>
-          Home
-        </button>
         <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'home'">
           <mat-icon>home</mat-icon>
           Home
