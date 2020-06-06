@@ -6,7 +6,7 @@ describe("MS_Buergerbuero API", function() {
     describe("Routes", function() {
         const RestUrl = "http://localhost:" + config.REST_PORT + "/alive";
         it("REST Server alive", function() {
-            request(url, function(error, response, body) {
+            request(RestUrl, function(error, response, body) {
                 expect(response.statusCode).to.equal(200);
             });
         });
