@@ -7,8 +7,8 @@ import {NotificationService} from './notification.service';
   providedIn: 'root'
 })
 export class GlobalConstantService {
-  // public host = 'localhost:8080';
-  public host = '/api';
+  public host = 'http://localhost:8080';
+  // public host = '/api';
 
   public authAction = 'login';
   public firebaseUser = null;

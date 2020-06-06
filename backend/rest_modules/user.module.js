@@ -2,10 +2,11 @@ const path = require('path');
 const userCtrl = require("../database/controller/user.controller");
 const rb = require("../components/response_builder");
 const db = require("../components/database");
+const config = require('../components/config');
 
 module.exports = function (app, firebase, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    const client = caller('localhost:50051', userProtoPath, 'UserService');
+    const client = caller('localhost:' + config.GRPC_PORT, userProtoPath, 'UserService');
 
     /**
      * Register new user

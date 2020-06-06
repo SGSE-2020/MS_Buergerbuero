@@ -1,5 +1,6 @@
 const path = require('path');
 const mali = require('mali');
+const conf = require('./config');
 
 const gRpcServer = new mali();
 const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
@@ -75,8 +76,8 @@ module.exports = function(config, firebase){
 
     /*Launch gRPC server*/
     gRpcServer.use({ verifyUser, getUser, sendAnnouncement, deleteAnnouncement});
-    gRpcServer.start("0.0.0.0:50051");
-    console.log("gRPC Server running on port: 50051");
+    gRpcServer.start(conf.GRPC_PORT);
+    console.log("gRPC Server running on port: " + conf.GRPC_PORT);
 }
 
 
