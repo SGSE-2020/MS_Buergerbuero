@@ -177,4 +177,7 @@ export class NavigationComponent implements OnInit {
   }
   // </editor-fold>
 
+  backToPortal() {
+    window.location.href = 'http://portal.dvess.network';
+  }
 }

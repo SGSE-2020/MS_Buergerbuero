@@ -5,8 +5,8 @@ const app = express();
 const caller = require('grpc-caller')
 
 module.exports = function(config, firebase, channel){
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json({limit: '50mb', extended: true}));
+    app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
     /*Header*/
     app.all('/*', function(req, res, next) {
