@@ -17,11 +17,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |
+    - name: Install packages
+      run: |
         cd backend
         npm install
+    - name: Run tests
     - run: |
         cd backend
         npm test
-      env:
+    - env:
         CI: true
