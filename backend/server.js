@@ -11,8 +11,6 @@ firebase.initializeApp({
 });
 
 /*Start all components*/
-
-
 console.log("Initial start up Bürgerbüro Server!");
 console.log("-----------------------------------");
 
@@ -21,9 +19,13 @@ let channel = require('./components/messages');
 require('./components/rest_server')(config, firebase, channel);
 require('./components/grpc_server')(config, firebase);
 
-
 let db = require('./components/database');
-db.sequelize.sync();
+
+db.sequelize.sync().then(function(){
+    console.log('DB connection successful.');
+}, function(err){
+    console.log('DB connection not successful.');
+});
 
 
 

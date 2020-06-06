@@ -1,10 +1,11 @@
 const path = require('path');
 const userCtrl = require("../database/controller/user.controller");
 const rb = require("../components/response_builder");
+const db = require("../components/database");
 
 module.exports = function (app, firebase, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    const client = caller(config.BACKEND_HOST + ':50051', userProtoPath, 'UserService');
+    const client = caller('localhost:50051', userProtoPath, 'UserService');
 
     /**
      * Register new user
@@ -17,42 +18,53 @@ module.exports = function (app, firebase, config, caller, channel) {
         let responseObj = {};
         let userObj = req.body;
         let displayName = (userObj.nickName === undefined || userObj.nickName === '') ? userObj.firstName + " " + userObj.lastName : userObj.nickName;
-        firebase.auth().createUser({
-            email: userObj.email,
-            emailVerified: true,
-            password: userObj.password,
-            displayName: displayName,
-            disabled: false,
-        }).then(function (userRecord) {
-            const user = {
-                uid: userRecord.uid,
-                gender: userObj.gender,
-                firstName: userObj.firstName,
-                lastName: userObj.lastName,
-                nickName: displayName,
-                email: userObj.email,
-                birthDate: userObj.birthDate,
-                streetAddress: userObj.streetAddress,
-                zipCode: userObj.zipCode,
-                city: 'Smart City',
-                phone: userObj.phone,
-                image: '',
-                isActive: true
-            };
 
-            userCtrl.create(user).then(databaseResult => {
-                if(databaseResult !== "Not created"){
-                    responseObj = rb.success("User", "was created", {
-                        uid: user.uid
-                    });
-                } else {
-                    responseObj = rb.failure("creating", "user");
-                }
+        db.sequelize.authenticate().then(() => {
+            firebase.auth().createUser({
+                email: userObj.email,
+                emailVerified: true,
+                password: userObj.password,
+                displayName: displayName,
+                disabled: false,
+            }).then(function (userRecord) {
+                const user = {
+                    uid: userRecord.uid,
+                    gender: userObj.gender,
+                    firstName: userObj.firstName,
+                    lastName: userObj.lastName,
+                    nickName: displayName,
+                    email: userObj.email,
+                    birthDate: userObj.birthDate,
+                    streetAddress: userObj.streetAddress,
+                    zipCode: userObj.zipCode,
+                    city: 'Smart City',
+                    phone: userObj.phone,
+                    image: '',
+                    isActive: true
+                };
+
+                userCtrl.create(user).then(databaseResult => {
+                    if(databaseResult !== "Not created"){
+                        responseObj = rb.success("User", "was created", {
+                            uid: user.uid
+                        });
+                    } else {
+                        responseObj = rb.failure("creating", "user");
+                    }
+                    res.send(responseObj);
+                });
+            }).catch(function (err) {
+                responseObj = rb.error(err);
+                responseObj.err = err;
+                responseObj.location = "firebase";
                 res.send(responseObj);
-            })
-        }).catch(function (err) {
-            responseObj = rb.error(err);
-            res.send(responseObj);
+            });
+        }).catch(err => {
+            console.log(err);
+            responseObj.status = "error";
+            responseObj.code = "";
+            responseObj.message = "Database is not available.";
+            responseObj.param = {};
         });
     });
 
@@ -77,6 +89,8 @@ module.exports = function (app, firebase, config, caller, channel) {
             res.send(responseObj);
         }).catch((err) => {
             responseObj = rb.error(err);
+            responseObj.err = err;
+            responseObj.location = "firebase";
             res.send(responseObj);
         });
     });
@@ -121,6 +135,8 @@ module.exports = function (app, firebase, config, caller, channel) {
             })
          }).catch(function(err) {
             responseObj = rb.error(err);
+            responseObj.err = err;
+            responseObj.location = "firebase";
             res.send(responseObj);
          });
     });
@@ -153,6 +169,8 @@ module.exports = function (app, firebase, config, caller, channel) {
             }
         }).catch(function(err) {
             responseObj = rb.error(err);
+            responseObj.err = err;
+            responseObj.location = "firebase";
             res.send(responseObj);
         });
     });

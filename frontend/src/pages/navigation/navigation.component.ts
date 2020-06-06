@@ -61,7 +61,7 @@ export class NavigationComponent implements OnInit {
       if (this.constants.authAction === 'login'){
         this.firebaseAuth.signInWithEmailAndPassword(this.authForm.value.email, this.authForm.value.password).then((result) => {
           result.user.getIdToken(true).then((token) => {
-            this.http.post('http://' + this.constants.host + ':' + this.constants.backendPort + '/user/verify/' +
+            this.http.post(this.constants.host + '/user/verify/' +
               token, {}).subscribe((val: any) => {
                 if (val.status === 'success'){
                   this.constants.userRole = val.param.role;
@@ -106,7 +106,7 @@ export class NavigationComponent implements OnInit {
           phone: this.authForm.value.phone
         };
 
-        this.http.post('http://' + this.constants.host + ':' + this.constants.backendPort + '/user/register',
+        this.http.post(this.constants.host + '/user/register',
           user).subscribe((val: any) => {
             if (val.status === 'success'){
               this.notificationService.showSuccess('Nutzerkonto wurde erfolgreich erstellt',
