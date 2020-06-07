@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
@@ -64,12 +64,13 @@ export class NavigationComponent implements OnInit {
             this.http.post(this.constants.host + '/user/verify/' +
               token, {}).subscribe((val: any) => {
                 if (val.status === 'success'){
-                  this.constants.userRole = val.param.role;
                   this.constants.firebaseUser = result.user;
                   this.modalService.dismissAll();
                   this.isSubmitted = false;
-                  this.constants.getCurrentUserData();
-                  this.router.navigate([this.router.url]);
+                  this.constants.getCurrentUserData().then(res => {
+                    this.router.navigate([this.router.url]);
+                  }).finally(() => {
+                  });
                 } else {
                   this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
                     'toast-top-center');

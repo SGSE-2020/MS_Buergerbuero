@@ -16,11 +16,16 @@ import { NotificationService } from '../../services/notification.service';
 export class UserAccountComponent implements OnInit {
   @ViewChild('imageInput') imageInput: ElementRef;
   @ViewChild('userImage') userImage: ElementRef;
+  @ViewChild('fOImage') fOImage: ElementRef;
+  @ViewChild('aImage') aImage: ElementRef;
 
   dataUpdateForm: any;
   createFoundObjectForm: any;
   createAnnouncementForm: any;
   private navigationSubscription: Subscription;
+  userDataIsSubmitted: boolean;
+  announcementIsSubmitted: boolean;
+  foundObjectIsSubmitted: boolean;
 
   constructor(private http: HttpClient, public constants: GlobalConstantService, private modalService: NgbModal,
               private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder,
@@ -31,12 +36,24 @@ export class UserAccountComponent implements OnInit {
    * Subscribes the router action to get current modal
    */
   ngOnInit(): void {
+    this.userDataIsSubmitted = false;
+    this.announcementIsSubmitted = false;
+    this.foundObjectIsSubmitted = false;
+
     this.createFoundObjectForm = this.formBuilder.group({
-      // todo to be defined
+      title: ['', Validators.required],
+      text: ['', Validators.required],
+      question1: ['', Validators.required],
+      question2: ['', Validators.required],
+      question3: ['', Validators.required],
+      answer1: ['', Validators.required],
+      answer2: ['', Validators.required],
+      answer3: ['', Validators.required]
     });
 
     this.createAnnouncementForm = this.formBuilder.group({
-      // todo to be defined
+      title: ['', Validators.required],
+      text: ['', Validators.required]
     });
 
     this.dataUpdateForm = this.formBuilder.group({
@@ -51,13 +68,14 @@ export class UserAccountComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]]
     });
 
+    this.refreshData();
+
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
-      if (e instanceof NavigationEnd) {
+      if (e instanceof NavigationEnd && e.url === '/user-account') {
         this.refreshData();
       }
     });
   }
-
   // <editor-fold desc="Modal utility">
 
   /**
@@ -94,6 +112,18 @@ export class UserAccountComponent implements OnInit {
     });
   }
 
+  /**
+   * Function to open the modal
+   * @param modalContent Modal that should be opened
+   */
+  openLargeModal(modalContent: any) {
+    this.modalService.open(modalContent, {
+      size: 'lg',
+      centered: true,
+      scrollable: true
+    });
+  }
+
   // </editor-fold>
 
   // <editor-fold desc="User actions">
@@ -102,6 +132,7 @@ export class UserAccountComponent implements OnInit {
    * the modal.
    */
   updateData() {
+    this.userDataIsSubmitted = true;
     if (this.dataUpdateForm.valid) {
       const birthDateStr = new Date (this.dataUpdateForm.value.birthDate.year + '-' +
         this.dataUpdateForm.value.birthDate.month + '-' + this.dataUpdateForm.value.birthDate.day);
@@ -121,17 +152,15 @@ export class UserAccountComponent implements OnInit {
       this.http.post(this.constants.host + '/user/update/' + this.constants.firebaseUser.uid,
         user).subscribe((val: any) => {
           if (val.status === 'success'){
+            this.userDataIsSubmitted = false;
+            this.firebaseAuth.currentUser.then(currentUser => {
+              currentUser.reload().then(() => {
+                this.constants.currentUser = currentUser;
+              });
+            });
             this.notificationService.showSuccess('Nutzerdaten wurden erfolgreich aktualisiert',
               'toast-top-left');
             this.modalService.dismissAll();
-            this.constants.currentUser.firstName = this.dataUpdateForm.value.firstName;
-            this.constants.currentUser.lastName = this.dataUpdateForm.value.lastName;
-            this.constants.currentUser.nickName = this.dataUpdateForm.value.nickName;
-            this.constants.currentUser.email = this.dataUpdateForm.value.email;
-            this.constants.currentUser.birthDate = this.dataUpdateForm.value.birthDate;
-            this.constants.currentUser.streetAddress = this.dataUpdateForm.value.streetAddress;
-            this.constants.currentUser.zipCode = this.dataUpdateForm.value.zipCode;
-            this.constants.currentUser.phone = this.dataUpdateForm.value.phone;
             this.refreshData();
           } else {
             this.notificationService.showError('Nutzerdaten konnten nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
@@ -185,25 +214,132 @@ export class UserAccountComponent implements OnInit {
    * Create new announcement from the user account page
    */
   createNewAnnouncement() {
+    this.announcementIsSubmitted = true;
     if (this.createAnnouncementForm.valid) {
-      // todo create announcement
+      const announcement = {
+        title: this.createAnnouncementForm.value.title,
+        text: this.createAnnouncementForm.value.text,
+        type: 'announcement',
+        source: 'Bürger',
+        service: null,
+        uid: this.constants.currentUser.uid,
+        isActive: false,
+        image: null
+      };
+
+      // todo add image while creating announcement
+      /*
+      if (this.aImage.nativeElement.files) {
+        const file = this.aImage.nativeElement.files[0];
+        if (file.type === 'image/jpeg' || 'image/png') {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            announcement.image = reader.result;
+            this.sendAnnouncementToServer(announcement);
+          };
+        }
+      } else {
+        this.sendAnnouncementToServer(announcement);
+      }*/
+      this.sendAnnouncementToServer(announcement);
     }
+  }
+
+  /**
+   * Send created announcement to backend server
+   * @param foundObject Json object containing all data for announcement
+   */
+  sendAnnouncementToServer(announcement: any){
+    this.http.post(this.constants.host + '/announcement/create',
+      announcement).subscribe((val: any) => {
+        if (val.status === 'success'){
+          this.notificationService.showSuccess('Aushang wurde erstellt. Sobald er freigegeben wurde können Sie ihn unter Aushänge sehen.',
+            'toast-top-left');
+          this.announcementIsSubmitted = false;
+          // todo reset file input
+          this.createAnnouncementForm.setValue({
+            title: '',
+            text: ''
+          });
+          this.modalService.dismissAll();
+        } else {
+          this.notificationService.showError('Aushang konnte nicht erstellt werden. Bitte versuchen sie es später erneut.',
+            'toast-top-left');
+        }
+      },
+      error => {
+        this.notificationService.showError('Aushang konnte nicht erstellt werden. Bitte versuchen sie es später erneut.',
+          'toast-top-left');
+      });
   }
 
   /**
    * Create new found item from the user account page
    */
-  createNewFoundItem() {
+  createNewFoundObject() {
+    this.foundObjectIsSubmitted = true;
     if (this.createFoundObjectForm.valid) {
-      // todo create found item
+      const foundObject = {
+        title: this.createFoundObjectForm.value.title,
+        text: this.createFoundObjectForm.value.text,
+        type: 'found object',
+        source: 'Bürger',
+        service: null,
+        uid: this.constants.currentUser.uid,
+        isActive: false,
+        image: null,
+        question1: this.createFoundObjectForm.value.question1,
+        question2: this.createFoundObjectForm.value.question2,
+        question3: this.createFoundObjectForm.value.question3,
+        answer1: this.createFoundObjectForm.value.answer1,
+        answer2: this.createFoundObjectForm.value.answer2,
+        answer3: this.createFoundObjectForm.value.answer3
+      };
+
+      // todo add image while creating found object
+      this.sendFoundObjectToServer(foundObject);
     }
+  }
+
+  /**
+   * Send created found object to backend server
+   * @param foundObject Json object containing all data for found object
+   */
+  sendFoundObjectToServer(foundObject: any){
+    this.http.post(this.constants.host + '/foundObject/create',
+      foundObject).subscribe((val: any) => {
+        if (val.status === 'success'){
+          this.notificationService.showSuccess('Fundgegenstand wurde erfolgreich abgegeben. Sobald er begutachtet wurde können Sie ihn unter Aushänge sehen.',
+            'toast-top-left');
+          // todo reset file input
+          this.createFoundObjectForm.setValue({
+            title: '',
+            text: '',
+            question1: '',
+            question2: '',
+            question3: '',
+            answer1: '',
+            answer2: '',
+            answer3: '',
+          });
+          this.foundObjectIsSubmitted = false;
+          this.modalService.dismissAll();
+        } else {
+          this.notificationService.showError('Fundgegenstand konnte nicht abgegeben werden. Bitte versuchen sie es später erneut.',
+            'toast-top-left');
+        }
+      },
+      error => {
+        this.notificationService.showError('Fundgegenstand konnte nicht abgegeben werden. Bitte versuchen sie es später erneut.',
+          'toast-top-left');
+      });
   }
 
   /**
    * Upload a new image for the current logged in user
    */
   uploadImage(file: any) {
-    // todo upload image for current user
     if (file.type === 'image/jpeg' || 'image/png'){
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -235,4 +371,5 @@ export class UserAccountComponent implements OnInit {
   }
 
   // </editor-fold>
+
 }

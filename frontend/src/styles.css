@@ -1,7 +1,16 @@
+/*#region Allgemein*/
+body {
+  padding-top: 70px;
+}
+/*#endregion*/
+
+/*#region Buttons*/
 button[aria-label="Close"]:focus {
   outline: none;
 }
+/*#endregion*/
 
+/*#region Icons*/
 .material-icons{
   font-size: 18px;
 }
@@ -12,7 +21,9 @@ button[aria-label="Close"]:focus {
   padding-top: 2px;
   vertical-align: middle
 }
+/*#endregion*/
 
+/*#region Notifications*/
 .toast-top-center {
   top: 7%;
 }
@@ -20,7 +31,9 @@ button[aria-label="Close"]:focus {
 .toast-top-left {
   top: 7%;
 }
+/*#endregion*/
 
+/*#region Links*/
 a.nav-link.active{
   color: black!important;
 }
@@ -28,3 +41,4 @@ a.nav-link.active{
 a.nav-link{
   color: #17a2b8!important;
 }
+/*#endregion*/

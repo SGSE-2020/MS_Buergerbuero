@@ -1,9 +1,99 @@
 <div class="container">
-  <div class="alert alert-danger" role="alert" *ngIf="this.constants.userRole != 2">
+  <div class="alert alert-danger mt-4" role="alert" *ngIf="this.constants.userRole != 2">
     <h4 class="alert-heading">Keine Berechtigung!</h4>
     <p>Sie haben keine Berechtigung auf diese Seite zuzugreifen</p>
   </div>
   <div id="content" *ngIf="this.constants.userRole == 2">
-    WORK
+    <div class="shadow p-3 bg-white rounded">
+      <h4 class="text-info">Neue Aushänge</h4>
+      <ngb-tabset #t="ngbTabset" justify="end">
+        <ngb-tab id="tab-selectbyid1">
+          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="announcementList.length > 0">{{announcementList.length}}</span></ng-template>
+          <ng-template ngbTabContent>
+            <div class="p-3">
+              <div class="row">
+                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let announcement of announcementList">
+                  <div class="card-body">
+                    <h5 class="card-title">{{announcement.title}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Von: {{announcement.source}}</h6>
+                    <p class="card-text">{{announcement.text | slice:0:95}}...</p>
+                  </div>
+                  <div class="card-footer bg-light">
+                    <div class="float-right">
+                      <mat-icon>add_circle</mat-icon>
+                      <mat-icon>remove_circle</mat-icon>
+                      <mat-icon (click)="openAnnouncementDetailView(announcementDetail, announcement)">search</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="tab-selectbyid2">
+          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="foundObjectList.length > 0">{{foundObjectList.length}}</span></ng-template>
+          <ng-template ngbTabContent>
+            <div class="p-3">
+              <div class="row">
+                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let foundObject of foundObjectList">
+                  <div class="card-body">
+                    <h5 class="card-title">{{foundObject.title}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Von: {{foundObject.source}}</h6>
+                    <p class="card-text">{{foundObject.text | slice:0:100}}</p>
+                  </div>
+                  <div class="card-footer bg-light">
+                    <div class="float-right">
+                      <mat-icon>add_circle</mat-icon>
+                      <mat-icon>remove_circle</mat-icon>
+                      <mat-icon (click)="openFoundObjectDetailView(foundObjectDetail, foundObject)">search</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </div>
   </div>
 </div>
+
+<ng-template #announcementDetail let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <img class="img-fluid col-xl-4" src="{{currentAnnouncement.image}}" *ngIf="currentAnnouncement.image != null"/>
+      <p class="col">{{currentAnnouncement.text}}</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="float-right">
+      <mat-icon>print</mat-icon>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #foundObjectDetail let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{currentFoundObject.title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <img class="img-fluid col-xl-4" src="{{currentFoundObject.image}}" *ngIf="currentFoundObject.image != null"/>
+      <p class="col">{{currentFoundObject.text}}</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="float-right">
+      <mat-icon>print</mat-icon>
+    </div>
+  </div>
+</ng-template>
