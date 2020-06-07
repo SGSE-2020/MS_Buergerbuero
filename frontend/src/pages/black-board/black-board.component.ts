@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GlobalConstantService } from '../../services/global-constant.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormBuilder, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-black-board',
@@ -21,7 +22,7 @@ export class BlackBoardComponent implements OnInit {
         'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
         'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
       type: 'announcement',
-      image: null,
+      image: '../assets/img/dummy_image.png',
       source: 'Bürger',
       uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
       service: null,
@@ -37,7 +38,7 @@ export class BlackBoardComponent implements OnInit {
         'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
         'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
       type: 'announcement',
-      image: null,
+      image: '../assets/img/dummy_image.png',
       source: 'Bürger',
       uid: '6TbzcPavrSNdq1W1qAKqyfhhvxB2',
       service: null,
@@ -135,7 +136,7 @@ export class BlackBoardComponent implements OnInit {
         'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
         'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
       type: 'found object',
-      image: null,
+      image: '../assets/img/dummy_image.png',
       source: 'Bürger',
       uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
       service: null,
@@ -167,7 +168,7 @@ export class BlackBoardComponent implements OnInit {
         'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
         'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
       type: 'found object',
-      image: null,
+      image: '../assets/img/dummy_image.png',
       source: 'Bürger',
       uid: 'Bla',
       service: null,
@@ -199,7 +200,7 @@ export class BlackBoardComponent implements OnInit {
         'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
         'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
       type: 'found object',
-      image: null,
+      image: '../assets/img/dummy_image.png',
       source: 'Bürger',
       uid: 'Bla',
       service: null,
@@ -210,9 +211,16 @@ export class BlackBoardComponent implements OnInit {
   currentAnnouncement: any;
   currentFoundObject: any;
 
-  constructor(public constants: GlobalConstantService, private modalService: NgbModal) { }
+  receiveFoundObjectForm: any;
+
+  constructor(public constants: GlobalConstantService, private modalService: NgbModal, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    this.receiveFoundObjectForm = this.formBuilder.group({
+      question1: ['', Validators.required],
+      question2: ['', Validators.required],
+      question3: ['', Validators.required]
+    });
   }
 
   /**
@@ -243,4 +251,11 @@ export class BlackBoardComponent implements OnInit {
     this.currentFoundObject = foundObject;
   }
 
+  /**
+   * Function to receive a found object
+   */
+  receiveFoundObject() {
+    // todo check if validation is okay
+    // todo if successful remove announcement
+  }
 }
