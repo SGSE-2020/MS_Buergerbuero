@@ -76,7 +76,7 @@ module.exports = function(config, firebase){
 
     /*Launch gRPC server*/
     gRpcServer.use({ verifyUser, getUser, sendAnnouncement, deleteAnnouncement});
-    gRpcServer.start(conf.GRPC_PORT);
+    gRpcServer.start("0.0.0.0:" + conf.GRPC_PORT);
     console.log("gRPC Server running on port: " + conf.GRPC_PORT);
 }
 

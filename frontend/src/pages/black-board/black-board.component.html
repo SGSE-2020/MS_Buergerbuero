@@ -1,5 +1,84 @@
 <div class="container">
   <div id="content">
-    AUSHÄNGE
+    <div class="shadow p-3 bg-white rounded">
+      <h4 class="text-info">Aushänge</h4>
+      <ngb-tabset #t="ngbTabset" justify="end">
+        <ngb-tab id="tab-selectbyid1"  title="Aushänge">
+          <ng-template ngbTabContent>
+            <div class="p-3">
+              <div class="row">
+                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let announcement of announcementList" [ngClass]="constants.firebaseUser != null && (announcement.uid == constants.firebaseUser.uid) ? 'bg-custom' : 'bg-light'">
+                  <div class="card-body">
+                    <h5 class="card-title">{{announcement.title}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Von: {{announcement.source}}</h6>
+                    <p class="card-text">{{announcement.text | slice:0:95}}...</p>
+                  </div>
+                  <div class="card-footer" [ngClass]="constants.firebaseUser != null && (announcement.uid == constants.firebaseUser.uid) ? 'bg-custom' : 'bg-light'">
+                    <div class="float-right">
+                      <mat-icon *ngIf="constants.firebaseUser != null && (announcement.uid == constants.firebaseUser.uid)" ngTooltip="Details von Aushang anzeigen">delete</mat-icon>
+                      <mat-icon (click)="openAnnouncementDetailView(announcementDetail, announcement)">search</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="tab-selectbyid2" title="Fundgegenstände">
+          <ng-template ngbTabContent>
+            <div class="p-3">
+              <div class="row">
+                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let foundObject of foundObjectList" [ngClass]="constants.firebaseUser != null && (foundObject.uid == constants.firebaseUser.uid) ? 'bg-custom' : 'bg-light'">
+                  <div class="card-body">
+                    <h5 class="card-title">{{foundObject.title}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Von: {{foundObject.source}}</h6>
+                    <p class="card-text">{{foundObject.text | slice:0:100}}</p>
+                  </div>
+                  <div class="card-footer" [ngClass]="constants.firebaseUser != null && (foundObject.uid == constants.firebaseUser.uid) ? 'bg-custom' : 'bg-light'">
+                    <div class="float-right">
+                      <mat-icon (click)="openFoundObjectDetailView(foundObjectDetail, foundObject)">search</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </div>
   </div>
 </div>
+
+<ng-template #announcementDetail let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p class="col">{{currentAnnouncement.text}}</p>
+  </div>
+  <div class="modal-footer">
+    <div class="float-right">
+      <mat-icon>print</mat-icon>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #foundObjectDetail let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{currentFoundObject.title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{currentFoundObject.text}}</p>
+  </div>
+  <div class="modal-footer">
+    <div class="float-right">
+      <mat-icon>print</mat-icon>
+    </div>
+  </div>
+</ng-template>

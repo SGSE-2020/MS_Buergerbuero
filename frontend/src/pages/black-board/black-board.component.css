@@ -1,3 +1,8 @@
-#blackboard-menu{
-  float:right;
+mat-icon:hover{
+  color: #138294;
+  cursor: pointer;
+}
+
+.bg-custom{
+  background-color: #add7de!important;
 }
