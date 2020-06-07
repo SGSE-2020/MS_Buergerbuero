@@ -138,8 +138,8 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn-link" *ngIf="this.constants.authAction=='login'" (click)="setAction('register')">Noch kein Bürger der Smart City? Jetzt registrieren!</button>
-      <button type="button" class="btn btn-link" *ngIf="this.constants.authAction=='register'" (click)="setAction('login')">Bereits Bürger der Smart City? Jetzt anmelden!</button>
+      <button type="button" class="btn btn-link text-info" *ngIf="this.constants.authAction=='login'" (click)="setAction('register')">Noch kein Bürger der Smart City? Jetzt registrieren!</button>
+      <button type="button" class="btn btn-link text-info" *ngIf="this.constants.authAction=='register'" (click)="setAction('login')">Bereits Bürger der Smart City? Jetzt anmelden!</button>
     </form>
   </div>
   <div class="modal-footer">

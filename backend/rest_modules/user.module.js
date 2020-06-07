@@ -57,7 +57,6 @@ module.exports = function (app, firebase, config, caller, channel) {
             }).catch(function (err) {
                 responseObj = rb.error(err);
                 responseObj.err = err;
-                responseObj.location = "firebase";
                 res.send(responseObj);
             });
         }).catch(err => {
@@ -88,10 +87,9 @@ module.exports = function (app, firebase, config, caller, channel) {
                 responseObj = rb.failure("verifying", "user");
             }
             res.send(responseObj);
-        }).catch((err) => {
+        }).catch(err => {
             responseObj = rb.error(err);
             responseObj.err = err;
-            responseObj.location = "firebase";
             res.send(responseObj);
         });
     });
@@ -137,7 +135,6 @@ module.exports = function (app, firebase, config, caller, channel) {
          }).catch(function(err) {
             responseObj = rb.error(err);
             responseObj.err = err;
-            responseObj.location = "firebase";
             res.send(responseObj);
          });
     });
@@ -171,7 +168,6 @@ module.exports = function (app, firebase, config, caller, channel) {
         }).catch(function(err) {
             responseObj = rb.error(err);
             responseObj.err = err;
-            responseObj.location = "firebase";
             res.send(responseObj);
         });
     });
