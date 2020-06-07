@@ -64,6 +64,7 @@ export class NavigationComponent implements OnInit {
             this.http.post(this.constants.host + '/user/verify/' +
               token, {}).subscribe((val: any) => {
                 if (val.status === 'success'){
+                  this.constants.userRole = val.param.role;
                   this.constants.firebaseUser = result.user;
                   this.modalService.dismissAll();
                   this.isSubmitted = false;

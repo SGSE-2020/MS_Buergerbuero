@@ -76,6 +76,7 @@ export class UserAccountComponent implements OnInit {
       }
     });
   }
+
   // <editor-fold desc="Modal utility">
 
   /**
