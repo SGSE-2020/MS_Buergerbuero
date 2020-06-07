@@ -77,7 +77,7 @@ module.exports = function (app, firebase, config, caller, channel) {
         console.log('REST CALL: /user/verify');
 
         let responseObj = {};
-        client.verifyUser(req.params).then(result => {
+        firebase.auth().verifyIdToken(req.params.token).then(result => {
             if(result.uid != null){
                 responseObj = rb.success("User", "was verified", {
                     uid : result.uid,
@@ -87,7 +87,7 @@ module.exports = function (app, firebase, config, caller, channel) {
                 responseObj = rb.failure("verifying", "user");
             }
             res.send(responseObj);
-        }).catch(err => {
+        }).catch((err) => {
             responseObj = rb.error(err);
             responseObj.err = err;
             res.send(responseObj);

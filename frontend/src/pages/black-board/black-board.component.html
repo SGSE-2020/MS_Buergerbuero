@@ -57,7 +57,10 @@
     </button>
   </div>
   <div class="modal-body">
-    <p class="col">{{currentAnnouncement.text}}</p>
+    <div class="row">
+      <img class="img-fluid col-xl-4" src="{{currentAnnouncement.image}}" *ngIf="currentAnnouncement.image != null"/>
+      <p class="col">{{currentAnnouncement.text}}</p>
+    </div>
   </div>
   <div class="modal-footer">
     <div class="float-right">
@@ -74,7 +77,40 @@
     </button>
   </div>
   <div class="modal-body">
-    <p>{{currentFoundObject.text}}</p>
+    <div class="row">
+      <img class="img-fluid col-xl-4" src="{{currentFoundObject.image}}" *ngIf="currentFoundObject.image != null"/>
+      <p class="col">{{currentFoundObject.text}}</p>
+    </div>
+    <div *ngIf="constants.firebaseUser != null && (constants.firebaseUser.uid != currentFoundObject.uid)">
+      <div class="row ml-2 mt-4">
+        <h5 class="text-info">Diesen Fundgegenstand abholen? Bitte verifiziere, dass dieser Gegenstand dir gehört!</h5>
+      </div>
+      <div class="row ml-2 mt-4">
+        <div class="col-xl-6">
+          <form [formGroup]="receiveFoundObjectForm" id="receiveFoundObjectFormId" (ngSubmit)="receiveFoundObject()" >
+            <div class="form-group">
+              <div class="form-row">
+                <label for="question1" class="control-label font-weight-bold">Beispielfrage 1</label>
+                <input type="text" id="question1" class="form-control" formControlName="question1">
+              </div>
+              <div class="form-row mt-2">
+                <label for="question2" class="control-label font-weight-bold">Beispielfrage 2</label>
+                <input type="text" id="question2" class="form-control" formControlName="question2">
+              </div>
+              <div class="form-row mt-2">
+                <label for="question3" class="control-label font-weight-bold">Beispielfrage 3</label>
+                <input type="text" id="question3" class="form-control" formControlName="question3">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row ml-2">
+        <div class="col">
+          <button form="receiveFoundObjectFormId" type="submit" class="btn btn-info float-right">Abholen</button>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <div class="float-right">
