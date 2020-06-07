@@ -30,7 +30,7 @@ exports.failure = function(what, operation, param = {}) {
     responseObj.message = "Error on " + operation + " " + what + " from the database.";
     responseObj.param = param;
 
-    console.log(responseObj.status.toUpperCase() + ": " + responseObj.message);
+    console.error(responseObj.status.toUpperCase() + ": " + responseObj.message);
     return responseObj;
 }
 
@@ -47,6 +47,6 @@ exports.error = function(errorObject, param = {}) {
     responseObj.message = errorObject.message;
     responseObj.param = param;
 
-    console.log(responseObj.status.toUpperCase() + ": " + responseObj.message);
+    console.error(responseObj.status.toUpperCase() + ": " + responseObj.message);
     return responseObj;
 }

@@ -5,6 +5,8 @@ module.exports = {
     DB_PASSWORD: "sgse-ss2020",
     DB_NAME: "buergerbuero",
     DB_DIALECT: "postgres",
+    //DB_HOST: "db",
+    DB_HOST: "localhost",
 
     MESSAGE_QUEUE: 'queue-test'
 };

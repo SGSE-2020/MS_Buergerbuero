@@ -16,9 +16,8 @@ button[aria-label="Close"]:focus {
 }
 
 .mat-icon{
-  height: 20px;
-  width: 20px;
-  padding-top: 2px;
+  height: 20px!important;
+  width: 20px!important;
   vertical-align: middle
 }
 /*#endregion*/
