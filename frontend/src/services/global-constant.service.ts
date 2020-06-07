@@ -15,8 +15,14 @@ export class GlobalConstantService {
   public currentUser = null;
   public userRole = 0;
   public userHasError = false;
+  public maxVarcharLength = 255;
+  public defaultImage: string;
+  public defaultAnnouncementPreview: string;
 
-  constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private notificationService: NotificationService) { }
+  constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private notificationService: NotificationService) {
+    this.defaultImage = '../../assets/img/avatar.png';
+    this.defaultAnnouncementPreview = '../assets/img/dummy_image.png';
+  }
 
   /**
    * Logout the current signed in user and set the role to guest
@@ -46,6 +52,9 @@ export class GlobalConstantService {
         month: birthDateResponse.getMonth() + 1,
         day: birthDateResponse.getDate()
       };
+      if (this.currentUser.image == null){
+        this.currentUser.image = this.defaultImage;
+      }
     } else {
       this.notificationService.showWarning('Nutzerdaten konnten nicht abgerufen werden. Datenbank möglicherweise nicht verfügbar.',
         'toast-top-left');
@@ -60,7 +69,8 @@ export class GlobalConstantService {
         birthDate: '',
         streetAddress: 'Nicht verfügbar',
         zipCode: '',
-        phone: 'Nicht verfügbar'
+        phone: 'Nicht verfügbar',
+        image: this.defaultImage
       };
 
       const birthDateResponse = new Date('01.01.1900');

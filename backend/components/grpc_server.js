@@ -19,7 +19,7 @@ module.exports = function(config, firebase){
      */
     function getUser (param){
         userCtrl.findOne(param).then(databaseResult => {
-            if(databaseResult != 'Not found'){
+            if(databaseResult !== 'Not found'){
                 param.res = databaseResult;
             } else {
                 param.res = null;
@@ -34,7 +34,7 @@ module.exports = function(config, firebase){
      */
     async function verifyUser (param) {
         let decodedToken = await firebase.auth().verifyIdToken(param.req.token);
-        if(decodedToken != undefined){
+        if(decodedToken !== undefined){
             param.res = {
                 uid: decodedToken.uid
             };

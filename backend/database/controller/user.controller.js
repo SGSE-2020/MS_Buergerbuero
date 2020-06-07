@@ -79,6 +79,31 @@ exports.updateImageFromUser = (req, res) => {
 };
 
 /**
+ * Delete an image from an user in the database
+ * @param Uid Uid from the user in the database
+ */
+exports.deleteImageFromUser = (req, res) => {
+    console.log("REST CALL: /user/image/:uid");
+
+    let responseObj = {};
+    let updateObj = {
+        image: null
+    };
+
+    return User.update(updateObj, {where: { uid: req.params.uid }}).then(data => {
+        if(data){
+            responseObj = rb.success("Image", "deleted");
+        } else {
+            responseObj = rb.failure("image", "deleting");
+        }
+        res.send(responseObj);
+    }).catch(err => {
+        responseObj = rb.error(err);
+        res.send(responseObj);
+    });
+};
+
+/**
  * Deactivate a user from the db by the uid of the user
  * @param param Json object containing the uid of the user that should be deactivated
  */

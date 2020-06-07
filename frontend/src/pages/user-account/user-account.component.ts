@@ -27,45 +27,49 @@ export class UserAccountComponent implements OnInit {
   announcementIsSubmitted: boolean;
   foundObjectIsSubmitted: boolean;
 
+  announcementFormImage: any;
+
   constructor(private http: HttpClient, public constants: GlobalConstantService, private modalService: NgbModal,
               private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder,
               private router: Router, private notificationService: NotificationService) { }
+
 
   /**
    * Initialization of Component. Sets current role to guest and current action th login.
    * Subscribes the router action to get current modal
    */
   ngOnInit(): void {
+    this.announcementFormImage = this.constants.defaultAnnouncementPreview;
     this.userDataIsSubmitted = false;
     this.announcementIsSubmitted = false;
     this.foundObjectIsSubmitted = false;
 
     this.createFoundObjectForm = this.formBuilder.group({
-      title: ['', Validators.required],
+      title: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
       text: ['', Validators.required],
-      question1: ['', Validators.required],
-      question2: ['', Validators.required],
-      question3: ['', Validators.required],
-      answer1: ['', Validators.required],
-      answer2: ['', Validators.required],
-      answer3: ['', Validators.required]
+      question1: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      question2: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      question3: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      answer1: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      answer2: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      answer3: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]]
     });
 
     this.createAnnouncementForm = this.formBuilder.group({
-      title: ['', Validators.required],
+      title: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
       text: ['', Validators.required]
     });
 
     this.dataUpdateForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      nickName: [''],
+      firstName: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      lastName: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      nickName: ['', Validators.maxLength(this.constants.maxVarcharLength)],
       birthDate: ['', Validators.required],
-      streetAddress: ['', Validators.required],
-      zipCode: ['', Validators.required],
+      streetAddress: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+      zipCode: ['', [Validators.required, Validators.maxLength(5)]],
       city: ['Smart City'],
-      phone: [''],
-      email: ['', [Validators.required, Validators.email]]
+      phone: ['', Validators.maxLength(this.constants.maxVarcharLength)],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(this.constants.maxVarcharLength)]]
     });
 
     this.refreshData();
@@ -76,6 +80,7 @@ export class UserAccountComponent implements OnInit {
       }
     });
   }
+
   // <editor-fold desc="Modal utility">
 
   /**
@@ -163,12 +168,12 @@ export class UserAccountComponent implements OnInit {
             this.modalService.dismissAll();
             this.refreshData();
           } else {
-            this.notificationService.showError('Nutzerdaten konnten nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+            this.notificationService.showError('Nutzerdaten konnten nicht aktualisiert werden. Bitte versuchen Sie es später erneut.',
               'toast-top-center');
           }
         },
         error => {
-          this.notificationService.showError('Nutzerdaten konnten nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+          this.notificationService.showError('Nutzerdaten konnten nicht aktualisiert werden. Bitte versuchen Sie es später erneut.',
             'toast-top-center');
         });
     }
@@ -187,12 +192,12 @@ export class UserAccountComponent implements OnInit {
           this.constants.authAction = 'login';
           this.router.navigate(['/home']);
         } else {
-          this.notificationService.showError('Abmeldung ist fehlgeschlagen. Bitte versuchen sie es später erneut.',
+          this.notificationService.showError('Abmeldung ist fehlgeschlagen. Bitte versuchen Sie es später erneut.',
             'toast-top-center');
         }
       },
       error => {
-        this.notificationService.showError('Abmeldung ist fehlgeschlagen. Bitte versuchen sie es später erneut.',
+        this.notificationService.showError('Abmeldung ist fehlgeschlagen. Bitte versuchen Sie es später erneut.',
           'toast-top-center');
       });
   }
@@ -216,6 +221,7 @@ export class UserAccountComponent implements OnInit {
   createNewAnnouncement() {
     this.announcementIsSubmitted = true;
     if (this.createAnnouncementForm.valid) {
+      const imageStr = this.announcementFormImage === this.constants.defaultAnnouncementPreview ? null : this.announcementFormImage;
       const announcement = {
         title: this.createAnnouncementForm.value.title,
         text: this.createAnnouncementForm.value.text,
@@ -224,24 +230,9 @@ export class UserAccountComponent implements OnInit {
         service: null,
         uid: this.constants.currentUser.uid,
         isActive: false,
-        image: null
+        image: imageStr
       };
 
-      // todo add image while creating announcement
-      /*
-      if (this.aImage.nativeElement.files) {
-        const file = this.aImage.nativeElement.files[0];
-        if (file.type === 'image/jpeg' || 'image/png') {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            announcement.image = reader.result;
-            this.sendAnnouncementToServer(announcement);
-          };
-        }
-      } else {
-        this.sendAnnouncementToServer(announcement);
-      }*/
       this.sendAnnouncementToServer(announcement);
     }
   }
@@ -257,21 +248,39 @@ export class UserAccountComponent implements OnInit {
           this.notificationService.showSuccess('Aushang wurde erstellt. Sobald er freigegeben wurde können Sie ihn unter Aushänge sehen.',
             'toast-top-left');
           this.announcementIsSubmitted = false;
-          // todo reset file input
+          this.announcementFormImage = this.constants.defaultAnnouncementPreview;
+          this.aImage.nativeElement.value = '';
           this.createAnnouncementForm.setValue({
             title: '',
             text: ''
           });
           this.modalService.dismissAll();
         } else {
-          this.notificationService.showError('Aushang konnte nicht erstellt werden. Bitte versuchen sie es später erneut.',
+          this.notificationService.showError('Aushang konnte nicht erstellt werden. Bitte versuchen Sie es später erneut.',
             'toast-top-left');
         }
       },
       error => {
-        this.notificationService.showError('Aushang konnte nicht erstellt werden. Bitte versuchen sie es später erneut.',
+        this.notificationService.showError('Aushang konnte nicht erstellt werden. Bitte versuchen Sie es später erneut.',
           'toast-top-left');
       });
+  }
+
+  updateAnnouncementPreview(fileInput: any) {
+    if (fileInput[0]){
+      if (fileInput[0].type === 'image/jpeg' || 'image/png') {
+        const reader = new FileReader();
+        reader.readAsDataURL(fileInput[0]);
+        reader.onload = () => {
+          this.announcementFormImage = reader.result;
+        };
+      }
+    }
+  }
+
+  removeAnnouncementPreview() {
+    this.announcementFormImage = this.constants.defaultAnnouncementPreview;
+    this.aImage.nativeElement.value = '';
   }
 
   /**
@@ -326,12 +335,12 @@ export class UserAccountComponent implements OnInit {
           this.foundObjectIsSubmitted = false;
           this.modalService.dismissAll();
         } else {
-          this.notificationService.showError('Fundgegenstand konnte nicht abgegeben werden. Bitte versuchen sie es später erneut.',
+          this.notificationService.showError('Fundgegenstand konnte nicht abgegeben werden. Bitte versuchen Sie es später erneut.',
             'toast-top-left');
         }
       },
       error => {
-        this.notificationService.showError('Fundgegenstand konnte nicht abgegeben werden. Bitte versuchen sie es später erneut.',
+        this.notificationService.showError('Fundgegenstand konnte nicht abgegeben werden. Bitte versuchen Sie es später erneut.',
           'toast-top-left');
       });
   }
@@ -353,14 +362,14 @@ export class UserAccountComponent implements OnInit {
             if (val.status === 'success'){
               this.notificationService.showSuccess('Nutzerbild wurde aktualisiert',
                 'toast-top-left');
-              this.userImage.nativeElement.src = reader.result;
+              this.constants.currentUser.image = reader.result;
             } else {
-              this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+              this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut.',
                 'toast-top-left');
             }
           },
           error => {
-            this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen sie es später erneut.',
+            this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut.',
               'toast-top-left');
           });
       };
@@ -370,6 +379,25 @@ export class UserAccountComponent implements OnInit {
     }
   }
 
+  /**
+   * Remove uploaded image from user and replace it with a default one in view
+   */
+  removeImage() {
+    this.http.delete(this.constants.host + '/user/image/' +
+      this.constants.firebaseUser.uid).subscribe((val: any) => {
+        if (val.status === 'success'){
+          this.constants.currentUser.image = this.constants.defaultImage;
+        } else {
+          this.notificationService.showError('Nutzerbild konnte nicht entfernt werden. Bitte versuchen Sie es später erneut.',
+            'toast-top-center');
+        }
+      },
+      error => {
+        this.notificationService.showError('Nutzerbild konnte nicht entfernt werden. Bitte versuchen Sie es später erneut.',
+          'toast-top-center');
+      });
+  }
   // </editor-fold>
+
 
 }

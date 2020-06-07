@@ -31,8 +31,8 @@ export class NavigationComponent implements OnInit {
     this.constants.userRole = 0;
     this.constants.authAction = 'login';
     this.authForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(this.constants.maxVarcharLength)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(this.constants.maxVarcharLength)]]
     });
     this.checkIfUserIsLoggedIn();
   }
@@ -72,12 +72,12 @@ export class NavigationComponent implements OnInit {
                   }).finally(() => {
                   });
                 } else {
-                  this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+                  this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut',
                     'toast-top-center');
                 }
               },
               error => {
-                this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+                this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut',
                   'toast-top-center');
               });
           });
@@ -87,7 +87,7 @@ export class NavigationComponent implements OnInit {
             this.notificationService.showError('Anmeldung fehlgeschlagen. Nutzerdaten fehlerhaft oder Nutzer existiert nicht.',
               'toast-top-center');
           } else{
-            this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+            this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut',
               'toast-top-center');
           }
         });
@@ -116,12 +116,12 @@ export class NavigationComponent implements OnInit {
               this.isSubmitted = false;
               this.setAction('login');
             } else {
-              this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+              this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut',
                 'toast-top-center');
             }
           },
           error => {
-            this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen sie es später erneut',
+            this.notificationService.showError('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut',
               'toast-top-center');
           });
       }
@@ -162,16 +162,16 @@ export class NavigationComponent implements OnInit {
     } else {
       this.authForm = this.formBuilder.group({
         gender: ['2'],
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
-        nickName: [''],
+        firstName: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+        lastName: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+        nickName: ['', Validators.maxLength(this.constants.maxVarcharLength)],
         birthDate: ['', Validators.required],
-        streetAddress: ['', Validators.required],
-        zipCode: ['', Validators.required],
+        streetAddress: ['', [Validators.required, Validators.maxLength(this.constants.maxVarcharLength)]],
+        zipCode: ['', [Validators.required, Validators.maxLength(5)]],
         city: ['Smart City'],
-        phone: [''],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]]
+        phone: ['', Validators.maxLength(this.constants.maxVarcharLength)],
+        email: ['', [Validators.required, Validators.email, Validators.maxLength(this.constants.maxVarcharLength)]],
+        password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(this.constants.maxVarcharLength)]]
       });
     }
     this.constants.authAction = givenAction;
