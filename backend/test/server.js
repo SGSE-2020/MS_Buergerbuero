@@ -1,5 +1,6 @@
 const expect  = require("chai").expect;
 const request = require("request");
+const server = require("../server");
 const config = require("../components/config");
 
 describe("MS_Buergerbuero API", function() {
