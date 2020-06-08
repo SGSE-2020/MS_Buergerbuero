@@ -42,7 +42,14 @@ import { NotificationService } from '../services/notification.service';
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot( {
+      maxOpened: 2,
+      preventDuplicates: true,
+      timeOut: 5000,
+      closeButton: true,
+      progressBar: true,
+      autoDismiss: true,
+      newestOnTop: true })
   ],
   providers: [
     GlobalConstantService,
