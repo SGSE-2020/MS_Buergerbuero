@@ -6,17 +6,22 @@ const firebase = require("firebase-admin");
 const serviceAccount = require("./smartcity_servicekey.json");
 const fs = require('fs');
 const util = require('util');
+const path = require('path');
 
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
     databaseURL: "https://smart-city-ss2020.firebaseio.com"
 });
 
-
 // === Redirect logging ===
-let debug_file = fs.createWriteStream('logs/debug.log', {flags : 'a'});
-let log_file = fs.createWriteStream('logs/node.log', {flags : 'a'});
-let error_file = fs.createWriteStream('logs/error.log', {flags : 'a'});
+const dir = './logs';
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
+let debug_file = fs.createWriteStream('logs/debug.log', {flags : 'a+'});
+let log_file = fs.createWriteStream('logs/node.log', {flags : 'a+'});
+let error_file = fs.createWriteStream('logs/error.log', {flags : 'a+'});
 let log_stdout = process.stdout;
 
 function getTimestamp() {
