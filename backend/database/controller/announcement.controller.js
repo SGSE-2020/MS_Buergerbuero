@@ -24,7 +24,7 @@ exports.create = (announcement) => {
  * @returns List of Announcement objects
  */
 exports.getAllActive = (req, res) => {
-    console.log("REST CALL: /announcement/active");
+    console.log("REST CALL: get -> /announcement/active");
 
     let responseObj = {};
     Announcement.findAll({where: { isActive: true }}).then(data => {
@@ -45,7 +45,7 @@ exports.getAllActive = (req, res) => {
  * @returns List of Announcement objects
  */
 exports.getAllInactive = (req, res) => {
-    console.log("REST CALL: /announcement/inactive");
+    console.log("REST CALL: get -> /announcement/inactive");
 
     let responseObj = {};
     Announcement.findAll({where: { isActive: false }}).then(data => {
@@ -66,7 +66,7 @@ exports.getAllInactive = (req, res) => {
  * @param id Id of the announcement that should be activated
  */
 exports.activate = (req, res) => {
-    console.log("REST CALL: /announcement/activate/:id");
+    console.log("REST CALL: put -> /announcement/activate/:id");
 
     const updateParam = {
         isActive: true
@@ -90,7 +90,7 @@ exports.activate = (req, res) => {
  * @param id Id of the announcement that should be deactivated
  */
 exports.deactivate = (req, res) => {
-    console.log("REST CALL: /announcement/deactivate/:id");
+    console.log("REST CALL: put -> /announcement/deactivate/:id");
 
     const updateParam = {
         isActive: false

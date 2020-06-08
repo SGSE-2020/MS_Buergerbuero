@@ -24,7 +24,7 @@ exports.create = (param) => {
  * @returns User object
  */
 exports.findOne = (req, res) => {
-    console.log("REST CALL: /user/:uid");
+    console.log("REST CALL: get -> /user/:uid");
     let responseObj = {};
     return User.findByPk(req.params.uid).then(data => {
         if(data){
@@ -62,7 +62,7 @@ exports.update = (param) => {
  * @param body.image Json object containing the image that should be updated
  */
 exports.updateImageFromUser = (req, res) => {
-    console.log("REST CALL: /user/image/:uid");
+    console.log("REST CALL: put -> /user/image/:uid");
 
     let responseObj = {};
     return User.update(req.body, {where: { uid: req.params.uid }}).then(data => {
@@ -83,7 +83,7 @@ exports.updateImageFromUser = (req, res) => {
  * @param Uid Uid from the user in the database
  */
 exports.deleteImageFromUser = (req, res) => {
-    console.log("REST CALL: /user/image/:uid");
+    console.log("REST CALL: delete -> /user/image/:uid");
 
     let responseObj = {};
     let updateObj = {

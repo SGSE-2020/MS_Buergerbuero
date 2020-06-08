@@ -389,8 +389,7 @@ export class UserAccountComponent implements OnInit {
         const updateObj = {
           image: reader.result
         };
-
-        this.http.post(this.constants.host + '/user/image/' + this.constants.firebaseUser.uid,
+        this.http.put(this.constants.host + '/user/image/' + this.constants.firebaseUser.uid,
           updateObj).subscribe((val: any) => {
             if (val.status === 'success'){
               this.notificationService.showSuccess('Nutzerbild wurde aktualisiert',

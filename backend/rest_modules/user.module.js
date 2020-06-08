@@ -74,7 +74,7 @@ module.exports = function (app, firebase, config, caller, channel) {
      * @returns Status object with uid param if successful
      */
     app.post("/user/verify/:token", function (req, res) {
-        console.log('REST CALL: /user/verify/:token');
+        console.log('REST CALL: post -> /user/verify/:token');
 
         let responseObj = {};
         firebase.auth().verifyIdToken(req.params.token).then(result => {
@@ -100,7 +100,7 @@ module.exports = function (app, firebase, config, caller, channel) {
      * @returns Status object with uid param if successful
      */
     app.post("/user/verify/gRpc/:token", function (req, res) {
-        console.log('REST CALL: /user/verify/gRpc/:token');
+        console.log('REST CALL: post -> /user/verify/gRpc/:token');
 
         let responseObj = {};
         client.verifyUser(req.params).then(result => {
@@ -127,7 +127,7 @@ module.exports = function (app, firebase, config, caller, channel) {
      * @returns Status object with user param if successful
      */
     app.put("/user/:uid", function (req, res) {
-        console.log('REST CALL: /user/:uid');
+        console.log('REST CALL: put -> /user/:uid');
 
         let userObj = req.body
         let responseObj = {};
@@ -171,7 +171,7 @@ module.exports = function (app, firebase, config, caller, channel) {
      * @returns Status object with user param if successful
      */
     app.delete("/user/:uid", function (req, res) {
-        console.log('REST CALL: /user/:uid');
+        console.log('REST CALL: delete -> /user/:uid');
 
         let responseObj = {};
         firebase.auth().updateUser(req.params.uid, {

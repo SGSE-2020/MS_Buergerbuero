@@ -13,7 +13,7 @@ module.exports = function (app, firebase, config, caller) {
      * @returns Status object
      */
     app.post("/announcement/", async function (req, res) {
-        console.log('REST CALL: /announcement/');
+        console.log('REST CALL: post -> /announcement/');
         let responseObj = {};
 
         announcementCtrl.create(req.body).then(databaseResult => {
@@ -33,7 +33,7 @@ module.exports = function (app, firebase, config, caller) {
      * @returns Status object
      */
     app.post("/foundObject/", async function (req, res) {
-        console.log('REST CALL: /foundObject/');
+        console.log('REST CALL: post -> /foundObject/');
 
         let responseObj = {};
 
