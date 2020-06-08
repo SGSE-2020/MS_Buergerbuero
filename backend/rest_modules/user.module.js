@@ -6,7 +6,6 @@ const config = require('../components/config');
 
 module.exports = function (app, firebase, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    //const client = caller('localhost:' + config.GRPC_PORT, userProtoPath, 'UserService');
     const client = caller('ms-buergerbuero:' + config.GRPC_PORT, userProtoPath, 'UserService');
 
     /**

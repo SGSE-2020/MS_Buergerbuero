@@ -86,8 +86,8 @@
         <div class="form-group col">
           <label for="aTitle" class="font-weight-bold">Titel</label>
           <input type="text" class="form-control" id="aTitle" formControlName="title" [ngClass]="announcementIsSubmitted && createAnnouncementForm.controls['title']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-group col ml-2 text-center">
           <div class="row-cols-xl-2 justify-content-center">
@@ -103,7 +103,7 @@
       <div class="form-group">
         <label for="aText" class="font-weight-bold">Beschreibung</label>
         <textarea class="form-control" id="aText" formControlName="text" rows="5" [ngClass]="announcementIsSubmitted && createAnnouncementForm.controls['text']?.errors ? 'is-invalid' : ''"></textarea>
-        <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['text']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
+        <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['text']?.errors?.required">Dieses Feld ist erforderlich.</div>
       </div>
     </form>
   </div>
@@ -125,8 +125,8 @@
         <div class="form-group col">
           <label for="fOTitle" class="font-weight-bold">Titel</label>
           <input type="text" class="form-control" id="fOTitle" formControlName="title" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['title']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['title']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['title']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-group col ml-2 text-center">
           <div class="row-cols-xl-2 justify-content-center">
@@ -143,49 +143,49 @@
       <div class="form-group">
         <label for="fOText" class="font-weight-bold">Beschreibung</label>
         <textarea class="form-control" id="fOText" formControlName="text" rows="5" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['text']?.errors ? 'is-invalid' : ''"></textarea>
-        <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['text']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
+        <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['text']?.errors?.required">Dieses Feld ist erforderlich.</div>
       </div>
       <h4 class="text-info mt-3">Validierung</h4>
       <div class="form-row mt-2">
         <div class="form-group col-xl-6">
           <label for="fOquestion1" class="font-weight-bold">Validierungsfrage 1</label>
           <input type="text" class="form-control" id="fOquestion1" formControlName="question1" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['question1']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question1']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question1']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question1']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question1']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-group col-xl-6">
           <label for="fOanswer1" class="font-weight-bold">Validierungsantwort 1</label>
           <input type="text" class="form-control" id="fOanswer1" formControlName="answer1" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['answer1']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer1']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer1']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer1']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer1']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
       </div>
       <div class="form-row mt-2">
         <div class="form-group col-xl-6">
           <label for="fOquestion2" class="font-weight-bold">Validierungsfrage 2</label>
           <input type="text" class="form-control" id="fOquestion2" formControlName="question2" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['question2']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question2']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question2']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question2']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question2']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-group col-xl-6">
           <label for="fOanswer2" class="font-weight-bold">Validierungsantwort 2</label>
           <input type="text" class="form-control" id="fOanswer2" formControlName="answer2" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['answer2']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer2']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer2']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer2']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer2']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
       </div>
       <div class="form-row mt-2">
         <div class="form-group col-xl-6">
           <label for="fOquestion3" class="font-weight-bold">Validierungsfrage 3</label>
           <input type="text" class="form-control" id="fOquestion3" formControlName="question3" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['question3']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question3']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question3']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question3']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['question3']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-group col-xl-6">
           <label for="fOanswer3" class="font-weight-bold">Validierungsantwort 3</label>
           <input type="text" class="form-control" id="fOanswer3" formControlName="answer3" [ngClass]="foundObjectIsSubmitted && createFoundObjectForm.controls['answer3']?.errors ? 'is-invalid' : ''"/>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer3']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer3']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer3']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createFoundObjectForm.controls['answer3']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
       </div>
     </form>
@@ -208,19 +208,19 @@
         <div class="form-row">
           <label for="firstName" class="control-label font-weight-bold mt-1">Vorname</label>
           <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Vornamen eintragen..." [ngClass]="userDataIsSubmitted && dataUpdateForm.controls['firstName']?.errors ? 'is-invalid' : ''">
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['firstName']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['firstName']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['firstName']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['firstName']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row">
           <label for="lastName" class="control-label font-weight-bold mt-1">Nachname</label>
           <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen..." [ngClass]="userDataIsSubmitted && dataUpdateForm.controls['lastName']?.errors ? 'is-invalid' : ''">
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['lastName']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['lastName']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['lastName']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['lastName']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row">
           <label for="nickName" class="control-label font-weight-bold mt-1">Spitzname</label>
           <input type="text" id="nickName" class="form-control" formControlName="nickName" placeholder="Spitznamen eintragen...">
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['nickName']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['nickName']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row">
           <label for="birthDate" class="control-label font-weight-bold mt-1">Geburtsdatum</label>
@@ -230,21 +230,21 @@
             <div class="input-group-append">
               <button type="button" class="btn btn-info" (click)="d.toggle()"><mat-icon>event</mat-icon></button>
             </div>
-            <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['birthDate']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
+            <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['birthDate']?.errors?.required">Dieses Feld ist erforderlich.</div>
           </div>
         </div>
         <div class="form-row">
           <label for="streetAddress" class="control-label font-weight-bold mt-1">Straße / Hausnummer</label>
           <input type="text" id="streetAddress" class="form-control" formControlName="streetAddress" placeholder="Straße und Hausnummer eintragen..." [ngClass]="userDataIsSubmitted && dataUpdateForm.controls['streetAddress']?.errors ? 'is-invalid' : ''">
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['streetAddress']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['streetAddress']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['streetAddress']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['streetAddress']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row">
           <div class="form-group col-xl-5 pl-0 mb-0">
             <label for="zipCode" class="control-label font-weight-bold mt-1">PLZ</label>
             <input type="text" id="zipCode" class="form-control" formControlName="zipCode"  placeholder="PLZ eintragen..." [ngClass]="userDataIsSubmitted && dataUpdateForm.controls['zipCode']?.errors ? 'is-invalid' : ''">
-            <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['zipCode']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-            <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['zipCode']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+            <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['zipCode']?.errors?.required">Dieses Feld ist erforderlich.</div>
+            <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['zipCode']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
           </div>
           <div class="form-group col-xl-7 pr-0 mb-0">
             <label for="city" class="control-label font-weight-bold mt-1">Stadt</label>
@@ -254,14 +254,14 @@
         <div class="form-row">
           <label for="phone" class="control-label font-weight-bold mt-1">Telefon</label>
           <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Telefonnr eintragen...">
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['phone']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['phone']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row">
           <label for="email" class="control-label font-weight-bold mt-1">E-Mail</label>
           <input type="text" id="email" class="form-control" formControlName="email" placeholder="E-Mail eintragen..." [ngClass]="userDataIsSubmitted && dataUpdateForm.controls['email']?.errors ? 'is-invalid' : ''">
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['email']?.errors?.required">Bitte füllen Sie dieses Feld.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['email']?.errors?.email">Ungültiges Format.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['email']?.errors?.maxLength">Maximal 255 Zeichen.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['email']?.errors?.required">Dieses Feld ist erforderlich.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['email']?.errors?.email">Ungültiges E-Mail Format.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="dataUpdateForm.controls['email']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
       </div>
     </form>
