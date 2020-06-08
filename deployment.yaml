@@ -17,11 +17,11 @@ spec:
         name: ms-buergerbuero-db
         env:
         - name: POSTGRES_DB
-          value: "buergerbuero"
+          value: buergerbuero
         - name: POSTGRES_USER
-          value: "sgse-ss2020"
+          value: sgse-ss2020
         - name: POSTGRES_PASSWORD
-          value: "buergerbuero"
+          value: buergerbuero
         ports:
         - containerPort: 5432
       - image: ms-buergerbuero-frontend
