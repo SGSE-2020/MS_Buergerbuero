@@ -17,11 +17,13 @@ import { HomeComponent } from '../pages/home/home.component';
 import { BlackBoardComponent } from '../pages/black-board/black-board.component';
 import { UserAccountComponent } from '../pages/user-account/user-account.component';
 import { WorkComponent } from '../pages/work/work.component';
+import { AdminPanelComponent } from '../pages/admin-panel/admin-panel.component';
 
 import { GlobalConstantService } from '../services/global-constant.service';
 import { NotificationService } from '../services/notification.service';
+
 import { FilterAnnouncementPipe } from '../pipes/filter-announcement.pipe';
-import { AdminPanelComponent } from '../pages/admin-panel/admin-panel.component';
+
 
 
 @NgModule({
@@ -32,8 +34,8 @@ import { AdminPanelComponent } from '../pages/admin-panel/admin-panel.component'
     BlackBoardComponent,
     UserAccountComponent,
     WorkComponent,
-    FilterAnnouncementPipe,
     AdminPanelComponent,
+    FilterAnnouncementPipe,
   ],
   imports: [
     BrowserModule,
@@ -47,13 +49,10 @@ import { AdminPanelComponent } from '../pages/admin-panel/admin-panel.component'
     ReactiveFormsModule,
     MatIconModule,
     ToastrModule.forRoot( {
-      maxOpened: 2,
-      preventDuplicates: true,
       timeOut: 5000,
       closeButton: true,
-      progressBar: true,
-      autoDismiss: true,
-      newestOnTop: true })
+      progressBar: true
+    })
   ],
   providers: [
     GlobalConstantService,
