@@ -19,6 +19,26 @@ exports.create = (param) => {
 };
 
 /**
+ * Get all users from db
+ * @returns user list
+ */
+exports.getAllUsers = (req, res) => {
+    console.log("REST CALL: get -> user");
+    let responseObj = {};
+    return User.findAll().then(data => {
+        if(data){
+            responseObj = rb.success("Users", "found", { users: data });
+        } else {
+            responseObj = rb.failure("users", "finding");
+        }
+        res.send(responseObj);
+    }).catch(err => {
+        responseObj = rb.error(err);
+        res.send(responseObj);
+    });
+};
+
+/**
  * Find a user by uid
  * @param param Json object containing a uid of user to search in the database
  * @returns User object
@@ -36,6 +56,24 @@ exports.findOne = (req, res) => {
     }).catch(err => {
         responseObj = rb.error(err);
         res.send(responseObj);
+    });
+};
+
+/**
+* Find a user by uid without rest call
+* @param param Json object containing a uid of user to search in the database
+* @returns User object
+*/
+exports.findOneManually = (param) => {
+    const uid = param.uid;
+    return User.findByPk(uid).then(data => {
+        if(data){
+            return data;
+        } else {
+            return 'Not found';
+        }
+    }).catch(err => {
+        return 'Not found';
     });
 };
 
@@ -95,6 +133,28 @@ exports.deleteImageFromUser = (req, res) => {
             responseObj = rb.success("Image", "deleted");
         } else {
             responseObj = rb.failure("image", "deleting");
+        }
+        res.send(responseObj);
+    }).catch(err => {
+        responseObj = rb.error(err);
+        res.send(responseObj);
+    });
+};
+
+/**
+ * Update user role from given user
+ * @param Uid Uid of the user in the database
+ * @param body.role New user role
+ */
+exports.updateUserRole = (req, res) => {
+    console.log("REST CALL: put -> /user/role/:uid");
+
+    let responseObj = {};
+    return User.update(req.body, {where: { uid: req.params.uid }}).then(data => {
+        if(data){
+            responseObj = rb.success("Role", "updated");
+        } else {
+            responseObj = rb.failure("role", "updating");
         }
         res.send(responseObj);
     }).catch(err => {

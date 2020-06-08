@@ -8,7 +8,7 @@ module.exports = function (app, firebase, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
     const client = caller('ms-buergerbuero:' + config.GRPC_PORT, userProtoPath, 'UserService');
 
-    /**
+     /**
      * Register new user
      * @param body Complete json object with all user data
      * @returns Status object with uid param if successful
@@ -41,7 +41,8 @@ module.exports = function (app, firebase, config, caller, channel) {
                     city: 'Smart City',
                     phone: userObj.phone,
                     image: '',
-                    isActive: true
+                    isActive: true,
+                    role: 1,
                 };
 
                 userCtrl.create(user).then(databaseResult => {

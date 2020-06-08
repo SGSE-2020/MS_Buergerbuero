@@ -8,11 +8,11 @@
       <h4 class="text-info">Neue Aushänge</h4>
       <ngb-tabset #t="ngbTabset" justify="end">
         <ngb-tab id="tab-selectbyid1">
-          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="announcementList.length > 0">{{announcementList.length}}</span></ng-template>
+          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="(constants.inActiveAnnouncementList | filterAnnouncement: 'announcement').length > 0">{{(constants.inActiveAnnouncementList | filterAnnouncement: 'announcement').length }}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let announcement of announcementList">
+                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let announcement of constants.inActiveAnnouncementList | filterAnnouncement: 'announcement'">
                   <div class="card-body">
                     <h5 class="card-title">{{announcement.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{announcement.source}}</h6>
@@ -20,8 +20,8 @@
                   </div>
                   <div class="card-footer bg-light">
                     <div class="float-right">
-                      <mat-icon>add_circle</mat-icon>
-                      <mat-icon>remove_circle</mat-icon>
+                      <mat-icon (click)="activateAnnouncement(announcement)">check_circle</mat-icon>
+                      <mat-icon (click)="deactivateAnnouncement(announcement)">delete</mat-icon>
                       <mat-icon (click)="openAnnouncementDetailView(announcementDetail, announcement)">search</mat-icon>
                     </div>
                   </div>
@@ -31,11 +31,11 @@
           </ng-template>
         </ngb-tab>
         <ngb-tab id="tab-selectbyid2">
-          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="foundObjectList.length > 0">{{foundObjectList.length}}</span></ng-template>
+          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="(constants.inActiveAnnouncementList | filterAnnouncement: 'found object').length > 0">{{(constants.inActiveAnnouncementList | filterAnnouncement: 'found object').length }}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let foundObject of foundObjectList">
+                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let foundObject of constants.inActiveAnnouncementList | filterAnnouncement: 'found object'">
                   <div class="card-body">
                     <h5 class="card-title">{{foundObject.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{foundObject.source}}</h6>
@@ -43,8 +43,8 @@
                   </div>
                   <div class="card-footer bg-light">
                     <div class="float-right">
-                      <mat-icon>add_circle</mat-icon>
-                      <mat-icon>remove_circle</mat-icon>
+                      <mat-icon (click)="activateAnnouncement(foundObject)">check_circle</mat-icon>
+                      <mat-icon (click)="deactivateAnnouncement(foundObject)">delete</mat-icon>
                       <mat-icon (click)="openFoundObjectDetailView(foundObjectDetail, foundObject)">search</mat-icon>
                     </div>
                   </div>

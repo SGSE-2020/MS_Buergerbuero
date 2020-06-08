@@ -19,6 +19,9 @@ export class GlobalConstantService {
   public defaultImage: string;
   public defaultAnnouncementPreview: string;
 
+  public activeAnnouncementList = [];
+  public inActiveAnnouncementList = [];
+
   constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private notificationService: NotificationService) {
     this.defaultImage = '../../assets/img/avatar.png';
     this.defaultAnnouncementPreview = '../assets/img/dummy_image.png';
@@ -79,6 +82,32 @@ export class GlobalConstantService {
         month: birthDateResponse.getMonth() + 1,
         day: birthDateResponse.getDate()
       };
+    }
+  }
+
+  /**
+   * Get all active announcements
+   */
+  public async getAllActiveAnnouncements(){
+    const data = await this.http.get(this.host + '/announcement/active').toPromise();
+    const obj = JSON.parse(JSON.stringify(data));
+    if (obj.status === 'success'){
+      return obj.param.announcements;
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   * Get all inactive announcements
+   */
+  public async getAllInActiveAnnouncements(){
+    const data = await this.http.get(this.host + '/announcement/inactive').toPromise();
+    const obj = JSON.parse(JSON.stringify(data));
+    if (obj.status === 'success'){
+      return obj.param.announcements;
+    } else {
+      return [];
     }
   }
 }

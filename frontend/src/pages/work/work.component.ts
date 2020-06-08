@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, Pipe, PipeTransform} from '@angular/core';
 import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {HttpClient} from '@angular/common/http';
+import {NotificationService} from '../../services/notification.service';
 
 @Component({
   selector: 'app-work',
@@ -8,81 +10,29 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./work.component.css']
 })
 export class WorkComponent implements OnInit {
-  announcementList = [
-    {
-      id: 1,
-      title: 'Beispielaushang 1',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 2,
-      title: 'Beispielaushang 2',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: '6TbzcPavrSNdq1W1qAKqyfhhvxB2',
-      service: null,
-      isActive: true
-    }
-  ];
-  foundObjectList = [
-    {
-      id: 1,
-      title: 'Fundgegenstand 1',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: null,
-      source: 'Bürger',
-      uid: '6TbzcPavrSNdq1W1qAKqyfhhvxB2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 2,
-      title: 'Fundgegenstand 2',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
-      service: null,
-      isActive: true
-    }
-  ];
-
   currentAnnouncement: any;
   currentFoundObject: any;
 
-  constructor(public constants: GlobalConstantService, private modalService: NgbModal) { }
+  constructor(public constants: GlobalConstantService, private modalService: NgbModal, private http: HttpClient,
+              private notificationService: NotificationService) { }
 
   ngOnInit(): void {
+    this.getAllInActiveAnnouncements().then( result => {
+      this.constants.inActiveAnnouncementList = result;
+    });
+  }
+
+  /**
+   * Get all inactive announcements
+   */
+  async getAllInActiveAnnouncements(){
+    const data = await this.http.get(this.constants.host + '/announcement/inactive').toPromise();
+    const obj = JSON.parse(JSON.stringify(data));
+    if (obj.status === 'success'){
+      return obj.param.announcements;
+    } else {
+      return [];
+    }
   }
 
   /**
@@ -111,5 +61,56 @@ export class WorkComponent implements OnInit {
       scrollable: true
     });
     this.currentFoundObject = foundObject;
+  }
+
+  /**
+   * Activate an created announcement
+   * @param announcement Announcement which should be activated
+   */
+  activateAnnouncement(announcement: any) {
+    this.http.put(this.constants.host + '/announcement/activate/' +
+      announcement.id, {}).subscribe((val: any) => {
+        if (val.status === 'success'){
+          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(announcement);
+          this.constants.inActiveAnnouncementList.splice(elementIndex, 1);
+          this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
+            'toast-top-left');
+          this.modalService.dismissAll();
+        } else {
+          this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+            'toast-top-left');
+        }
+      },
+      error => {
+        this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+          'toast-top-left');
+      });
+  }
+
+  /**
+   * Deactivate an created announcement
+   * @param announcement Announcement which should be deactivated
+   */
+  deactivateAnnouncement(announcement: any) {
+    this.http.put(this.constants.host + '/announcement/deactivate/' +
+      announcement.id, {}).subscribe((val: any) => {
+        if (val.status === 'success'){
+          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(announcement);
+          this.constants.inActiveAnnouncementList.splice(elementIndex, 1);
+          const activeAnnouncement = announcement;
+          activeAnnouncement.isActive = true;
+          this.constants.activeAnnouncementList.push(activeAnnouncement);
+          this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
+            'toast-top-left');
+          this.modalService.dismissAll();
+        } else {
+          this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+            'toast-top-left');
+        }
+      },
+      error => {
+        this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+          'toast-top-left');
+      });
   }
 }

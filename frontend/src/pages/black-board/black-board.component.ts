@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-black-board',
@@ -9,216 +10,43 @@ import { FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./black-board.component.css']
 })
 export class BlackBoardComponent implements OnInit {
-  announcementList = [
-    {
-      id: 1,
-      title: 'Beispielaushang 1',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 2,
-      title: 'Beispielaushang 2',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: '6TbzcPavrSNdq1W1qAKqyfhhvxB2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 3,
-      title: 'Beispielaushang 3',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: null,
-      source: 'Dienstleister',
-      uid: '0000000000000000000000000000',
-      service: 'ms-parkplatz',
-      isActive: true
-    },
-    {
-      id: 4,
-      title: 'Beispielaushang 4',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: null,
-      source: 'Dienstleister',
-      uid: '0000000000000000000000000000',
-      service: 'ms-parkplatz',
-      isActive: true
-    },
-    {
-      id: 5,
-      title: 'Beispielaushang 5',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: null,
-      source: 'Dienstleister',
-      uid: '0000000000000000000000000000',
-      service: 'ms-parkplatz',
-      isActive: true
-    },
-    {
-      id: 6,
-      title: 'Beispielaushang 6',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'announcement',
-      image: null,
-      source: 'Bürger',
-      uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
-      service: null,
-      isActive: true
-    },
-  ];
-  foundObjectList = [
-    {
-      id: 1,
-      title: 'Fundgegenstand 1',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: null,
-      source: 'Bürger',
-      uid: '6TbzcPavrSNdq1W1qAKqyfhhvxB2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 2,
-      title: 'Fundgegenstand 2',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 3,
-      title: 'Fundgegenstand 3',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: null,
-      source: 'Bürger',
-      uid: '8S6wdLzkUlYWI3WNPvXULIGFgYN2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 4,
-      title: 'Fundgegenstand 4',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: 'Bla',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 5,
-      title: 'Fundgegenstand 5',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: null,
-      source: 'Bürger',
-      uid: '6TbzcPavrSNdq1W1qAKqyfhhvxB2',
-      service: null,
-      isActive: true
-    },
-    {
-      id: 6,
-      title: 'Fundgegenstand 6',
-      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ' +
-        'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, ' +
-        'consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
-        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ' +
-        'eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' +
-        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      type: 'found object',
-      image: '../assets/img/dummy_image.png',
-      source: 'Bürger',
-      uid: 'Bla',
-      service: null,
-      isActive: true
-    },
-  ];
-
   currentAnnouncement: any;
   currentFoundObject: any;
-
   receiveFoundObjectForm: any;
 
-  constructor(public constants: GlobalConstantService, private modalService: NgbModal, private formBuilder: FormBuilder) { }
+  announcementList: any;
+  foundObjectList: any;
+
+  constructor(public constants: GlobalConstantService, private modalService: NgbModal, private formBuilder: FormBuilder,
+              private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.announcementList = [];
+    this.foundObjectList = [];
     this.receiveFoundObjectForm = this.formBuilder.group({
       question1: ['', Validators.required],
       question2: ['', Validators.required],
       question3: ['', Validators.required]
     });
+
+    this.getAllActiveAnnouncements().then( result => {
+      this.constants.activeAnnouncementList = result;
+      this.announcementList = this.constants.activeAnnouncementList.filter((a) => a.type === 'announcement');
+      this.foundObjectList = this.constants.activeAnnouncementList.filter((a) =>  a.type === 'found object');
+    });
+  }
+
+  /**
+   * Get all active announcements
+   */
+   async getAllActiveAnnouncements(){
+     const data = await this.http.get(this.constants.host + '/announcement/active').toPromise();
+     const obj = JSON.parse(JSON.stringify(data));
+     if (obj.status === 'success'){
+       return obj.param.announcements;
+     } else {
+       return [];
+     }
   }
 
   /**

@@ -27,6 +27,10 @@
           <mat-icon>work</mat-icon>
           Arbeit
         </button>
+        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'admin-panel'" *ngIf="this.constants.userRole==3">
+          <mat-icon>settings</mat-icon>
+          Admin Panel
+        </button>
         <button type="button" class="btn btn-outline-light mr-1 ml-1" (click)="openModal(authModal)" *ngIf="this.constants.userRole==0">
           <mat-icon>account_circle</mat-icon>
           Anmeldung

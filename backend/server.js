@@ -25,7 +25,7 @@ let error_file = fs.createWriteStream('logs/error.log', {flags : 'a+'});
 let log_stdout = process.stdout;
 
 function getTimestamp() {
-    return new Date().toTimeString();
+    return new Date().toLocaleTimeString();
 }
 
 console.debug = function(d) {
@@ -53,9 +53,11 @@ require('./components/rest_server')(config, firebase, channel, fs);
 require('./components/grpc_server')(config, firebase);
 
 let db = require('./components/database');
+let dbFunctions = require('./database/initial-script')
 
 db.sequelize.sync().then(function(){
     console.log('DB connection successful.');
+    dbFunctions.createFirebaseUserAccounts(firebase);
 }, function(err){
     console.log('DB connection not successful.');
 });

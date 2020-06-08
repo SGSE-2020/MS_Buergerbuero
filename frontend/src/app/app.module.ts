@@ -20,6 +20,8 @@ import { WorkComponent } from '../pages/work/work.component';
 
 import { GlobalConstantService } from '../services/global-constant.service';
 import { NotificationService } from '../services/notification.service';
+import { FilterAnnouncementPipe } from '../pipes/filter-announcement.pipe';
+import { AdminPanelComponent } from '../pages/admin-panel/admin-panel.component';
 
 
 @NgModule({
@@ -30,6 +32,8 @@ import { NotificationService } from '../services/notification.service';
     BlackBoardComponent,
     UserAccountComponent,
     WorkComponent,
+    FilterAnnouncementPipe,
+    AdminPanelComponent,
   ],
   imports: [
     BrowserModule,

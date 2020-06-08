@@ -51,8 +51,7 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: true
         },
         role: {
-            type: Sequelize.INTEGER,
-            defaultValue: 1
+            type: Sequelize.INTEGER
         },
     });
 

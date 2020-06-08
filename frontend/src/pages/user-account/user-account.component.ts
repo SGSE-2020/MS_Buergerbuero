@@ -163,13 +163,9 @@ export class UserAccountComponent implements OnInit {
             this.firebaseAuth.currentUser.then(currentUser => {
               currentUser.reload().then(() => {
                 this.constants.firebaseUser = currentUser;
-                this.constants.currentUser = val.param;
-                const birthDateResponse = new Date(this.constants.currentUser.birthDate);
-                this.constants.currentUser.birthDate = {
-                  year: birthDateResponse.getFullYear(),
-                  month: birthDateResponse.getMonth() + 1,
-                  day: birthDateResponse.getDate()
-                };
+                this.constants.getCurrentUserData().then(result => {
+                  this.refreshData();
+                });
               });
             });
             this.notificationService.showSuccess('Nutzerdaten wurden erfolgreich aktualisiert',
@@ -341,6 +337,7 @@ export class UserAccountComponent implements OnInit {
         if (val.status === 'success'){
           this.notificationService.showSuccess('Fundgegenstand wurde erfolgreich abgegeben. Sobald er begutachtet wurde können Sie ihn unter Aushänge sehen.',
             'toast-top-left');
+          this.foundObjectFormImage = this.constants.defaultAnnouncementPreview;
           if (this.fOImage !== undefined){
             this.fOImage.nativeElement.value = '';
           }
@@ -384,7 +381,7 @@ export class UserAccountComponent implements OnInit {
   }
 
   /**
-   * Remove image from foundobject creation modal
+   * Remove image from found object creation modal
    */
   removeFoundObjectPreview() {
     this.foundObjectFormImage = this.constants.defaultAnnouncementPreview;

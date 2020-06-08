@@ -15,7 +15,7 @@
                   </div>
                   <div class="card-footer" [ngClass]="constants.currentUser != null && announcement.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
                     <div class="float-right">
-                      <mat-icon *ngIf="constants.currentUser != null && (announcement.uid == constants.currentUser.uid || constants.currentUser.role == 2)">remove_circle</mat-icon>
+                      <mat-icon *ngIf="constants.currentUser != null && (announcement.uid == constants.currentUser.uid || constants.currentUser.role == 2)">delete</mat-icon>
                       <mat-icon (click)="openAnnouncementDetailView(announcementDetail, announcement)">search</mat-icon>
                     </div>
                   </div>
@@ -36,7 +36,7 @@
                   </div>
                   <div class="card-footer" [ngClass]="constants.currentUser != null && foundObject.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
                     <div class="float-right">
-                      <mat-icon *ngIf="constants.currentUser != null && constants.currentUser.role == 2">remove_circle</mat-icon>
+                      <mat-icon *ngIf="constants.currentUser != null && constants.currentUser.role == 2">delete</mat-icon>
                       <mat-icon (click)="openFoundObjectDetailView(foundObjectDetail, foundObject)">search</mat-icon>
                     </div>
                   </div>
