@@ -49,10 +49,13 @@ import { FilterAnnouncementPipe } from '../pipes/filter-announcement.pipe';
     ReactiveFormsModule,
     MatIconModule,
     ToastrModule.forRoot( {
+      maxOpened: 2,
+      preventDuplicates: true,
       timeOut: 5000,
       closeButton: true,
-      progressBar: true
-    })
+      progressBar: true,
+      autoDismiss: true,
+      newestOnTop: true })
   ],
   providers: [
     GlobalConstantService,
