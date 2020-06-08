@@ -19,9 +19,9 @@ spec:
         - name: POSTGRES_DB
           value: buergerbuero
         - name: POSTGRES_USER
-          value: sgse-ss2020
-        - name: POSTGRES_PASSWORD
           value: buergerbuero
+        - name: POSTGRES_PASSWORD
+          value: sgse-ss2020
         ports:
         - containerPort: 5432
       - image: ms-buergerbuero-frontend
