@@ -15,10 +15,13 @@ spec:
       containers:
       - image: postgres
         name: ms-buergerbuero-db
-        environment:
-          POSTGRES_USER: buergerbuero
-          POSTGRES_PASSWORD: sgse-ss2020
-          POSTGRES_DB: buergerbuero
+        env:
+        - name: POSTGRES_DB
+          value: "buergerbuero"
+        - name: POSTGRES_USER
+          value: "sgse-ss2020"
+        - name: POSTGRES_PASSWORD
+          value: "buergerbuero"
         ports:
         - containerPort: 5432
       - image: ms-buergerbuero-frontend
