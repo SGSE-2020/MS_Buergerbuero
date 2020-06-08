@@ -43,21 +43,24 @@ module.exports = function(config, firebase, channel, fs){
                 if (err) {
                     responseObj = {
                         status:"error",
-                        message: level + " log file was not found.",
+                        message: "Logfile with level '" + level + "' was not found.",
                         param: {}
                     }
+                    console.error(responseObj.message);
                     res.send(responseObj);
                 } else {
                     // todo format much prettier
+                    console.log("Log file was send.");
                     res.send("<body style='font-family: Courier'>" + data.toString().replace(/\n/g, "<br>") + "</body>");
                 }
             });
         } else {
             responseObj = {
                 status:"error",
-                message: level + " is not available.",
+                message: "Loglevel '" + level + "' is not available.",
                 param: {}
             }
+            console.error(responseObj.message);
             res.send(responseObj);
         }
     });

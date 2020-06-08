@@ -6,7 +6,8 @@ const config = require('../components/config');
 
 module.exports = function (app, firebase, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    const client = caller('localhost:' + config.GRPC_PORT, userProtoPath, 'UserService');
+    //const client = caller('localhost:' + config.GRPC_PORT, userProtoPath, 'UserService');
+    const client = caller('ms-buergerbuero:' + config.GRPC_PORT, userProtoPath, 'UserService');
 
     /**
      * Register new user
@@ -60,11 +61,11 @@ module.exports = function (app, firebase, config, caller, channel) {
                 res.send(responseObj);
             });
         }).catch(err => {
-            console.log(err);
             responseObj.status = "error";
             responseObj.code = "";
             responseObj.message = "Database is not available.";
             responseObj.param = {};
+            console.error("Database is not available");
         });
     });
 
@@ -74,10 +75,36 @@ module.exports = function (app, firebase, config, caller, channel) {
      * @returns Status object with uid param if successful
      */
     app.post("/user/verify/:token", function (req, res) {
-        console.log('REST CALL: /user/verify');
+        console.log('REST CALL: /user/verify/:token');
 
         let responseObj = {};
         firebase.auth().verifyIdToken(req.params.token).then(result => {
+            if(result.uid != null){
+                responseObj = rb.success("User", "was verified", {
+                    uid : result.uid,
+                    role: 1
+                });
+            } else {
+                responseObj = rb.failure("verifying", "user");
+            }
+            res.send(responseObj);
+        }).catch((err) => {
+            responseObj = rb.error(err);
+            responseObj.err = err;
+            res.send(responseObj);
+        });
+    });
+
+    /**
+     * Verify user token [gRPC test]
+     * @param token User token from the current authenticated user
+     * @returns Status object with uid param if successful
+     */
+    app.post("/user/verify/gRpc/:token", function (req, res) {
+        console.log('REST CALL: /user/verify/gRpc/:token');
+
+        let responseObj = {};
+        client.verifyUser(req.params).then(result => {
             if(result.uid != null){
                 responseObj = rb.success("User", "was verified", {
                     uid : result.uid,
@@ -100,8 +127,8 @@ module.exports = function (app, firebase, config, caller, channel) {
      * @param body User object that should be updated in the database
      * @returns Status object with user param if successful
      */
-    app.post("/user/update/:uid", function (req, res) {
-        console.log('REST CALL: /user/update');
+    app.put("/user/:uid", function (req, res) {
+        console.log('REST CALL: /user/:uid');
 
         let userObj = req.body
         let responseObj = {};
@@ -144,8 +171,8 @@ module.exports = function (app, firebase, config, caller, channel) {
      * @param uid Uid of of user the that should be deactivated
      * @returns Status object with user param if successful
      */
-    app.post("/user/deactivate/:uid", function (req, res) {
-        console.log('REST CALL: /user/deactivate');
+    app.delete("/user/:uid", function (req, res) {
+        console.log('REST CALL: /user/:uid');
 
         let responseObj = {};
         firebase.auth().updateUser(req.params.uid, {

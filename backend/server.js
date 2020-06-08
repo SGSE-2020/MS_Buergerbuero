@@ -13,7 +13,7 @@ firebase.initializeApp({
     databaseURL: "https://smart-city-ss2020.firebaseio.com"
 });
 
-// === Redirect logging ===
+/* Logging */
 const dir = './logs';
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);

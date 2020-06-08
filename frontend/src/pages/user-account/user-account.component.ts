@@ -28,6 +28,7 @@ export class UserAccountComponent implements OnInit {
   foundObjectIsSubmitted: boolean;
 
   announcementFormImage: any;
+  foundObjectFormImage: any;
 
   constructor(private http: HttpClient, public constants: GlobalConstantService, private modalService: NgbModal,
               private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder,
@@ -40,6 +41,7 @@ export class UserAccountComponent implements OnInit {
    */
   ngOnInit(): void {
     this.announcementFormImage = this.constants.defaultAnnouncementPreview;
+    this.foundObjectFormImage = this.constants.defaultAnnouncementPreview;
     this.userDataIsSubmitted = false;
     this.announcementIsSubmitted = false;
     this.foundObjectIsSubmitted = false;
@@ -154,7 +156,7 @@ export class UserAccountComponent implements OnInit {
         phone: this.dataUpdateForm.value.phone
       };
 
-      this.http.post(this.constants.host + '/user/update/' + this.constants.firebaseUser.uid,
+      this.http.put(this.constants.host + '/user/' + this.constants.firebaseUser.uid,
         user).subscribe((val: any) => {
           if (val.status === 'success'){
             this.userDataIsSubmitted = false;
@@ -183,7 +185,7 @@ export class UserAccountComponent implements OnInit {
    * Deactivated the user account and signs out the currently logged in user
    */
   deactivateUserAndLogout() {
-    this.http.post(this.constants.host + '/user/deactivate/' + this.constants.firebaseUser.uid,
+    this.http.delete(this.constants.host + '/user/' + this.constants.firebaseUser.uid,
       {}).subscribe((val: any) => {
         if (val.status === 'success'){
           this.modalService.dismissAll();
@@ -242,7 +244,7 @@ export class UserAccountComponent implements OnInit {
    * @param foundObject Json object containing all data for announcement
    */
   sendAnnouncementToServer(announcement: any){
-    this.http.post(this.constants.host + '/announcement/create',
+    this.http.post(this.constants.host + '/announcement/',
       announcement).subscribe((val: any) => {
         if (val.status === 'success'){
           this.notificationService.showSuccess('Aushang wurde erstellt. Sobald er freigegeben wurde können Sie ihn unter Aushänge sehen.',
@@ -266,6 +268,10 @@ export class UserAccountComponent implements OnInit {
       });
   }
 
+  /**
+   * Udate image preview in announcement creation modal
+   * @param fileInput File that should be converted to base64 and shown in the preview
+   */
   updateAnnouncementPreview(fileInput: any) {
     if (fileInput[0]){
       if (fileInput[0].type === 'image/jpeg' || 'image/png') {
@@ -278,6 +284,9 @@ export class UserAccountComponent implements OnInit {
     }
   }
 
+  /**
+   * Remove image from announcement creation modal
+   */
   removeAnnouncementPreview() {
     this.announcementFormImage = this.constants.defaultAnnouncementPreview;
     this.aImage.nativeElement.value = '';
@@ -316,7 +325,7 @@ export class UserAccountComponent implements OnInit {
    * @param foundObject Json object containing all data for found object
    */
   sendFoundObjectToServer(foundObject: any){
-    this.http.post(this.constants.host + '/foundObject/create',
+    this.http.post(this.constants.host + '/foundObject/',
       foundObject).subscribe((val: any) => {
         if (val.status === 'success'){
           this.notificationService.showSuccess('Fundgegenstand wurde erfolgreich abgegeben. Sobald er begutachtet wurde können Sie ihn unter Aushänge sehen.',
@@ -343,6 +352,30 @@ export class UserAccountComponent implements OnInit {
         this.notificationService.showError('Fundgegenstand konnte nicht abgegeben werden. Bitte versuchen Sie es später erneut.',
           'toast-top-left');
       });
+  }
+
+  /**
+   * Udate image preview in found object creation modal
+   * @param fileInput File that should be converted to base64 and shown in the preview
+   */
+  updateFoundObjectPreview(fileInput: any) {
+    if (fileInput[0]){
+      if (fileInput[0].type === 'image/jpeg' || 'image/png') {
+        const reader = new FileReader();
+        reader.readAsDataURL(fileInput[0]);
+        reader.onload = () => {
+          this.foundObjectFormImage = reader.result;
+        };
+      }
+    }
+  }
+
+  /**
+   * Remove image from foundobject creation modal
+   */
+  removeFoundObjectPreview() {
+    this.foundObjectFormImage = this.constants.defaultAnnouncementPreview;
+    this.fOImage.nativeElement.value = '';
   }
 
   /**

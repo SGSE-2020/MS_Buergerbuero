@@ -12,8 +12,8 @@ module.exports = function (app, firebase, config, caller) {
      * @param body Complete json object with all announcement data
      * @returns Status object
      */
-    app.post("/announcement/create", async function (req, res) {
-        console.log('REST CALL: /announcement/create');
+    app.post("/announcement/", async function (req, res) {
+        console.log('REST CALL: /announcement/');
         let responseObj = {};
 
         announcementCtrl.create(req.body).then(databaseResult => {
@@ -32,8 +32,8 @@ module.exports = function (app, firebase, config, caller) {
      * @param body Complete json object with all found object data
      * @returns Status object
      */
-    app.post("/foundObject/create", async function (req, res) {
-        console.log('REST CALL: /foundObject/create');
+    app.post("/foundObject/", async function (req, res) {
+        console.log('REST CALL: /foundObject/');
 
         let responseObj = {};
 
