@@ -162,7 +162,14 @@ export class UserAccountComponent implements OnInit {
             this.userDataIsSubmitted = false;
             this.firebaseAuth.currentUser.then(currentUser => {
               currentUser.reload().then(() => {
-                this.constants.currentUser = currentUser;
+                this.constants.firebaseUser = currentUser;
+                this.constants.currentUser = val.param;
+                const birthDateResponse = new Date(this.constants.currentUser.birthDate);
+                this.constants.currentUser.birthDate = {
+                  year: birthDateResponse.getFullYear(),
+                  month: birthDateResponse.getMonth() + 1,
+                  day: birthDateResponse.getDate()
+                };
               });
             });
             this.notificationService.showSuccess('Nutzerdaten wurden erfolgreich aktualisiert',
@@ -251,7 +258,9 @@ export class UserAccountComponent implements OnInit {
             'toast-top-left');
           this.announcementIsSubmitted = false;
           this.announcementFormImage = this.constants.defaultAnnouncementPreview;
-          this.aImage.nativeElement.value = '';
+          if (this.aImage !== undefined){
+            this.aImage.nativeElement.value = '';
+          }
           this.createAnnouncementForm.setValue({
             title: '',
             text: ''
@@ -289,7 +298,9 @@ export class UserAccountComponent implements OnInit {
    */
   removeAnnouncementPreview() {
     this.announcementFormImage = this.constants.defaultAnnouncementPreview;
-    this.aImage.nativeElement.value = '';
+    if (this.aImage !== undefined){
+      this.aImage.nativeElement.value = '';
+    }
   }
 
   /**
@@ -330,7 +341,9 @@ export class UserAccountComponent implements OnInit {
         if (val.status === 'success'){
           this.notificationService.showSuccess('Fundgegenstand wurde erfolgreich abgegeben. Sobald er begutachtet wurde können Sie ihn unter Aushänge sehen.',
             'toast-top-left');
-          // todo reset file input
+          if (this.fOImage !== undefined){
+            this.fOImage.nativeElement.value = '';
+          }
           this.createFoundObjectForm.setValue({
             title: '',
             text: '',
@@ -375,7 +388,9 @@ export class UserAccountComponent implements OnInit {
    */
   removeFoundObjectPreview() {
     this.foundObjectFormImage = this.constants.defaultAnnouncementPreview;
-    this.fOImage.nativeElement.value = '';
+    if (this.fOImage !== undefined){
+      this.fOImage.nativeElement.value = '';
+    }
   }
 
   /**

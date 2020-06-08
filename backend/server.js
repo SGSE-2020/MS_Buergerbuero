@@ -25,7 +25,7 @@ let error_file = fs.createWriteStream('logs/error.log', {flags : 'a+'});
 let log_stdout = process.stdout;
 
 function getTimestamp() {
-    return new Date().toLocaleTimeString();
+    return new Date().toTimeString();
 }
 
 console.debug = function(d) {

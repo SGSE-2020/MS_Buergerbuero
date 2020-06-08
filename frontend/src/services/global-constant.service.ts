@@ -52,7 +52,7 @@ export class GlobalConstantService {
         month: birthDateResponse.getMonth() + 1,
         day: birthDateResponse.getDate()
       };
-      if (this.currentUser.image == null){
+      if (this.currentUser.image == null || this.currentUser.image === ''){
         this.currentUser.image = this.defaultImage;
       }
     } else {

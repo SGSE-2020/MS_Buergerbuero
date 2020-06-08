@@ -6,19 +6,23 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true
         },
         title: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         text: {
-            type: Sequelize.TEXT
+            type: Sequelize.TEXT,
+            allowNull: false
         },
         type: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         image: {
             type: Sequelize.TEXT
         },
         source: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         service: {
             type: Sequelize.STRING
@@ -28,7 +32,8 @@ module.exports = (sequelize, Sequelize) => {
             references: {
                 model: "users",
                 key: "uid"
-            }
+            },
+            allowNull: false
         },
         isActive: {
             type: Sequelize.BOOLEAN,

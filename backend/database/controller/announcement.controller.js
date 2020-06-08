@@ -7,7 +7,6 @@ const Announcement = db.announcements;
  * @param announcement Json object containing a announcement within the database
  */
 exports.create = (announcement) => {
-    console.log(announcement);
     return Announcement.create(announcement).then(data => {
         if(data){
             return data;

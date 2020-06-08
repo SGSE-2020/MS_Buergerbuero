@@ -6,28 +6,35 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: false
         },
         gender: {
-            type: Sequelize.INTEGER
+            type: Sequelize.INTEGER,
+            allowNull: false
         },
         firstName: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         lastName: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         nickName: {
             type: Sequelize.STRING
         },
         email: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         birthDate: {
-            type: Sequelize.DATE
+            type: Sequelize.DATE,
+            allowNull: false
         },
         streetAddress: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         zipCode: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         city: {
             type: Sequelize.STRING,
