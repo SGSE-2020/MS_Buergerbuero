@@ -13,25 +13,60 @@ spec:
         app: ms-buergerbuero
     spec:
       containers:
-      - image: postgres
-        name: ms-buergerbuero-db
-        env:
-        - name: POSTGRES_DB
-          value: buergerbuero
-        - name: POSTGRES_USER
-          value: buergerbuero
-        - name: POSTGRES_PASSWORD
-          value: sgse-ss2020
-        ports:
-        - containerPort: 5432
       - image: ms-buergerbuero-frontend
         name: ms-buergerbuero-frontend
         ports:
         - containerPort: 80
       - image: ms-buergerbuero-backend
         name: ms-buergerbuero-backend
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: ms-buergerbuero
+                key: POSTGRES_DB
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: ms-buergerbuero
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ms-buergerbuero
+                key: POSTGRES_PASSWORD
         ports:
         - containerPort: 8080
         - containerPort: 50051
+      - image: postgres
+        name: ms-buergerbuero-db
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: ms-buergerbuero
+                key: POSTGRES_DB
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: ms-buergerbuero
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ms-buergerbuero
+                key: POSTGRES_PASSWORD
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data/
+          name: db
+          subPath: ms-buergerbuero-db
+        ports:
+        - containerPort: 5432
+      
       restartPolicy: Always
+       volumes:
+      - name: db
+        gcePersistentDisk:
+          pdName: ms-buergerbuero
+          fsType: ext4
 status: {}

@@ -64,7 +64,7 @@
                   <div class="card-footer bg-transparent pb-0">
                     <div class="float-left">
                       <mat-icon [ngClass]="userAnnouncement.isActive == true ? 'mat-icon-approved' : 'mat-icon-pending'">{{userAnnouncement.isActive == true ? 'done' : 'warning'}}</mat-icon>
-                      <p class="float-right ml-1" [ngClass]="userAnnouncement.isActive == true ? 'text-success' : 'text-warning'">{{userAnnouncement.isActive == true ? 'Akzeptiert' : 'Ausstehendmit'}}</p>
+                      <p class="float-right ml-1" [ngClass]="userAnnouncement.isActive == true ? 'text-success' : 'text-warning'">{{userAnnouncement.isActive == true ? 'Akzeptiert' : 'Ausstehend'}}</p>
                     </div>
                     <div class="float-right">
                       <mat-icon *ngIf="userAnnouncement.isActive == true && userAnnouncement.type == 'announcement'" (click)="openDeletionConfirmation(deactivateConfirmation, userAnnouncement)">delete</mat-icon>
@@ -121,14 +121,11 @@
 </ng-template>
 
 <ng-template #foundObjectDetail let-modal>
-  <div class="modal-header d-block">
-    <div class="d-flex">
-      <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <h6 class="modal-title text-muted">Erstellt von '{{currentCreator != '' ? currentCreator.nickName : 'Anonym'}}'</h6>
+  <div class="modal-header">
+    <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
   <div class="modal-body">
     <div class="row">
@@ -169,7 +166,6 @@
 
   <div class="modal-footer">
     <div class="float-right">
-      <mat-icon *ngIf="currentCreator != null" class="mr-2" (click)="mailTo()">mail</mat-icon>
       <mat-icon>print</mat-icon>
     </div>
   </div>

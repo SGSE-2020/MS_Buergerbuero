@@ -27,7 +27,10 @@ env:
   IMAGE_backend: ms-buergerbuero-backend
   REGISTRY_HOSTNAME: gcr.io
   DEPLOYMENT_NAME: ms-buergerbuero
-
+  POSTGRES_USER: ${{secrets.POSTGRES_USER}}
+  POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+  POSTGRES_DB: ${{secrets.POSTGRES_DB}}
+  
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
@@ -59,7 +62,7 @@ jobs:
         docker build -t "$REGISTRY_HOSTNAME"/"$GKE_PROJECT"/"$IMAGE_backend":"$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" ./backend
-          
+
     # Push the Docker image to Google Container Registry
     - name: Publish
       run: |
@@ -76,8 +79,11 @@ jobs:
     - name: Deploy
       run: |
         gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
-        ./kustomize edit set image ms-buergerbuero-backend=$REGISTRY_HOSTNAME/$GKE_PROJECT/$IMAGE_backend:${GITHUB_SHA}
-        ./kustomize edit set image ms-buergerbuero-frontend=$REGISTRY_HOSTNAME/$GKE_PROJECT/$IMAGE_frontend:${GITHUB_SHA}
+        ./kustomize edit set image ms-MSSERVICE-backend=$REGISTRY_HOSTNAME/$GKE_PROJECT/$IMAGE_backend:${GITHUB_SHA}
+        ./kustomize edit set image ms-MSSERVICE-frontend=$REGISTRY_HOSTNAME/$GKE_PROJECT/$IMAGE_frontend:${GITHUB_SHA}
+        ./kustomize edit add secret ms-MSSERVICE --from-literal POSTGRES_USER=$POSTGRES_USER
+        ./kustomize edit add secret ms-MSSERVICE --from-literal POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+        ./kustomize edit add secret ms-MSSERVICE --from-literal POSTGRES_DB=$POSTGRES_DB
         ./kustomize build . | kubectl apply -f -
         kubectl rollout status deployment/$DEPLOYMENT_NAME
         kubectl get services -o wide

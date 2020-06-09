@@ -30,6 +30,8 @@ export class UserAccountComponent implements OnInit {
   announcementFormImage: any;
   foundObjectFormImage: any;
 
+  maxFileSize: any;
+
   constructor(private http: HttpClient, public constants: GlobalConstantService, private modalService: NgbModal,
               private firebaseAuth: AngularFireAuth, private formBuilder: FormBuilder,
               private router: Router, private notificationService: NotificationService) { }
@@ -40,6 +42,8 @@ export class UserAccountComponent implements OnInit {
    * Subscribes the router action to get current modal
    */
   ngOnInit(): void {
+    // 9.214.643,25‬ = 9MB
+    this.maxFileSize = 9214644;
     this.announcementFormImage = this.constants.defaultAnnouncementPreview;
     this.foundObjectFormImage = this.constants.defaultAnnouncementPreview;
     this.userDataIsSubmitted = false;
@@ -278,13 +282,22 @@ export class UserAccountComponent implements OnInit {
    * @param fileInput File that should be converted to base64 and shown in the preview
    */
   updateAnnouncementPreview(fileInput: any) {
-    if (fileInput[0]){
-      if (fileInput[0].type === 'image/jpeg' || 'image/png') {
-        const reader = new FileReader();
-        reader.readAsDataURL(fileInput[0]);
-        reader.onload = () => {
-          this.announcementFormImage = reader.result;
-        };
+    const announcementImage = fileInput[0];
+    if (announcementImage){
+      if (announcementImage.type === 'image/jpeg' || 'image/png') {
+        if (announcementImage.size < this.maxFileSize){
+          const reader = new FileReader();
+          reader.readAsDataURL(announcementImage);
+          reader.onload = () => {
+            this.announcementFormImage = reader.result;
+          };
+        } else {
+          this.notificationService.showError('Bild ist zu groß. Es werden maximal 9MB unterstützt.',
+            'toast-top-center');
+        }
+      } else {
+        this.notificationService.showError('Falsches Bildformat. Es werden nur JPEG und PNG Bilder unterstützt',
+          'toast-top-center');
       }
     }
   }
@@ -371,11 +384,19 @@ export class UserAccountComponent implements OnInit {
   updateFoundObjectPreview(fileInput: any) {
     if (fileInput[0]){
       if (fileInput[0].type === 'image/jpeg' || 'image/png') {
-        const reader = new FileReader();
-        reader.readAsDataURL(fileInput[0]);
-        reader.onload = () => {
-          this.foundObjectFormImage = reader.result;
-        };
+        if (fileInput[0].size < this.maxFileSize){
+          const reader = new FileReader();
+          reader.readAsDataURL(fileInput[0]);
+          reader.onload = () => {
+            this.foundObjectFormImage = reader.result;
+          };
+        } else {
+          this.notificationService.showError('Bild ist zu groß. Es werden maximal 9MB unterstützt.',
+            'toast-top-center');
+        }
+      } else {
+        this.notificationService.showError('Falsches Bildformat. Es werden nur JPEG und PNG Bilder unterstützt',
+          'toast-top-center');
       }
     }
   }
@@ -394,29 +415,34 @@ export class UserAccountComponent implements OnInit {
    * Upload a new image for the current logged in user
    */
   uploadImage(file: any) {
-    if (file.type === 'image/jpeg' || 'image/png'){
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const updateObj = {
-          image: reader.result
-        };
-        this.http.put(this.constants.host + '/user/image/' + this.constants.firebaseUser.uid,
-          updateObj).subscribe((val: any) => {
-            if (val.status === 'success'){
-              this.notificationService.showSuccess('Nutzerbild wurde aktualisiert',
-                'toast-top-left');
-              this.constants.currentUser.image = reader.result;
-            } else {
+    if (file.type === 'image/jpeg' || file.type === 'image/png'){
+      if (file.size < this.maxFileSize){
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const updateObj = {
+            image: reader.result
+          };
+          this.http.put(this.constants.host + '/user/image/' + this.constants.firebaseUser.uid,
+            updateObj).subscribe((val: any) => {
+              if (val.status === 'success'){
+                this.notificationService.showSuccess('Nutzerbild wurde aktualisiert',
+                  'toast-top-left');
+                this.constants.currentUser.image = reader.result;
+              } else {
+                this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut.',
+                  'toast-top-left');
+              }
+            },
+            error => {
               this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut.',
                 'toast-top-left');
-            }
-          },
-          error => {
-            this.notificationService.showError('Nutzerbild konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut.',
-              'toast-top-left');
-          });
-      };
+            });
+        };
+      } else {
+        this.notificationService.showError('Bild ist zu groß. Es werden maximal 9MB unterstützt.',
+          'toast-top-left');
+      }
     } else {
       this.notificationService.showError('Falsches Bildformat. Es werden nur JPEG und PNG Bilder unterstützt',
         'toast-top-left');
