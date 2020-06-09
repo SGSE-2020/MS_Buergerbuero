@@ -17,7 +17,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let user of usersList">
+        <tr *ngFor="let user of usersList" [ngClass]="user.uid == constants.firebaseUser.uid ? 'table-info' : ''">
           <td>{{user.email}}</td>
           <td>{{user.nickName}}</td>
           <td>{{user.uid}}</td>
