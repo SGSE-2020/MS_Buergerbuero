@@ -35,6 +35,22 @@ exports.getVerification = (param) => {
     });
 };
 
+/**
+ * Delete an announcement verification
+ * @param param Id of the announcement
+ */
+exports.delete = (param) => {
+    return AnnouncementVerification.destroy({where: { aid: param }}).then(data => {
+        if(data){
+            return data;
+        } else {
+            return 'Not found';
+        }
+    }).catch(err => {
+        return 'Not found';
+    });
+};
+
 
 
 

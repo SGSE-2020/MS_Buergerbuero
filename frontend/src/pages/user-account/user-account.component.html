@@ -7,7 +7,10 @@
     <div class="shadow p-3 bg-white rounded">
       <h4 class="border-bottom border-gray pb-3 text-info">Nutzerdaten</h4>
       <div class="row mt-2 ml-1">
-        <div class="col-xl-7 float-left">
+        <div class="col-xl-7 float-left" *ngIf="constants.userHasError == true">
+          <h6>Es konnten keine Nutzerdaten abgerufen werden.</h6>
+        </div>
+        <div class="col-xl-7 float-left" *ngIf="constants.userHasError == false">
           <div class="font-weight-bold mt-2">Geschlecht</div>
           <div class="border-bottom">{{constants.currentUser.gender == 0 ? 'Divers' : (constants.currentUser.gender == 1 ? 'Männlich' : (constants.currentUser.gender == 2 ? 'Weiblich' : ''))}}</div>
           <div class="font-weight-bold mt-2">Name:</div>
@@ -19,8 +22,10 @@
           <div class="border-bottom">{{constants.currentUser.zipCode}} {{constants.currentUser.city}}</div>
           <div class="font-weight-bold mt-2">E-Mail:</div>
           <div class="border-bottom">{{constants.currentUser.email}}</div>
-          <div class="font-weight-bold mt-2">Telefon:</div>
-          <div class="border-bottom">{{constants.currentUser.phone}}</div>
+          <div *ngIf="constants.currentUser?.phone != null && constants.currentUser?.phone != ''">
+            <div class="font-weight-bold mt-2">Telefon:</div>
+            <div class="border-bottom">{{constants.currentUser.phone}}</div>
+          </div>
           <div class="font-weight-bold mt-2">Geburtsdatum:</div>
           <div class="border-bottom">{{constants.currentUser.birthDate.day}}.{{constants.currentUser.birthDate.month}}.{{constants.currentUser.birthDate.year}}</div>
         </div>

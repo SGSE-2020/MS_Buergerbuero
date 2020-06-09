@@ -3,6 +3,22 @@ mat-icon:hover{
   cursor: pointer;
 }
 
+.mat-icon-approved{
+  color: #28a745;
+}
+
+.mat-icon-pending{
+  color: #ffc107;
+}
+
 .bg-custom{
   background-color: #add7de!important;
+}
+
+.bg-pending{
+  background-color: #ffc1071c!important;
+}
+
+.bg-approved{
+  background-color: #28a74517!important;
 }

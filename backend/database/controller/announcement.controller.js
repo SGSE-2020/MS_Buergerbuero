@@ -1,5 +1,6 @@
 const rb = require('../../components/response_builder');
 const db = require("../../components/database");
+const announcementVerificationCtrl = require("./announcement_verification.controller");
 const Announcement = db.announcements;
 
 /**
@@ -107,6 +108,37 @@ exports.deactivate = (req, res) => {
         res.send(responseObj);
     });
 };
+
+/**
+ * Delete a announcement from the db by the id of the announcement
+ * @param id Id of the announcement that should be deleted
+ */
+exports.delete = (req, res) => {
+    console.log("REST CALL: delete -> /announcement/:id");
+
+    let responseObj = {};
+
+    announcementVerificationCtrl.delete(req.params.id ).then(data => {
+        if(data){
+            Announcement.destroy({where: { id: req.params.id }}).then(data => {
+                if(data){
+                    responseObj = rb.success("Announcement", "deleted");
+                } else {
+                    responseObj = rb.failure("Announcement", "deleting");
+                }
+                res.send(responseObj);
+            }).catch(err => {
+                responseObj = rb.error(err);
+
+            });
+        } else {
+            responseObj = rb.failure("Announcement", "deleting");
+            res.send(responseObj);
+        }
+    });
+
+};
+
 
 
 

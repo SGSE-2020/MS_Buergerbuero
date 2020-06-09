@@ -1,10 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {JsonObject} from '@angular/compiler-cli/ngcc/src/packages/entry_point';
 
 @Pipe({
-  name: 'filterAnnouncement'
+  name: 'filterAnnouncementType'
 })
-export class FilterAnnouncementPipe implements PipeTransform {
+export class FilterAnnouncementTypePipe implements PipeTransform {
   transform(items: any[], filter: string): any {
     if (!items || !filter) {
       return items;

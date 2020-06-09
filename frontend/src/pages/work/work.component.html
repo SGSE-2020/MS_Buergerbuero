@@ -8,21 +8,22 @@
       <h4 class="text-info">Neue Aushänge</h4>
       <ngb-tabset #t="ngbTabset" justify="end">
         <ngb-tab id="tab-selectbyid1">
-          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="(constants.inActiveAnnouncementList | filterAnnouncement: 'announcement').length > 0">{{(constants.inActiveAnnouncementList | filterAnnouncement: 'announcement').length }}</span></ng-template>
+          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="(constants.inActiveAnnouncementList | filterAnnouncementType: 'announcement').length > 0">{{(constants.inActiveAnnouncementList | filterAnnouncementType: 'announcement').length }}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let announcement of constants.inActiveAnnouncementList | filterAnnouncement: 'announcement'">
+                <h6 *ngIf="(constants.inActiveAnnouncementList | filterAnnouncementType: 'announcement').length == 0">Es sind keine Aushänge freizugeben.</h6>
+                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let announcement of constants.inActiveAnnouncementList | filterAnnouncementType: 'announcement'">
                   <div class="card-body">
                     <h5 class="card-title">{{announcement.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{announcement.source}}</h6>
                     <p class="card-text">{{announcement.text | slice:0:95}}...</p>
                   </div>
-                  <div class="card-footer bg-light">
+                  <div class="card-footer bg-transparent">
                     <div class="float-right">
                       <mat-icon (click)="activateAnnouncement(announcement)">check_circle</mat-icon>
-                      <mat-icon (click)="deactivateAnnouncement(announcement)">delete</mat-icon>
-                      <mat-icon (click)="openAnnouncementDetailView(announcementDetail, announcement)">search</mat-icon>
+                      <mat-icon (click)="openDeletionConfirmation(deactivateConfirmation, announcement)">delete</mat-icon>
+                      <mat-icon (click)="openDetailView(announcementDetail, announcement)">search</mat-icon>
                     </div>
                   </div>
                 </div>
@@ -31,21 +32,22 @@
           </ng-template>
         </ngb-tab>
         <ngb-tab id="tab-selectbyid2">
-          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="(constants.inActiveAnnouncementList | filterAnnouncement: 'found object').length > 0">{{(constants.inActiveAnnouncementList | filterAnnouncement: 'found object').length }}</span></ng-template>
+          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="(constants.inActiveAnnouncementList | filterAnnouncementType: 'found object').length > 0">{{(constants.inActiveAnnouncementList | filterAnnouncementType: 'found object').length }}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let foundObject of constants.inActiveAnnouncementList | filterAnnouncement: 'found object'">
+                <h6 *ngIf="(constants.inActiveAnnouncementList | filterAnnouncementType: 'found object').length == 0">Es sind keine Fundgegenstände freizugeben.</h6>
+                <div class="col-xl-3 card mr-3 mb-3 bg-light" *ngFor="let foundObject of constants.inActiveAnnouncementList | filterAnnouncementType: 'found object'">
                   <div class="card-body">
                     <h5 class="card-title">{{foundObject.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{foundObject.source}}</h6>
                     <p class="card-text">{{foundObject.text | slice:0:100}}</p>
                   </div>
-                  <div class="card-footer bg-light">
+                  <div class="card-footer bg-transparent">
                     <div class="float-right">
                       <mat-icon (click)="activateAnnouncement(foundObject)">check_circle</mat-icon>
-                      <mat-icon (click)="deactivateAnnouncement(foundObject)">delete</mat-icon>
-                      <mat-icon (click)="openFoundObjectDetailView(foundObjectDetail, foundObject)">search</mat-icon>
+                      <mat-icon (click)="openDeletionConfirmation(deactivateConfirmation, foundObject)">delete</mat-icon>
+                      <mat-icon (click)="openDetailView(announcementDetail, foundObject)">search</mat-icon>
                     </div>
                   </div>
                 </div>
@@ -57,6 +59,21 @@
     </div>
   </div>
 </div>
+
+<ng-template #deactivateConfirmation let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{currentAnnouncement.type == 'announcement' ? 'Aushang' : 'Fundgegenstand'}} wirklich löschen?</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <span>Bist du sicher, dass du den {{currentAnnouncement.type == 'announcement' ? 'Aushang' : 'Fundgegenstand'}} '{{currentAnnouncement.title}}' wirklich löschen möchtest? Der Aushang kann nicht wiederhergestellt werden.</span>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn btn-info" (click)="deleteAnnouncement()">Löschen</button>
+  </div>
+</ng-template>
 
 <ng-template #announcementDetail let-modal>
   <div class="modal-header">
@@ -78,22 +95,3 @@
   </div>
 </ng-template>
 
-<ng-template #foundObjectDetail let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title">{{currentFoundObject.title}}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="row">
-      <img class="img-fluid col-xl-4" src="{{currentFoundObject.image}}" *ngIf="currentFoundObject.image != null"/>
-      <p class="col">{{currentFoundObject.text}}</p>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <div class="float-right">
-      <mat-icon>print</mat-icon>
-    </div>
-  </div>
-</ng-template>

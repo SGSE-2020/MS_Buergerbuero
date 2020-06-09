@@ -11,7 +11,6 @@ import {NotificationService} from '../../services/notification.service';
 })
 export class WorkComponent implements OnInit {
   currentAnnouncement: any;
-  currentFoundObject: any;
 
   constructor(public constants: GlobalConstantService, private modalService: NgbModal, private http: HttpClient,
               private notificationService: NotificationService) { }
@@ -40,27 +39,13 @@ export class WorkComponent implements OnInit {
    * @param modalContent announcementDetail modal
    * @param announcement Announcement that was selected
    */
-  openAnnouncementDetailView(modalContent: any, announcement: any) {
+  openDetailView(modalContent: any, announcement: any) {
     this.modalService.open(modalContent, {
       size: 'xl',
       centered: true,
       scrollable: true
     });
     this.currentAnnouncement = announcement;
-  }
-
-  /**
-   * Open detail view of clicked found object
-   * @param modalContent foundObjectDetail modal
-   * @param foundObject Found object that was selected
-   */
-  openFoundObjectDetailView(modalContent: any, foundObject: any) {
-    this.modalService.open(modalContent, {
-      size: 'xl',
-      centered: true,
-      scrollable: true
-    });
-    this.currentFoundObject = foundObject;
   }
 
   /**
@@ -71,33 +56,10 @@ export class WorkComponent implements OnInit {
     this.http.put(this.constants.host + '/announcement/activate/' +
       announcement.id, {}).subscribe((val: any) => {
         if (val.status === 'success'){
-          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(announcement);
+          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(this.currentAnnouncement);
           this.constants.inActiveAnnouncementList.splice(elementIndex, 1);
-          this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
-            'toast-top-left');
-          this.modalService.dismissAll();
-        } else {
-          this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
-            'toast-top-left');
-        }
-      },
-      error => {
-        this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
-          'toast-top-left');
-      });
-  }
 
-  /**
-   * Deactivate an created announcement
-   * @param announcement Announcement which should be deactivated
-   */
-  deactivateAnnouncement(announcement: any) {
-    this.http.put(this.constants.host + '/announcement/deactivate/' +
-      announcement.id, {}).subscribe((val: any) => {
-        if (val.status === 'success'){
-          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(announcement);
-          this.constants.inActiveAnnouncementList.splice(elementIndex, 1);
-          const activeAnnouncement = announcement;
+          const activeAnnouncement = this.currentAnnouncement;
           activeAnnouncement.isActive = true;
           this.constants.activeAnnouncementList.push(activeAnnouncement);
           this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
@@ -112,5 +74,40 @@ export class WorkComponent implements OnInit {
         this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
           'toast-top-left');
       });
+  }
+
+  /**
+   * Delete an created announcement
+   * @param announcement Announcement which should be deactivated
+   */
+  deleteAnnouncement() {
+    this.http.delete(this.constants.host + '/announcement/' +
+      this.currentAnnouncement.id, {}).subscribe((val: any) => {
+        if (val.status === 'success'){
+          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(this.currentAnnouncement);
+          this.constants.inActiveAnnouncementList.splice(elementIndex, 1);
+          this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
+            'toast-top-left');
+          this.modalService.dismissAll();
+        } else {
+          this.notificationService.showError('Entfernen des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+            'toast-top-left');
+        }
+      },
+      error => {
+        this.notificationService.showError('Entfernen des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+          'toast-top-left');
+      });
+  }
+
+  /**
+   * Open confirmation Modal
+   */
+  openDeletionConfirmation(modalContent: any, announcement: any) {
+    this.modalService.open(modalContent, {
+      centered: true,
+      scrollable: true
+    });
+    this.currentAnnouncement = announcement;
   }
 }

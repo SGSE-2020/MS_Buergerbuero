@@ -3,20 +3,22 @@
     <div class="shadow p-3 bg-white rounded">
       <h4 class="text-info">Aushänge</h4>
       <ngb-tabset #t="ngbTabset" justify="end">
-        <ngb-tab id="tab-selectbyid1"  title="Aushänge">
+        <ngb-tab id="tab-selectbyid1">
+          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'announcement').length > 0">{{(constants.activeAnnouncementList | filterAnnouncementType: 'announcement').length}}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let announcement of announcementList" [ngClass]="constants.currentUser != null && announcement.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
+                <h6 *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'announcement').length == 0">Es sind keine Aushänge vorhanden.</h6>
+                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let announcement of constants.activeAnnouncementList | filterAnnouncementType: 'announcement'" [ngClass]="constants.currentUser != null && announcement.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
                   <div class="card-body">
                     <h5 class="card-title">{{announcement.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{announcement.source}}</h6>
                     <p class="card-text">{{announcement.text | slice:0:95}}...</p>
                   </div>
-                  <div class="card-footer" [ngClass]="constants.currentUser != null && announcement.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
+                  <div class="card-footer bg-transparent">
                     <div class="float-right">
-                      <mat-icon *ngIf="constants.currentUser != null && (announcement.uid == constants.currentUser.uid || constants.currentUser.role == 2)">delete</mat-icon>
-                      <mat-icon (click)="openAnnouncementDetailView(announcementDetail, announcement)">search</mat-icon>
+                      <mat-icon *ngIf="constants.currentUser != null && (announcement.uid == constants.currentUser.uid || constants.currentUser.role == 2)" (click)="openDeletionConfirmation(deactivateConfirmation, announcement)">delete</mat-icon>
+                      <mat-icon (click)="openDetailView(announcementDetail, announcement)">search</mat-icon>
                     </div>
                   </div>
                 </div>
@@ -24,20 +26,49 @@
             </div>
           </ng-template>
         </ngb-tab>
-        <ngb-tab id="tab-selectbyid2" title="Fundgegenstände">
+        <ngb-tab id="tab-selectbyid2">
+          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'found object').length > 0">{{(constants.activeAnnouncementList | filterAnnouncementType: 'found object').length}}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let foundObject of foundObjectList" [ngClass]="constants.currentUser != null && foundObject.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
+                <h6 *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'found object').length == 0">Es sind keine Fundgegenstände vorhanden.</h6>
+                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let foundObject of constants.activeAnnouncementList | filterAnnouncementType: 'found object'" [ngClass]="constants.currentUser != null && foundObject.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
                   <div class="card-body">
                     <h5 class="card-title">{{foundObject.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{foundObject.source}}</h6>
                     <p class="card-text">{{foundObject.text | slice:0:100}}</p>
                   </div>
-                  <div class="card-footer" [ngClass]="constants.currentUser != null && foundObject.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
+                  <div class="card-footer bg-transparent">
                     <div class="float-right">
-                      <mat-icon *ngIf="constants.currentUser != null && constants.currentUser.role == 2">delete</mat-icon>
-                      <mat-icon (click)="openFoundObjectDetailView(foundObjectDetail, foundObject)">search</mat-icon>
+                      <mat-icon *ngIf="constants.currentUser != null && constants.currentUser.role == 2" (click)="openDeletionConfirmation(deactivateConfirmation, foundObject)">delete</mat-icon>
+                      <mat-icon (click)="openDetailView(foundObjectDetail, foundObject)">search</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="tab-selectbyid3" *ngIf="constants.userRole == 1">
+          <ng-template ngbTabTitle>Meins <span class="badge badge-info" *ngIf="(allAnnouncements| filterAnnouncementUser: constants.firebaseUser.uid).length > 0">{{(allAnnouncements | filterAnnouncementUser: constants.firebaseUser.uid).length}}</span></ng-template>
+          <ng-template ngbTabContent>
+            <div class="p-3">
+              <div class="row">
+                <h6 *ngIf="(allAnnouncements | filterAnnouncementUser: constants.firebaseUser.uid).length == 0">Du hast keine Aushänge erstellt. </h6>
+                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let userAnnouncement of allAnnouncements | filterAnnouncementUser: constants.firebaseUser.uid" [ngClass]="userAnnouncement.isActive == true ? 'bg-approved' : 'bg-pending'">
+                  <div class="card-body">
+                    <h5 class="card-title">{{userAnnouncement.title}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Von: {{userAnnouncement.source}}</h6>
+                    <p class="card-text">{{userAnnouncement.text | slice:0:100}}</p>
+                  </div>
+                  <div class="card-footer bg-transparent pb-0">
+                    <div class="float-left">
+                      <mat-icon [ngClass]="userAnnouncement.isActive == true ? 'mat-icon-approved' : 'mat-icon-pending'">{{userAnnouncement.isActive == true ? 'done' : 'warning'}}</mat-icon>
+                      <p class="float-right ml-1" [ngClass]="userAnnouncement.isActive == true ? 'text-success' : 'text-warning'">{{userAnnouncement.isActive == true ? 'Akzeptiert' : 'Ausstehendmit'}}</p>
+                    </div>
+                    <div class="float-right">
+                      <mat-icon *ngIf="userAnnouncement.isActive == true && userAnnouncement.type == 'announcement'" (click)="openDeletionConfirmation(deactivateConfirmation, userAnnouncement)">delete</mat-icon>
+                      <mat-icon (click)="openDetailView(foundObjectDetail, userAnnouncement)">search</mat-icon>
                     </div>
                   </div>
                 </div>
@@ -50,12 +81,30 @@
   </div>
 </div>
 
-<ng-template #announcementDetail let-modal>
+<ng-template #deactivateConfirmation let-modal>
   <div class="modal-header">
-    <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
+    <h4 class="modal-title">Aushang wirklich löschen?</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
+  </div>
+  <div class="modal-body">
+    <span>Bist du sicher, dass du den Aushang '{{currentAnnouncement.title}}' wirklich löschen möchtest? Der Aushang kann nicht wiederhergestellt werden.</span>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn btn-info" (click)="confirmDeletion()">Löschen</button>
+  </div>
+</ng-template>
+
+<ng-template #announcementDetail let-modal>
+  <div class="modal-header d-block">
+    <div class="d-flex">
+      <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <h6 class="modal-title text-muted">Erstellt von '{{currentCreator != '' ? currentCreator.nickName : 'Anonym'}}'</h6>
   </div>
   <div class="modal-body">
     <div class="row">
@@ -65,24 +114,28 @@
   </div>
   <div class="modal-footer">
     <div class="float-right">
+      <mat-icon *ngIf="currentCreator != null" class="mr-2" (click)="mailTo()">mail</mat-icon>
       <mat-icon>print</mat-icon>
     </div>
   </div>
 </ng-template>
 
 <ng-template #foundObjectDetail let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title">{{currentFoundObject.title}}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+  <div class="modal-header d-block">
+    <div class="d-flex">
+      <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <h6 class="modal-title text-muted">Erstellt von '{{currentCreator != '' ? currentCreator.nickName : 'Anonym'}}'</h6>
   </div>
   <div class="modal-body">
     <div class="row">
-      <img class="img-fluid col-xl-4" src="{{currentFoundObject.image}}" *ngIf="currentFoundObject.image != null"/>
-      <p class="col">{{currentFoundObject.text}}</p>
+      <img class="img-fluid col-xl-4" src="{{currentAnnouncement.image}}" *ngIf="currentAnnouncement.image != null"/>
+      <p class="col">{{currentAnnouncement.text}}</p>
     </div>
-    <div *ngIf="constants.firebaseUser != null && (constants.firebaseUser.uid != currentFoundObject.uid)">
+    <div *ngIf="constants.firebaseUser != null && (constants.firebaseUser.uid != currentAnnouncement.uid)">
       <div class="row mt-4 p-3">
         <h5 class="text-info">Diesen Fundgegenstand abholen? Bitte verifiziere, dass dieser Gegenstand dir gehört!</h5>
       </div>
@@ -113,8 +166,10 @@
       </div>
     </div>
   </div>
+
   <div class="modal-footer">
     <div class="float-right">
+      <mat-icon *ngIf="currentCreator != null" class="mr-2" (click)="mailTo()">mail</mat-icon>
       <mat-icon>print</mat-icon>
     </div>
   </div>
