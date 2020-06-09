@@ -64,7 +64,7 @@ spec:
         - containerPort: 5432
       
       restartPolicy: Always
-       volumes:
+      volumes:
       - name: db
         gcePersistentDisk:
           pdName: ms-buergerbuero
