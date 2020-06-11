@@ -27,6 +27,7 @@ import { FilterAnnouncementTypePipe } from '../pipes/filter-announcement-type.pi
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +13,7 @@ import { NotificationService } from '../../services/notification.service';
   styleUrls: ['./navigation.component.css']
 })
 
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit, AfterViewInit {
   isMenuCollapsed = true;
   authForm: any;
   isSubmitted = false;
@@ -34,24 +34,38 @@ export class NavigationComponent implements OnInit {
       email: ['', [Validators.required, Validators.email, Validators.maxLength(this.constants.maxVarcharLength)]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(this.constants.maxVarcharLength)]]
     });
-    this.checkIfUserIsLoggedIn();
+
+    this.firebaseAuth.authState.subscribe(user => {
+      if (user) {
+        this.constants.firebaseUser = user;
+        localStorage.setItem('user', JSON.stringify(this.constants.firebaseUser));
+      } else {
+        localStorage.setItem('user', null);
+      }
+    });
+  }
+
+  /**
+   * Function after view load finished
+   */
+  ngAfterViewInit(): void {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const isLoggedIn = (user !== null && user.emailVerified !== false) ? true : false
+    if (isLoggedIn){
+      this.constants.firebaseUser = user;
+      if (this.constants.firebaseUser.uid !== this.constants.currentUser?.uid){
+        this.constants.getCurrentUserData().then(() => {
+          if (this.constants.currentUser == null){
+            this.constants.performLogout();
+          } else {
+            this.constants.userRole = this.constants.currentUser.role;
+          }
+        });
+      }
+    }
   }
 
   // <editor-fold desc="Authentication functions">
-  /**
-   * Check if an user is signed in at the moment
-   */
-  checkIfUserIsLoggedIn(){
-      this.firebaseAuth.currentUser.then((user) => {
-          if (user != null){
-            this.constants.userRole = 1;
-            // todo check role from current logged in user
-          } else {
-            this.constants.currentUser = null;
-          }
-      });
-  }
-
   /**
    * Perform login or register depending on current action when the form is valid
    */
@@ -179,6 +193,9 @@ export class NavigationComponent implements OnInit {
   }
   // </editor-fold>
 
+  /**
+   * Back to smart city portal
+   */
   backToPortal() {
     window.location.href = 'http://portal.dvess.network';
   }

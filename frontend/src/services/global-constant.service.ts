@@ -59,29 +59,10 @@ export class GlobalConstantService {
         this.currentUser.image = this.defaultImage;
       }
     } else {
-      this.notificationService.showWarning('Nutzerdaten konnten nicht abgerufen werden. Datenbank möglicherweise nicht verfügbar.',
+      this.notificationService.showWarning('Nutzerdaten konnten nicht abgerufen werden.',
         'toast-top-left');
       this.userHasError = true;
-      this.currentUser = {
-        gender: 1,
-        firstName: 'Nicht verfügbar',
-        lastName: '',
-        nickName: 'Nicht verfügbar',
-        email: 'Nicht verfügbar',
-        password: 'Nicht verfügbar',
-        birthDate: '',
-        streetAddress: 'Nicht verfügbar',
-        zipCode: '',
-        phone: 'Nicht verfügbar',
-        image: this.defaultImage
-      };
-
-      const birthDateResponse = new Date('01.01.1900');
-      this.currentUser.birthDate = {
-        year: birthDateResponse.getFullYear(),
-        month: birthDateResponse.getMonth() + 1,
-        day: birthDateResponse.getDate()
-      };
+      this.currentUser = null;
     }
   }
 

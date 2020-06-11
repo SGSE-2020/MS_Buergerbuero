@@ -35,8 +35,6 @@ export class BlackBoardComponent implements OnInit {
       });
     });
 
-
-
     this.currentCreator = null;
   }
 
