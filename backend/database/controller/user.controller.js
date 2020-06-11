@@ -64,7 +64,7 @@ exports.findOne = (req, res) => {
 * @param param Json object containing a uid of user to search in the database
 * @returns User object
 */
-exports.findOneManually = (param) => {
+exports.findOneManually = async (param) => {
     const uid = param.uid;
     return User.findByPk(uid).then(data => {
         if(data){

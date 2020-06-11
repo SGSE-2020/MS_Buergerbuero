@@ -94,28 +94,6 @@ module.exports = function (app, firebase, config, caller, channel) {
     });
 
     /**
-     * Test Route for getUser gRpc Call
-     * */
-    app.get("/user/gRpc/:uid", function (req, res) {
-        console.log('REST CALL: get -> /user/gRpc/:uid');
-
-        let responseObj = {};
-        client.getUser(req.params).then(result => {
-            if(result != null){
-                responseObj = rb.success("User", "was found", {
-                    user: result
-                });
-            } else {
-                responseObj = rb.failure("finding", "user");
-            }
-            res.send(responseObj);
-        }).catch((err) => {
-            responseObj = rb.error(err);
-            res.send(responseObj);
-        });
-    });
-
-    /**
      * Update existing user
      * @param uid Uid of of user the that should be updated
      * @param body User object that should be updated in the database

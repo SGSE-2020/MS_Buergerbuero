@@ -17,31 +17,31 @@ module.exports = function(config, firebase){
      * @param param Parameter object containing the uid of requested user
      * @returns User dataset of requested user or null if not successful
      */
-    function getUser (param){
+    async function getUser (param){
         console.log("GRPC CALL: UserService -> getUser");
-
-        userCtrl.findOneManually(param.req.uid).then(databaseResult => {
-            if(databaseResult !== 'Not found'){
-                let responseObj = {
-                    uid: databaseResult.dataValues.uid,
-                    gender: databaseResult.dataValues.gender,
-                    firstName: databaseResult.dataValues.firstName,
-                    lastName: databaseResult.dataValues.lastName,
-                    nickName: databaseResult.dataValues.nickName,
-                    email: databaseResult.dataValues.email,
-                    birthDate: databaseResult.dataValues.birthDate.toDateString(),
-                    streetAddress: databaseResult.dataValues.streetAddress,
-                    zipCode: databaseResult.dataValues.zipCode,
-                    city: databaseResult.dataValues.city,
-                    phone: databaseResult.dataValues.phone,
-                    image: databaseResult.dataValues.image,
-                    isActive: databaseResult.dataValues.isActive
-                }
-                param.res = responseObj;
-            } else {
-                param.res = null;
-            }
-        })
+        let databaseResult = await userCtrl.findOneManually(param.req);
+        if(databaseResult !== 'Not found'){
+            delete databaseResult.dataValues["createdAt"];
+            delete databaseResult.dataValues["updatedAt"];
+            delete databaseResult.dataValues["role"];
+            param.res = databaseResult.dataValues;
+        } else {
+            param.res = {
+                uid: null,
+                gender: null,
+                firstName: null,
+                lastName: null,
+                nickName: null,
+                email: null,
+                birthDate: null,
+                streetAddress: null,
+                zipCode: null,
+                city: null,
+                phone: null,
+                image: null,
+                isActive: null
+            };
+        }
     }
 
     /**
