@@ -18,9 +18,26 @@ module.exports = function(config, firebase){
      * @returns User dataset of requested user or null if not successful
      */
     function getUser (param){
-        userCtrl.findOne(param).then(databaseResult => {
+        console.log("GRPC CALL: UserService -> getUser");
+
+        userCtrl.findOneManually(param.req.uid).then(databaseResult => {
             if(databaseResult !== 'Not found'){
-                param.res = databaseResult;
+                let responseObj = {
+                    uid: databaseResult.dataValues.uid,
+                    gender: databaseResult.dataValues.gender,
+                    firstName: databaseResult.dataValues.firstName,
+                    lastName: databaseResult.dataValues.lastName,
+                    nickName: databaseResult.dataValues.nickName,
+                    email: databaseResult.dataValues.email,
+                    birthDate: databaseResult.dataValues.birthDate.toDateString(),
+                    streetAddress: databaseResult.dataValues.streetAddress,
+                    zipCode: databaseResult.dataValues.zipCode,
+                    city: databaseResult.dataValues.city,
+                    phone: databaseResult.dataValues.phone,
+                    image: databaseResult.dataValues.image,
+                    isActive: databaseResult.dataValues.isActive
+                }
+                param.res = responseObj;
             } else {
                 param.res = null;
             }
@@ -33,6 +50,7 @@ module.exports = function(config, firebase){
      * @returns Uid of the verified user or null if not successful
      */
     async function verifyUser (param) {
+        console.log("GRPC CALL: UserService -> verifyUser");
         let decodedToken = await firebase.auth().verifyIdToken(param.req.token);
         if(decodedToken !== undefined){
             param.res = {
@@ -52,6 +70,7 @@ module.exports = function(config, firebase){
      * @returns Id of the created announcement or null if not successful
      */
     function sendAnnouncement (param) {
+        console.log("GRPC CALL: AnnouncementService -> sendAnnouncement");
         //TODO create announcement in db and get the id from the inserted entry
         //TODO replace example response after database result
         param.res = {
@@ -66,6 +85,7 @@ module.exports = function(config, firebase){
      * @returns Status object containing state and message
      */
     function deleteAnnouncement (param) {
+        console.log("GRPC CALL: AnnouncementService -> deleteAnnouncement");
         //TODO delete the announcement from the database
         //TODO replace example response after database result
         param.res = {

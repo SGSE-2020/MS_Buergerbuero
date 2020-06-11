@@ -57,7 +57,6 @@ module.exports = function (app, firebase, config, caller, channel) {
                 });
             }).catch(function (err) {
                 responseObj = rb.error(err);
-                responseObj.err = err;
                 res.send(responseObj);
             });
         }).catch(err => {
@@ -90,33 +89,28 @@ module.exports = function (app, firebase, config, caller, channel) {
             res.send(responseObj);
         }).catch((err) => {
             responseObj = rb.error(err);
-            responseObj.err = err;
             res.send(responseObj);
         });
     });
 
     /**
-     * Verify user token [gRPC test]
-     * @param token User token from the current authenticated user
-     * @returns Status object with uid param if successful
-     */
-    app.post("/user/verify/gRpc/:token", function (req, res) {
-        console.log('REST CALL: post -> /user/verify/gRpc/:token');
+     * Test Route for getUser gRpc Call
+     * */
+    app.get("/user/gRpc/:uid", function (req, res) {
+        console.log('REST CALL: get -> /user/gRpc/:uid');
 
         let responseObj = {};
-        client.verifyUser(req.params).then(result => {
-            if(result.uid != null){
-                responseObj = rb.success("User", "was verified", {
-                    uid : result.uid,
-                    role: 1
+        client.getUser(req.params).then(result => {
+            if(result != null){
+                responseObj = rb.success("User", "was found", {
+                    user: result
                 });
             } else {
-                responseObj = rb.failure("verifying", "user");
+                responseObj = rb.failure("finding", "user");
             }
             res.send(responseObj);
         }).catch((err) => {
             responseObj = rb.error(err);
-            responseObj.err = err;
             res.send(responseObj);
         });
     });
@@ -161,7 +155,6 @@ module.exports = function (app, firebase, config, caller, channel) {
             })
          }).catch(function(err) {
             responseObj = rb.error(err);
-            responseObj.err = err;
             res.send(responseObj);
          });
     });
@@ -194,7 +187,6 @@ module.exports = function (app, firebase, config, caller, channel) {
             }
         }).catch(function(err) {
             responseObj = rb.error(err);
-            responseObj.err = err;
             res.send(responseObj);
         });
     });

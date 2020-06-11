@@ -10,7 +10,8 @@ const path = require('path');
 
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
-    databaseURL: "https://smart-city-ss2020.firebaseio.com"
+    databaseURL: "https://smart-city-ss2020.firebaseio.com",
+
 });
 
 /* Logging */
@@ -40,8 +41,6 @@ console.error = function(d) {
     error_file.write(getTimestamp() + ' ' + util.format(d) + '\n');
     log_stdout.write(getTimestamp() + ' ' + util.format(d) + '\n');
 };
-
-
 
 /*Start all components*/
 console.log("Initial start up Bürgerbüro Server!");
