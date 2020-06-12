@@ -5,7 +5,7 @@ const app = express();
 
 const caller = require('grpc-caller')
 
-module.exports = function(config, firebase, channel, fs){
+module.exports = function(config, firebase, fbClient, channel, fs){
     app.use(bodyParser.json({limit: '50mb', extended: true}));
     app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
@@ -65,7 +65,7 @@ module.exports = function(config, firebase, channel, fs){
         }
     });
 
-    require('../rest_modules/user.module')(app, firebase, config, caller, channel);
+    require('../rest_modules/user.module')(app, firebase, fbClient, config, caller, channel);
     require('../rest_modules/user.routes')(app);
     require('../rest_modules/announcement.module')(app, firebase, config, caller);
     require('../rest_modules/announcement.routes')(app);

@@ -3,6 +3,7 @@ const config = require('./components/config');
 
 /*Firebase Initialization*/
 const firebase = require("firebase-admin");
+const fbClient = require("firebase");
 const serviceAccount = require("./smartcity_servicekey.json");
 const fs = require('fs');
 const util = require('util');
@@ -12,6 +13,15 @@ firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
     databaseURL: "https://smart-city-ss2020.firebaseio.com",
 
+});
+
+fbClient.initializeApp({
+    apiKey: 'AIzaSyBvTg0_QrhEvQ9UeZPH8--E2JZ55KA_u_c',
+        authDomain: 'smart-city-ss2020.firebaseapp.com',
+        databaseURL: 'https://smart-city-ss2020.firebaseio.com',
+        projectId: 'smart-city-ss2020',
+        storageBucket: 'smart-city-ss2020.appspot.com',
+        messagingSenderId: '957240233717'
 });
 
 /* Logging */
@@ -48,7 +58,7 @@ console.log("-----------------------------------");
 
 /*Routes*/
 let channel = require('./components/messages');
-require('./components/rest_server')(config, firebase, channel, fs);
+require('./components/rest_server')(config, firebase, fbClient, channel, fs);
 require('./components/grpc_server')(config, firebase);
 
 let db = require('./components/database');

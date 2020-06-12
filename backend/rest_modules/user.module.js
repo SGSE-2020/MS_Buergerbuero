@@ -4,7 +4,7 @@ const rb = require("../components/response_builder");
 const db = require("../components/database");
 const config = require('../components/config');
 
-module.exports = function (app, firebase, config, caller, channel) {
+module.exports = function (app, firebase, fbClient, config, caller, channel) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
     const client = caller('ms-buergerbuero:' + config.GRPC_PORT, userProtoPath, 'UserService');
 
@@ -65,6 +65,32 @@ module.exports = function (app, firebase, config, caller, channel) {
             responseObj.message = "Database is not available.";
             responseObj.param = {};
             console.error("Database is not available");
+        });
+    });
+
+    /**
+     * Sign in user and return token and user object
+     * @param body JSON object containing email and password
+     * @returns Status object with user and token if successful
+     */
+    app.post("/user/login", function (req, res) {
+        console.log('REST CALL: /user/login');
+
+        let responseObj = {};
+        fbClient.auth().signInWithEmailAndPassword(req.body.email, req.body.password).then(result =>{
+            result.user.getIdToken(true).then((token) => {
+                responseObj = rb.success("User", "was signed in", {
+                    user: result.user,
+                    token: token
+                });
+                res.send(responseObj);
+            }).catch(err => {
+                responseObj = rb.error(err);
+                res.send(responseObj);
+            });
+        }).catch(function(err) {
+            responseObj = rb.error(err);
+            res.send(responseObj);
         });
     });
 
