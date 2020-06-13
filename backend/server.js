@@ -1,5 +1,5 @@
 /*Global*/
-const config = require('./components/config');
+require('dotenv').config();
 
 /*Firebase Initialization*/
 const firebase = require("firebase-admin");
@@ -58,8 +58,8 @@ console.log("-----------------------------------");
 
 /*Routes*/
 let channel = require('./components/messages');
-require('./components/rest_server')(config, firebase, fbClient, channel, fs);
-require('./components/grpc_server')(config, firebase);
+require('./components/rest_server')(firebase, fbClient, channel, fs);
+require('./components/grpc_server')(firebase);
 
 let db = require('./components/database');
 let dbFunctions = require('./database/initial-script')

@@ -1,4 +1,3 @@
-const config = require("./config.js");
 const amqp = require('amqplib/callback_api');
 let pubChannel = null;
 
@@ -18,9 +17,9 @@ function createChannel(){
             pubChannel = channel;
 
             //assert the queue
-            channel.assertQueue(config.MESSAGE_QUEUE);
+            channel.assertQueue(process.env.MESSAGE_QUEUE);
 
-            channel.consume(config.MESSAGE_QUEUE, msg => {
+            channel.consume(process.env.MESSAGE_QUEUE, msg => {
                 console.log("received: " + message);
             })
         })

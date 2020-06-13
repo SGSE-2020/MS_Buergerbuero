@@ -9,15 +9,28 @@ const Announcement = db.announcements;
  */
 exports.create = (announcement) => {
     return Announcement.create(announcement).then(data => {
+        return data;
+    }).catch(err => {
+        console.log(err);
+        return 'Error on creation';
+    });
+};
+/**
+ * Searched one Announcement in the database
+ * @param announcement Json object containing a announcement within the database
+ */
+exports.find = (param) => {
+    return Announcement.findByPk(param).then(data => {
         if(data){
             return data;
         } else {
-           return 'Not created';
+            return 'Not found';
         }
     }).catch(err => {
-        return 'Not created';
+        return 'Not found';
     });
 };
+
 
 /**
  * Get all active announcements
@@ -136,7 +149,22 @@ exports.delete = (req, res) => {
             res.send(responseObj);
         }
     });
+};
 
+/**
+ * Delete a announcement from the db by the id of the announcement manually
+ * @param param Id of the announcement that should be deleted
+ */
+exports.deleteManually = (param) => {
+    return Announcement.destroy({where: { id: param }}).then(data => {
+        if(data){
+            return data;
+        } else {
+            return 'Not deleted';
+        }
+    }).catch(err => {
+        return 'Not deleted';
+    });
 };
 
 

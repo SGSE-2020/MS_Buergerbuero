@@ -5,14 +5,6 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        aid: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: "announcements",
-                key: "id"
-            },
-            allowNull: false
-        },
         key1: {
             type: Sequelize.STRING,
             allowNull: false

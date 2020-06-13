@@ -1,12 +1,8 @@
-const path = require('path');
 const announcementCtrl = require("../database/controller/announcement.controller");
 const announcementVerificationCtrl = require("../database/controller/announcement_verification.controller");
 const rb = require("../components/response_builder");
 
-module.exports = function (app, firebase, config, caller) {
-    const userProtoPath = path.resolve(__dirname, '../proto/announcement.proto');
-    const client = caller('localhost:' + config.GRPC_PORT, userProtoPath, 'AnnouncementService');
-
+module.exports = function (app, firebase, channel) {
     /**
      * Create new announcement
      * @param body Complete json object with all announcement data

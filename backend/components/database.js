@@ -1,9 +1,8 @@
-const config = require("./config.js");
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize(config.DB_NAME, config.DB_USER, config.DB_PASSWORD, {
-    host: config.DB_HOST,
-    dialect: config.DB_DIALECT
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT
 });
 
 const db = {};
@@ -14,5 +13,8 @@ db.sequelize = sequelize;
 db.users = require("../database/model/user.model")(sequelize, Sequelize);
 db.announcements = require("../database/model/announcement.model")(sequelize, Sequelize);
 db.announcement_verification = require("../database/model/announcement_verification.model")(sequelize, Sequelize);
+
+db.announcements.belongsTo(db.users, {foreignKey: 'uid', allowNull: true});
+db.announcement_verification.belongsTo(db.announcements, {foreignKey: 'aid'});
 
 module.exports = db;

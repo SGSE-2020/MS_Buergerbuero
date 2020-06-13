@@ -1,6 +1,5 @@
 const path = require('path');
 const mali = require('mali');
-const conf = require('./config');
 
 const gRpcServer = new mali();
 const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
@@ -11,11 +10,11 @@ gRpcServer.addService(announcementProtoPath, 'AnnouncementService');
 const userCtrl = require("../database/controller/user.controller");
 const announcementCtrl = require("../database/controller/announcement.controller");
 
-module.exports = function(config, firebase){
+module.exports = function(firebase){
     /**
      * Get user dataset by uid
      * @param param Parameter object containing the uid of requested user
-     * @returns User dataset of requested user or null if not successful
+     * @returns User dataset of requested user or empty object if not successful
      */
     async function getUser (param){
         console.log("GRPC CALL: UserService -> getUser");
@@ -47,7 +46,7 @@ module.exports = function(config, firebase){
     /**
      * Verify a given user token
      * @param param Parameter object containing the user token of the user to verify
-     * @returns Uid of the verified user or null if not successful
+     * @returns Uid of the verified user or or empty object if not successful
      */
     async function verifyUser (param) {
         console.log("GRPC CALL: UserService -> verifyUser");
@@ -67,15 +66,31 @@ module.exports = function(config, firebase){
      * Create an announcement to be shown at the blackboard
      * @param param Parameter object containing title, text and image for the announcement
      * such as the service the announcement originates from
-     * @returns Id of the created announcement or null if not successful
+     * @returns The created announcement object or empty object if not successful
      */
-    function sendAnnouncement (param) {
+    async function sendAnnouncement (param) {
         console.log("GRPC CALL: AnnouncementService -> sendAnnouncement");
-        //TODO create announcement in db and get the id from the inserted entry
-        //TODO replace example response after database result
-        param.res = {
-            id: '12345'
-        };
+
+        param.req.source = 'Dienstleister';
+        param.req.type = 'announcement';
+        let databaseResult = await announcementCtrl.create(param.req);
+        if(databaseResult !== "Error on creation"){
+            delete databaseResult.dataValues["createdAt"];
+            delete databaseResult.dataValues["updatedAt"];
+            delete databaseResult.dataValues["uid"];
+            param.res = databaseResult.dataValues;
+        } else {
+            param.res = {
+                id: null,
+                title: null,
+                text: null,
+                type: null,
+                image: null,
+                source: null,
+                service: null,
+                isActive: null,
+            };
+        }
     }
 
     /**
@@ -84,20 +99,43 @@ module.exports = function(config, firebase){
      * announcement originates from
      * @returns Status object containing state and message
      */
-    function deleteAnnouncement (param) {
+    async function deleteAnnouncement (param) {
         console.log("GRPC CALL: AnnouncementService -> deleteAnnouncement");
-        //TODO delete the announcement from the database
-        //TODO replace example response after database result
-        param.res = {
-            status: 'Success',
-            message: 'Aushang wurde vom schwarzen Brett gelöscht.'
-        };
+        console.log(param.req);
+        let dataFind = await announcementCtrl.find(param.req.id);
+        if(dataFind){
+            if (dataFind.service === param.req.service){
+                let dataDelete = await announcementCtrl.deleteManually(param.req.id);
+                if (dataDelete){
+                    param.res = {
+                        status: 'success',
+                        message: 'Aushang wurde gelöscht.'
+                    };
+                } else {
+                    param.res = {
+                        status: 'error',
+                        message: 'Aushang konnte nicht gelöscht werden. Versuchen Sie es später noch einmal.'
+                    };
+                }
+            } else {
+                param.res = {
+                    status: 'error',
+                    message: 'Validierung fehlgeschlagen. Service stimmt nicht überein.'
+                };
+            }
+        } else {
+            param.res = {
+                status: 'error',
+                message: 'Aushang konnte nicht gefunden werden.'
+            };
+        }
+
     }
 
     /*Launch gRPC server*/
     gRpcServer.use({ verifyUser, getUser, sendAnnouncement, deleteAnnouncement});
-    gRpcServer.start("0.0.0.0:" + conf.GRPC_PORT);
-    console.log("gRPC Server running on port: " + conf.GRPC_PORT);
+    gRpcServer.start("0.0.0.0:" + process.env.GRPC_PORT);
+    console.log("gRPC Server running on port: " + process.env.GRPC_PORT);
 }
 
 

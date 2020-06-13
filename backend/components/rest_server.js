@@ -1,11 +1,8 @@
 const express = require("express");
 const bodyParser = require('body-parser');
-const config = require('./config');
 const app = express();
 
-const caller = require('grpc-caller')
-
-module.exports = function(config, firebase, fbClient, channel, fs){
+module.exports = function(firebase, fbClient, channel, fs){
     app.use(bodyParser.json({limit: '50mb', extended: true}));
     app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
@@ -65,13 +62,13 @@ module.exports = function(config, firebase, fbClient, channel, fs){
         }
     });
 
-    require('../rest_modules/user.module')(app, firebase, fbClient, config, caller, channel);
+    require('../rest_modules/user.module')(app, firebase, fbClient, channel);
     require('../rest_modules/user.routes')(app);
-    require('../rest_modules/announcement.module')(app, firebase, config, caller);
+    require('../rest_modules/announcement.module')(app, firebase, channel);
     require('../rest_modules/announcement.routes')(app);
 
     /*Launch REST server*/
-    app.listen(config.REST_PORT, function () {
-        console.log("REST Server running on port: " + config.REST_PORT);
+    app.listen(process.env.REST_PORT, function () {
+        console.log("REST Server running on port: " + process.env.REST_PORT);
     });
 }

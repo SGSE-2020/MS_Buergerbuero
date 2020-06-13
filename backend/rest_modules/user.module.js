@@ -2,12 +2,8 @@ const path = require('path');
 const userCtrl = require("../database/controller/user.controller");
 const rb = require("../components/response_builder");
 const db = require("../components/database");
-const config = require('../components/config');
 
-module.exports = function (app, firebase, fbClient, config, caller, channel) {
-    const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    const client = caller('ms-buergerbuero:' + config.GRPC_PORT, userProtoPath, 'UserService');
-
+module.exports = function (app, firebase, fbClient, channel) {
      /**
      * Register new user
      * @param body Complete json object with all user data
