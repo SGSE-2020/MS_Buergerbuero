@@ -1,6 +1,5 @@
 const userCtrl = require("./controller/user.controller");
 
-
 /**
  * Create initial firebase user accounts if not exists and add admin role
  * @param firebase Firebase auth object
@@ -44,6 +43,17 @@ exports.createFirebaseUserAccounts = (firebase) => {
     });
 };
 
+/**
+ * Drop all database tables
+ * @param db database
+ */
+exports.dropAll = (db) => {
+    db.sequelize.query("DROP TABLE users, announcements, announcement_verifications CASCADE").then(databaseResult => {
+        console.log("Dropped all tables.");
+    }).catch(err => {
+        console.error("Error on dropping all tables.");
+    });
+};
 
 
 
