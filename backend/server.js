@@ -66,8 +66,8 @@ let dbFunctions = require('./database/initial-script')
 
 db.sequelize.sync().then(function(){
     console.log('DB connection successful.');
-    //dbFunctions.createFirebaseUserAccounts(firebase);
-    dbFunctions.dropAll(db);
+    dbFunctions.createFirebaseUserAccounts(firebase);
+    //dbFunctions.dropAll(db);
 }, function(err){
     console.log('DB connection not successful.');
 });
