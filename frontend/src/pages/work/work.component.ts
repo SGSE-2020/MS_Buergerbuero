@@ -3,6 +3,8 @@ import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient} from '@angular/common/http';
 import {NotificationService} from '../../services/notification.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-work',
@@ -11,11 +13,25 @@ import {NotificationService} from '../../services/notification.service';
 })
 export class WorkComponent implements OnInit {
   currentAnnouncement: any;
-
+  private navigationSubscription: Subscription;
   constructor(public constants: GlobalConstantService, private modalService: NgbModal, private http: HttpClient,
-              private notificationService: NotificationService) { }
+              private notificationService: NotificationService, private router: Router) { }
 
   ngOnInit(): void {
+    this.refreshData();
+
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd && e.url === '/work') {
+        this.refreshData();
+      }
+    });
+  }
+
+
+  /**
+   * Refreshes the form validation depending on the current user -> Reset if no user is logged in
+   */
+  refreshData() {
     this.getAllInActiveAnnouncements().then( result => {
       this.constants.inActiveAnnouncementList = result;
     });

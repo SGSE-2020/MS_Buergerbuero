@@ -92,7 +92,7 @@
           <label for="aTitle" class="font-weight-bold">Titel</label>
           <input type="text" class="form-control" id="aTitle" formControlName="title" [ngClass]="announcementIsSubmitted && createAnnouncementForm.controls['title']?.errors ? 'is-invalid' : ''"/>
           <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.required">Dieses Feld ist erforderlich.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="createAnnouncementForm.controls['title']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-group col ml-2 text-center">
           <div class="row-cols-xl-2 justify-content-center">

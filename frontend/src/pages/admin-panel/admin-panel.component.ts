@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalConstantService } from '../../services/global-constant.service';
 import {NotificationService} from '../../services/notification.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-admin-panel',
@@ -10,10 +12,27 @@ import {NotificationService} from '../../services/notification.service';
 })
 export class AdminPanelComponent implements OnInit {
   usersList: any;
-  constructor(private http: HttpClient, public constants: GlobalConstantService, private notificationService: NotificationService) { }
+  private navigationSubscription: Subscription;
+
+  constructor(private http: HttpClient, public constants: GlobalConstantService, private notificationService: NotificationService,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.usersList = [];
+
+    this.refreshData();
+
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd && e.url === '/admin-panel') {
+        this.refreshData();
+      }
+    });
+  }
+
+  /**
+   * Refreshes the form validation depending on the current user -> Reset if no user is logged in
+   */
+  refreshData() {
     this.getAllUsers().then( result => {
       this.usersList = result;
     });

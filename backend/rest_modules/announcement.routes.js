@@ -1,6 +1,7 @@
 const announcementCtrl = require("../database/controller/announcement.controller");
 
 module.exports = function (app) {
+    app.get("/announcement", announcementCtrl.getAll);
     app.get("/announcement/inactive", announcementCtrl.getAllInactive);
     app.get("/announcement/active", announcementCtrl.getAllActive);
     app.put("/announcement/activate/:id", announcementCtrl.activate);

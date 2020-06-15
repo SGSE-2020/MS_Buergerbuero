@@ -2,6 +2,7 @@ const rb = require('../../components/response_builder');
 const db = require("../../components/database");
 const announcementVerificationCtrl = require("./announcement_verification.controller");
 const Announcement = db.announcements;
+const AnnouncementVerification = db.announcement_verification;
 
 /**
  * Create Announcement in the database
@@ -31,6 +32,27 @@ exports.find = (param) => {
     });
 };
 
+/**
+ * Get all announcements
+ * @returns List of Announcement objects
+ */
+exports.getAll = (req, res) => {
+    console.log("REST CALL: get -> /announcement");
+
+    let responseObj = {};
+    Announcement.findAll({include: [{model: AnnouncementVerification}]}).then(data => {
+        if(data){
+            responseObj = rb.success("Announcements", "found", data);
+        } else {
+            responseObj = rb.failure("Announcements", "finding");
+        }
+        res.send(responseObj);
+    }).catch(err => {
+        responseObj = rb.error(err);
+        res.send(responseObj);
+    });
+};
+
 
 /**
  * Get all active announcements
@@ -40,7 +62,7 @@ exports.getAllActive = (req, res) => {
     console.log("REST CALL: get -> /announcement/active");
 
     let responseObj = {};
-    Announcement.findAll({where: { isActive: true }}).then(data => {
+    Announcement.findAll({where: { isActive: true }, include: [{model: AnnouncementVerification}]}).then(data => {
         if(data){
             responseObj = rb.success("Active announcements", "found", { announcements: data });
         } else {
@@ -61,7 +83,7 @@ exports.getAllInactive = (req, res) => {
     console.log("REST CALL: get -> /announcement/inactive");
 
     let responseObj = {};
-    Announcement.findAll({where: { isActive: false }}).then(data => {
+    Announcement.findAll({where: { isActive: false }, include: [{model: AnnouncementVerification}]}).then(data => {
         if(data){
             responseObj = rb.success("Inactive announcements", "found", { announcements: data });
         } else {

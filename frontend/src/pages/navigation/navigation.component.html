@@ -87,18 +87,18 @@
           <label for="firstName" class="control-label font-weight-bold mt-1">Vorname</label>
           <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Vornamen eintragen..." [ngClass]="isSubmitted && authForm.controls['firstName']?.errors ? 'is-invalid' : ''">
           <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['firstName']?.errors?.required">Dieses Feld ist erforderlich..</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['firstName']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['firstName']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="lastName" class="control-label font-weight-bold mt-1">Nachname</label>
           <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Nachnamen eintragen..." [ngClass]="isSubmitted && authForm.controls['lastName']?.errors ? 'is-invalid' : ''">
           <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['lastName']?.errors?.required">Dieses Feld ist erforderlich..</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['lastName']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['lastName']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="nickName" class="control-label font-weight-bold mt-1">Spitzname</label>
           <input type="text" id="nickName" class="form-control" formControlName="nickName" placeholder="Spitznamen eintragen...">
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['nickName']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['nickName']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <label for="birthDate" class="control-label font-weight-bold mt-1">Geburtsdatum</label>
@@ -115,14 +115,14 @@
           <label for="streetAddress" class="control-label font-weight-bold mt-1">Straße / Hausnummer</label>
           <input type="text" id="streetAddress" class="form-control" formControlName="streetAddress" placeholder="Straße und Hausnummer eintragen..." [ngClass]="isSubmitted && authForm.controls['streetAddress']?.errors ? 'is-invalid' : ''">
           <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['streetAddress']?.errors?.required">Dieses Feld ist erforderlich..</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['streetAddress']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['streetAddress']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row" *ngIf="this.constants.authAction=='register'">
           <div class="form-group col-xl-5 pl-0 mb-0">
             <label for="zipCode" class="control-label font-weight-bold mt-1">PLZ</label>
             <input type="text" id="zipCode" class="form-control" formControlName="zipCode"  placeholder="PLZ eintragen..." [ngClass]="isSubmitted && authForm.controls['zipCode']?.errors ? 'is-invalid' : ''">
             <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['zipCode']?.errors?.required">Dieses Feld ist erforderlich..</div>
-            <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['zipCode']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+            <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['zipCode']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
           </div>
           <div class="form-group col-xl-7 pr-0 mb-0">
             <label for="city" class="control-label font-weight-bold mt-1">Stadt</label>
@@ -138,14 +138,14 @@
           <input type="text" id="email" class="form-control" formControlName="email" placeholder="E-Mail eintragen..." [ngClass]="isSubmitted && authForm.controls['email']?.errors ? 'is-invalid' : ''">
           <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['email']?.errors?.required">Dieses Feld ist erforderlich..</div>
           <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['email']?.errors?.email">Ungültiges E-Mail Format.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['email']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['email']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
         <div class="form-row">
           <label for="password" class="control-label font-weight-bold mt-1">Passwort</label>
-          <input type="password" id="password" class="form-control" formControlName="password" placeholder="Passwort eintragen..." [ngClass]="isSubmitted && authForm.controls['password']?.errors ? 'is-invalid' : ''">
+          <input type="password" id="password" class="form-control" formControlName="password" placeholder="Passwort eintragen..." [ngClass]="isSubmitted && authForm.controls['password'].errors ? 'is-invalid' : ''">
           <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['password']?.errors?.required">Dieses Feld ist erforderlich..</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['password']?.errors?.minLength">Passwort muss mindestens 6 Zeichen lang sein.</div>
-          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['password']?.errors?.maxLength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['password']?.errors?.minlength">Passwort muss mindestens 6 Zeichen lang sein.</div>
+          <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['password']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
       </div>
 
