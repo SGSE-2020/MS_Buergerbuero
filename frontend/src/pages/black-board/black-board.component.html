@@ -141,15 +141,15 @@
           <form [formGroup]="receiveFoundObjectForm" id="receiveFoundObjectFormId" (ngSubmit)="receiveFoundObject()" >
             <div class="form-group">
               <div class="form-row">
-                <label for="question1" class="control-label font-weight-bold">Beispielfrage 1</label>
+                <label for="question1" class="control-label font-weight-bold">{{currentAnnouncement.announcement_verification?.key1}}</label>
                 <input type="text" id="question1" class="form-control" formControlName="question1">
               </div>
               <div class="form-row mt-2">
-                <label for="question2" class="control-label font-weight-bold">Beispielfrage 2</label>
+                <label for="question2" class="control-label font-weight-bold">{{currentAnnouncement.announcement_verification?.key2}}</label>
                 <input type="text" id="question2" class="form-control" formControlName="question2">
               </div>
               <div class="form-row mt-2">
-                <label for="question3" class="control-label font-weight-bold">Beispielfrage 3</label>
+                <label for="question3" class="control-label font-weight-bold">{{currentAnnouncement.announcement_verification?.key3}}</label>
                 <input type="text" id="question3" class="form-control" formControlName="question3">
               </div>
             </div>
