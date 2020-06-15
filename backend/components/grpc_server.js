@@ -18,13 +18,35 @@ module.exports = function(firebase){
      */
     async function getUser (param){
         console.log("GRPC CALL: UserService -> getUser");
-        let databaseResult = await userCtrl.findOneManually(param.req);
-        if(databaseResult !== 'Not found'){
-            delete databaseResult.dataValues["createdAt"];
-            delete databaseResult.dataValues["updatedAt"];
-            delete databaseResult.dataValues["role"];
-            param.res = databaseResult.dataValues;
-        } else {
+
+        try{
+            let databaseResult = await userCtrl.findOneManually(param.req);
+            if(databaseResult !== 'Not found'){
+                console.log("SUCCESS: User was found. Return user data.");
+                delete databaseResult.dataValues["createdAt"];
+                delete databaseResult.dataValues["updatedAt"];
+                delete databaseResult.dataValues["role"];
+                param.res = databaseResult.dataValues;
+            } else {
+                console.error("ERROR: User could not be found in  the database.");
+                param.res = {
+                    uid: null,
+                    gender: null,
+                    firstName: null,
+                    lastName: null,
+                    nickName: null,
+                    email: null,
+                    birthDate: null,
+                    streetAddress: null,
+                    zipCode: null,
+                    city: null,
+                    phone: null,
+                    image: null,
+                    isActive: null
+                };
+            }
+        } catch (err) {
+            console.error("ERROR: " + err.message);
             param.res = {
                 uid: null,
                 gender: null,
@@ -41,6 +63,7 @@ module.exports = function(firebase){
                 isActive: null
             };
         }
+
     }
 
     /**
@@ -50,16 +73,27 @@ module.exports = function(firebase){
      */
     async function verifyUser (param) {
         console.log("GRPC CALL: UserService -> verifyUser");
-        let decodedToken = await firebase.auth().verifyIdToken(param.req.token);
-        if(decodedToken !== undefined){
-            param.res = {
-                uid: decodedToken.uid
-            };
-        } else {
+
+        try{
+            let decodedToken = await firebase.auth().verifyIdToken(param.req.token);
+            if(decodedToken !== undefined){
+                console.log("SUCCESS: User was verified");
+                param.res = {
+                    uid: decodedToken.uid
+                };
+            } else {
+                console.error("ERROR: User could not be verified");
+                param.res = {
+                    uid: null
+                };
+            }
+        } catch(err){
+            console.error("ERROR: " + err.message);
             param.res = {
                 uid: null
             };
         }
+
     }
 
     /**
@@ -73,13 +107,30 @@ module.exports = function(firebase){
 
         param.req.source = 'Dienstleister';
         param.req.type = 'announcement';
-        let databaseResult = await announcementCtrl.create(param.req);
-        if(databaseResult !== "Error on creation"){
-            delete databaseResult.dataValues["createdAt"];
-            delete databaseResult.dataValues["updatedAt"];
-            delete databaseResult.dataValues["uid"];
-            param.res = databaseResult.dataValues;
-        } else {
+
+        try{
+            let databaseResult = await announcementCtrl.create(param.req);
+            if(databaseResult !== "Error on creation"){
+                console.log("SUCCESS: Announcement successfully created. Returning announcement.");
+                delete databaseResult.dataValues["createdAt"];
+                delete databaseResult.dataValues["updatedAt"];
+                delete databaseResult.dataValues["uid"];
+                param.res = databaseResult.dataValues;
+            } else {
+                console.error("ERROR: Announcement could not be created in database.");
+                param.res = {
+                    id: null,
+                    title: null,
+                    text: null,
+                    type: null,
+                    image: null,
+                    source: null,
+                    service: null,
+                    isActive: null,
+                };
+            }
+        } catch(err) {
+            console.error("ERROR: " + err.message);
             param.res = {
                 id: null,
                 title: null,
@@ -91,6 +142,7 @@ module.exports = function(firebase){
                 isActive: null,
             };
         }
+
     }
 
     /**
@@ -102,33 +154,46 @@ module.exports = function(firebase){
     async function deleteAnnouncement (param) {
         console.log("GRPC CALL: AnnouncementService -> deleteAnnouncement");
         console.log(param.req);
-        let dataFind = await announcementCtrl.find(param.req.id);
-        if(dataFind){
-            if (dataFind.service === param.req.service){
-                let dataDelete = await announcementCtrl.deleteManually(param.req.id);
-                if (dataDelete){
-                    param.res = {
-                        status: 'success',
-                        message: 'Aushang wurde gelöscht.'
-                    };
+        try{
+            let dataFind = await announcementCtrl.find(param.req.id);
+            if(dataFind){
+                if (dataFind.service === param.req.service){
+                    let dataDelete = await announcementCtrl.deleteManually(param.req.id);
+                    if (dataDelete){
+                        console.log("SUCCESS: Aushang wurde erfolgreich gelöscht.");
+                        param.res = {
+                            status: 'success',
+                            message: 'Aushang wurde gelöscht.'
+                        };
+                    } else {
+                        console.error("ERROR: Aushang konnte nicht gelöscht werden. Versuchen Sie es später noch einmal.");
+                        param.res = {
+                            status: 'error',
+                            message: 'Aushang konnte nicht gelöscht werden. Versuchen Sie es später noch einmal.'
+                        };
+                    }
                 } else {
+                    console.error("ERROR: Validierung fehlgeschlagen. Service stimmt nicht überein.");
                     param.res = {
                         status: 'error',
-                        message: 'Aushang konnte nicht gelöscht werden. Versuchen Sie es später noch einmal.'
+                        message: 'Validierung fehlgeschlagen. Service stimmt nicht überein.'
                     };
                 }
             } else {
+                console.error("ERROR: Aushang konnte nicht gefunden werden.");
                 param.res = {
                     status: 'error',
-                    message: 'Validierung fehlgeschlagen. Service stimmt nicht überein.'
+                    message: 'Aushang konnte nicht gefunden werden.'
                 };
             }
-        } else {
+        } catch (err){
+            console.error("ERROR: " + err.message);
             param.res = {
                 status: 'error',
-                message: 'Aushang konnte nicht gefunden werden.'
+                message: err.message
             };
         }
+
 
     }
 
