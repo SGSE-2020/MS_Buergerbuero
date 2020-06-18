@@ -4,16 +4,6 @@ const rb = require("../components/response_builder");
 const db = require("../components/database");
 
 module.exports = function (app, firebase, fbClient, channel) {
-    const caller = require('grpc-caller');
-    const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    const client = caller('localhost:50051', userProtoPath, 'UserService');
-    const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjRlMjdmNWIwNjllYWQ4ZjliZWYxZDE0Y2M2Mjc5YmRmYWYzNGM1MWIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoicHNjaHJlaW5lciIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9zbWFydC1jaXR5LXNzMjAyMCIsImF1ZCI6InNtYXJ0LWNpdHktc3MyMDIwIiwiYXV0aF90aW1lIjoxNTkyMjM5MTg4LCJ1c2VyX2lkIjoiQUZicFZNNVJzSldNMnhWOHRrNENTcFZyT2dTMiIsInN1YiI6IkFGYnBWTTVSc0pXTTJ4Vjh0azRDU3BWck9nUzIiLCJpYXQiOjE1OTIyMzkxODgsImV4cCI6MTU5MjI0Mjc4OCwiZW1haWwiOiJwaWEuc2NocmVpbmVyQG91dGxvb2suY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicGlhLnNjaHJlaW5lckBvdXRsb29rLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.lLh_ebtATMlVxhha3PzsFzGWp2Qo1wMtdwGyYHRdDhADvtMOTa1bt5YxWFYp6mWEMR7Ky4ecnZ_pqmPEvFTiVWuZKuMdpn1PSHR1-NOkhCU94NPAZf2Gtep72G1hqIbRWpc6s5HaAvCNIQCndFQUTxWJGVnkNPhu4MPWGGGHlaXn4gks0I03FaOms0-SyKGzAGHNYkQ3ehnZ_f9JC-Oe45QypOgIUgFp-XjMc9Eo6k_7HL3DEoGHx7f1Eay-C_kMrDPyNjqPgQZVpigy6gdqpcBISyYwM7bz0YCyvH_E9Z0hwCZu-e-vR-egq8ZUXxGiLojXLaneILzujg2E0VR6";
-
-    client.verifyUser({token: token}).then(res=>{
-        console.log(res);
-    }).catch(err => {
-        //console.log(err);
-    });
      /**
      * Register new user
      * @param body Complete json object with all user data
