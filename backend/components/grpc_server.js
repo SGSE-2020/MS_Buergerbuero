@@ -16,7 +16,7 @@ module.exports = function(firebase){
      * @param param Parameter object containing the uid of requested user
      * @returns User dataset of requested user or empty object if not successful
      */
-    async function getUser (param){
+    async function GetUser (param){
         console.log("GRPC CALL: UserService -> getUser");
 
         try{
@@ -71,7 +71,7 @@ module.exports = function(firebase){
      * @param param Parameter object containing the user token of the user to verify
      * @returns Uid of the verified user or or empty object if not successful
      */
-    async function verifyUser (param) {
+    async function VerifyUser (param) {
         console.log("GRPC CALL: UserService -> verifyUser");
 
         try{
@@ -198,7 +198,7 @@ module.exports = function(firebase){
     }
 
     /*Launch gRPC server*/
-    gRpcServer.use({ verifyUser, getUser, sendAnnouncement, deleteAnnouncement});
+    gRpcServer.use({ VerifyUser, GetUser, sendAnnouncement, deleteAnnouncement});
     gRpcServer.start("0.0.0.0:" + process.env.GRPC_PORT);
     console.log("gRPC Server running on port: " + process.env.GRPC_PORT);
 }
