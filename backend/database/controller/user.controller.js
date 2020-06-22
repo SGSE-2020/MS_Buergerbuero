@@ -1,4 +1,4 @@
-const rb = require('../../components/response_builder');
+const rb = require('../../components/responseBuilder');
 const db = require("../../components/database");
 const User = db.users;
 
@@ -25,6 +25,7 @@ exports.create = (param) => {
 exports.getAllUsers = (req, res) => {
     console.log("REST CALL: get -> user");
     let responseObj = {};
+
     return User.findAll().then(data => {
         if(data){
             responseObj = rb.success("Users", "found", { users: data });

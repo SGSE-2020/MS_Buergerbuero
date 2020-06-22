@@ -1,4 +1,4 @@
-const rb = require('../../components/response_builder');
+const rb = require('../../components/responseBuilder');
 const db = require("../../components/database");
 const announcementVerificationCtrl = require("./announcement_verification.controller");
 const Announcement = db.announcements;

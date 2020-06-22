@@ -1,9 +1,9 @@
 const path = require('path');
 const userCtrl = require("../database/controller/user.controller");
-const rb = require("../components/response_builder");
+const rb = require("../components/responseBuilder");
 const db = require("../components/database");
 
-module.exports = function (app, firebase, fbClient, channel) {
+module.exports = function (app, firebase, fbClient, messageService) {
      /**
      * Register new user
      * @param body Complete json object with all user data
@@ -148,6 +148,11 @@ module.exports = function (app, firebase, fbClient, channel) {
                     responseObj = rb.success("User", "was updated", {
                         user: databaseResult
                     });
+                    const data = {
+                        uid: user.uid,
+                        message: 'User was updated'
+                    };
+                    messageService.publishToExchange(process.env.QUEUE_USER_CHANGED, data);
                 } else {
                     responseObj = rb.failure("updating", "user");
                 }
@@ -177,6 +182,11 @@ module.exports = function (app, firebase, fbClient, channel) {
                         responseObj = rb.success("User", "was deactivated", {
                             user: databaseResult
                         });
+                        const data = {
+                            uid: req.params.uid,
+                            message: 'User was deactivated'
+                        };
+                        messageService.publishToExchange(process.env.QUEUE_USER_DEACTIVATE, data);
                     } else {
                         responseObj = rb.failure("deactivating", "user");
                     }

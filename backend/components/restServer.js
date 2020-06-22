@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const app = express();
 
-module.exports = function(firebase, fbClient, channel, fs){
+module.exports = function(firebase, fbClient, messageService, fs){
     app.use(bodyParser.json({limit: '50mb', extended: true}));
     app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
@@ -19,6 +19,7 @@ module.exports = function(firebase, fbClient, channel, fs){
      */
     app.get("/alive", function(req, res) {
         console.log("REST CALL: /alive");
+
         let responseObj = {
             status:"success",
             message: "Server is alive."
@@ -62,13 +63,13 @@ module.exports = function(firebase, fbClient, channel, fs){
         }
     });
 
-    require('../rest_modules/user.module')(app, firebase, fbClient, channel);
+    require('../rest_modules/user.module')(app, firebase, fbClient, messageService);
     require('../rest_modules/user.routes')(app);
-    require('../rest_modules/announcement.module')(app, firebase, channel);
+    require('../rest_modules/announcement.module')(app, firebase);
     require('../rest_modules/announcement.routes')(app);
 
     /*Launch REST server*/
-    app.listen(process.env.REST_PORT, function () {
+    app.listen(9000, function () {
         console.log("REST Server running on port: " + process.env.REST_PORT);
     });
 }
