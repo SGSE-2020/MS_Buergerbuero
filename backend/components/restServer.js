@@ -69,7 +69,7 @@ module.exports = function(firebase, fbClient, messageService, fs){
     require('../rest_modules/announcement.routes')(app);
 
     /*Launch REST server*/
-    app.listen(9000, function () {
+    app.listen(process.env.REST_PORT, function () {
         console.log("REST Server running on port: " + process.env.REST_PORT);
     });
 }

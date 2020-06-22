@@ -1,6 +1,7 @@
 const amqp = require('amqplib/callback_api');
 const publishURL = 'amqp://localhost';
-const consumeURL = 'amqp://ms-rettungsdienst';
+//const consumeURL = 'amqp://ms-rettungsdienst';
+const consumeURL = 'amqp://localhost';
 
 let pubChannel = null;
 let consumeChannel = null;
