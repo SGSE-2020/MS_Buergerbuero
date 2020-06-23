@@ -58,11 +58,9 @@ console.log("-----------------------------------");
 
 /*Routes*/
 let messageService = require('./components/messageService');
-if(process.env.MESSAGING_START == true){
-    console.log("Start messaging service");
-    //messageService.startConsumer();
-    messageService.startPublisher();
-}
+console.log("Start messaging service");
+//messageService.startConsumer();
+messageService.startPublisher();
 
 
 
