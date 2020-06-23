@@ -1,13 +1,12 @@
 const amqp = require('amqplib/callback_api');
-const publishURL = 'amqp://localhost';
-//const consumeURL = 'amqp://ms-rettungsdienst';
-const consumeURL = 'amqp://localhost';
+const messageURL = 'amqp://ms-rabbitmq';
+//const messageURL = 'amqp://localhost';
 
 let pubChannel = null;
 let consumeChannel = null;
 
 exports.startPublisher = () => {
-    amqp.connect(publishURL, function (conErr, con) {
+    amqp.connect(messageURL, function (conErr, con) {
         if(conErr){
             console.error("AMQP ERROR: " + conErr.message);
         } else {
@@ -24,7 +23,7 @@ exports.startPublisher = () => {
 };;
 
 exports.startConsumer = () => {
-    amqp.connect(consumeURL, function (conErr, con) {
+    amqp.connect(messageURL, function (conErr, con) {
         if (conErr) {
             console.error("AMQP ERROR: " + conErr.message);
         } else {
@@ -42,13 +41,12 @@ exports.startConsumer = () => {
                         exclusive: true
                     }, function (queueErr, queue) {
                         if (queueErr) {
-                            throw queueErr;
-                        }
-                        console.log(' [*] Waiting for logs. To exit press CTRL+C');
-
+                            console.error("AMQP ERROR: " + queueErr.message);
+                        };
                         // todo bind all queues
                         //channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
 
+                        /*
                         channel.consume(queue.queue, function (msg) {
                             console.log("Consume object");
                             //console.log(JSON.parse(msg.content));
@@ -58,6 +56,8 @@ exports.startConsumer = () => {
                         }, {
                             noAck: true
                         });
+                        */
+
                     });
                 }
             });

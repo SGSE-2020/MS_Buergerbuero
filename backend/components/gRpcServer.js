@@ -106,6 +106,7 @@ module.exports = function(firebase){
 
         param.req.source = 'Dienstleister';
         param.req.type = 'announcement';
+        param.req.isActive = true;
 
         try{
             let databaseResult = await announcementCtrl.create(param.req);
