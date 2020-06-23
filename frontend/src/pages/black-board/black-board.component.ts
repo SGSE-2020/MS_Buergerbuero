@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
-import {NotificationService} from '../../services/notification.service';
+import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../../services/notification.service';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-black-board',
@@ -14,6 +17,7 @@ export class BlackBoardComponent implements OnInit {
   currentCreator: any;
   currentAnnouncement: any;
   receiveFoundObjectForm: any;
+  receiveFoundObjectFormSubmitted: boolean;
 
   allAnnouncements: any;
 
@@ -21,6 +25,7 @@ export class BlackBoardComponent implements OnInit {
               private http: HttpClient, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
+    this.receiveFoundObjectFormSubmitted = false;
     this.receiveFoundObjectForm = this.formBuilder.group({
       question1: ['', Validators.required],
       question2: ['', Validators.required],
@@ -102,8 +107,34 @@ export class BlackBoardComponent implements OnInit {
    * Function to receive a found object
    */
   receiveFoundObject() {
-    // todo check if validation is okay
-    // todo if successful remove announcement
+    this.receiveFoundObjectFormSubmitted = true;
+    if (this.receiveFoundObjectForm.valid){
+      const validationObj = {
+        answer1: this.receiveFoundObjectForm.value.question1,
+        answer2: this.receiveFoundObjectForm.value.question2,
+        answer3: this.receiveFoundObjectForm.value.question3
+      };
+      this.http.post(this.constants.host + '/announcement/receive/' + this.currentAnnouncement.id,
+        validationObj).subscribe((val: any) => {
+          if (val.status === 'success'){
+            this.receiveFoundObjectFormSubmitted = false;
+            const elementIndexA = this.allAnnouncements.indexOf(this.currentAnnouncement);
+            this.allAnnouncements.splice(elementIndexA, 1);
+            const elementIndexB = this.constants.activeAnnouncementList.indexOf(this.currentAnnouncement);
+            this.constants.activeAnnouncementList.splice(elementIndexB, 1);
+            this.notificationService.showSuccess('Fundgegenstand wurde erfolgreich abgeholt.',
+              'toast-top-left');
+            this.modalService.dismissAll();
+          } else {
+            this.notificationService.showWarning('Validierung fehlgeschlagen. Bitte trage die korrekten Antworten ein, wenn der Gegenstand wirklich dir gehört.',
+              'toast-top-center');
+          }
+        },
+        error => {
+          this.notificationService.showError('Fundgegenstand konnte nicht abgeholt werden. Bitte versuchen Sie es später erneut.',
+            'toast-top-center');
+        });
+    }
   }
 
   /**
@@ -132,12 +163,12 @@ export class BlackBoardComponent implements OnInit {
             'toast-top-center');
           this.modalService.dismissAll();
         } else {
-          this.notificationService.showSuccess('Aushang konte nicht gelöscht werden. Bitte versuchen Sie es später erneut.',
+          this.notificationService.showError('Aushang konte nicht gelöscht werden. Bitte versuchen Sie es später erneut.',
           'toast-top-center');
         }
       },
       error => {
-        this.notificationService.showSuccess('Aushang konte nicht gelöscht werden. Bitte versuchen Sie es später erneut.',
+        this.notificationService.showError('Aushang konte nicht gelöscht werden. Bitte versuchen Sie es später erneut.',
           'toast-top-center');
       });
   }
@@ -152,6 +183,40 @@ export class BlackBoardComponent implements OnInit {
     mail.click();
   }
 
+  /**
+   * Open PDF of announcement in new tab to print or download
+   * @param currentAnnouncement current announcement to print
+   */
+  printAnnouncement(currentAnnouncement: any) {
+    const documentDefinition = {
+      content: [],
+      styles: {
+        header: {
+          fontSize: 22,
+          bold: true
+        }
+      }
+    };
+    const titleObj = {
+      text: currentAnnouncement.title,
+      style: 'header'
+    };
+    documentDefinition.content.push(titleObj);
+    if (currentAnnouncement.image != null){
+      const imgObj = {
+        image: currentAnnouncement.image,
+        width: 500,
+        margin: [0, 10, 0, 0]
+      };
+      documentDefinition.content.push(imgObj);
 
+    }
+    const textObj = {
+      text: currentAnnouncement.text,
+      margin: [0, 10, 0, 0]
+    };
+    documentDefinition.content.push(textObj);
 
+    pdfMake.createPdf(documentDefinition).open();
+  }
 }

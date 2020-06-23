@@ -25,9 +25,6 @@ import { NotificationService } from '../services/notification.service';
 import { FilterAnnouncementUserPipe } from '../pipes/filter-announcement-user.pipe';
 import { FilterAnnouncementTypePipe } from '../pipes/filter-announcement-type.pipe';
 
-
-
-
 @NgModule({
   declarations: [
     AppComponent,

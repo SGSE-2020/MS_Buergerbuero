@@ -58,9 +58,10 @@ console.log("-----------------------------------");
 
 /*Routes*/
 let messageService = require('./components/messageService');
-//console.log("Start messaging service");
+console.log("Start messaging service");
+messageService.startPublisher();
 //messageService.startConsumer();
-//messageService.startPublisher();
+
 
 require('./components/restServer')(firebase, fbClient, messageService, fs);
 require('./components/gRpcServer')(firebase);

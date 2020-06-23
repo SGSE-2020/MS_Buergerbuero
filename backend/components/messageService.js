@@ -1,4 +1,3 @@
-/*
 const amqp = require('amqplib/callback_api');
 const messageURL = 'amqp://ms-rabbitmq';
 //const messageURL = 'amqp://localhost';
@@ -43,7 +42,9 @@ exports.startConsumer = () => {
                     }, function (queueErr, queue) {
                         if (queueErr) {
                             console.error("AMQP ERROR: " + queueErr.message);
-                        };
+                        }
+
+                        /*
                         // todo bind all queues
                         //channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
 
@@ -56,6 +57,7 @@ exports.startConsumer = () => {
                         }, {
                             noAck: true
                         });
+                        */
 
                     });
                 }
@@ -90,7 +92,7 @@ process.on('exit', (code) => {
     }
     console.log('Shutting down rabbitmq publish channel');
 });
-*/
+
 
 
 

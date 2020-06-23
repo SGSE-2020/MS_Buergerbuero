@@ -18,36 +18,14 @@ exports.createVerification = (param) => {
 };
 
 /**
- * Find an announcement verification from the db by the id of the announcement
- * @param param Json object containing the id of the announcement verification
- */
-exports.getVerification = (param) => {
-    const aid = param.aid;
-
-    return AnnouncementVerification.findOne({where: { aid: aid }}).then(data => {
-        if(data){
-            return data;
-        } else {
-            return 'Not found';
-        }
-    }).catch(err => {
-        return 'Not found';
-    });
-};
-
-/**
  * Delete an announcement verification
- * @param param Id of the announcement
+ * @param param Id of the announcement verification
  */
 exports.delete = (param) => {
-    return AnnouncementVerification.destroy({where: { aid: param }}).then(data => {
-        if(data){
-            return data;
-        } else {
-            return 'Not found';
-        }
+    return AnnouncementVerification.destroy({where: { id: param }}).then(data => {
+        return 'Deleted';
     }).catch(err => {
-        return 'Not found';
+        return 'Not deleted';
     });
 };
 

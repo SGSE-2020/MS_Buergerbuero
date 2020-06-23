@@ -97,25 +97,27 @@
 </ng-template>
 
 <ng-template #announcementDetail let-modal>
-  <div class="modal-header d-block">
-    <div class="d-flex">
-      <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
+  <div id="print-section">
+    <div class="modal-header d-block">
+      <div class="d-flex">
+        <h4 class="modal-title">{{currentAnnouncement.title}}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <h6 class="modal-title text-muted">Erstellt von '{{currentCreator != null ? currentCreator.nickName : 'Anonym'}}'</h6>
     </div>
-    <h6 class="modal-title text-muted">Erstellt von '{{currentCreator != null ? currentCreator.nickName : 'Anonym'}}'</h6>
-  </div>
-  <div class="modal-body">
-    <div class="row">
-      <img class="img-fluid col-xl-4" src="{{currentAnnouncement.image}}" *ngIf="currentAnnouncement.image != null"/>
-      <p class="col">{{currentAnnouncement.text}}</p>
+    <div class="modal-body">
+      <div class="row">
+        <img class="img-fluid col-xl-4" src="{{currentAnnouncement.image}}" *ngIf="currentAnnouncement.image != null"/>
+        <p class="col">{{currentAnnouncement.text}}</p>
+      </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <div class="float-right">
-      <mat-icon *ngIf="currentCreator != null && currentCreator.email != undefined" class="mr-2" (click)="mailTo()">mail</mat-icon>
-      <mat-icon>print</mat-icon>
+    <div class="modal-footer">
+      <div class="float-right">
+        <mat-icon *ngIf="currentCreator != null && currentCreator.email != undefined" class="mr-2" (click)="mailTo()">mail</mat-icon>
+        <mat-icon (click)="printAnnouncement(currentAnnouncement)">print</mat-icon>
+      </div>
     </div>
   </div>
 </ng-template>
@@ -142,15 +144,18 @@
             <div class="form-group">
               <div class="form-row">
                 <label for="question1" class="control-label font-weight-bold">{{currentAnnouncement.announcement_verification?.key1}}</label>
-                <input type="text" id="question1" class="form-control" formControlName="question1">
+                <input type="text" id="question1" class="form-control" formControlName="question1" [ngClass]="receiveFoundObjectFormSubmitted && receiveFoundObjectForm.controls['question1']?.errors ? 'is-invalid' : ''">
+                <div class="invalid-feedback ml-1 mb-1" *ngIf="receiveFoundObjectForm.controls['question1']?.errors?.required">Dieses Feld ist erforderlich.</div>
               </div>
               <div class="form-row mt-2">
                 <label for="question2" class="control-label font-weight-bold">{{currentAnnouncement.announcement_verification?.key2}}</label>
-                <input type="text" id="question2" class="form-control" formControlName="question2">
+                <input type="text" id="question2" class="form-control" formControlName="question2" [ngClass]="receiveFoundObjectFormSubmitted && receiveFoundObjectForm.controls['question2']?.errors ? 'is-invalid' : ''">
+                <div class="invalid-feedback ml-1 mb-1" *ngIf="receiveFoundObjectForm.controls['question2']?.errors?.required">Dieses Feld ist erforderlich.</div>
               </div>
               <div class="form-row mt-2">
                 <label for="question3" class="control-label font-weight-bold">{{currentAnnouncement.announcement_verification?.key3}}</label>
-                <input type="text" id="question3" class="form-control" formControlName="question3">
+                <input type="text" id="question3" class="form-control" formControlName="question3" [ngClass]="receiveFoundObjectFormSubmitted && receiveFoundObjectForm.controls['question3']?.errors ? 'is-invalid' : ''">
+                <div class="invalid-feedback ml-1 mb-1" *ngIf="receiveFoundObjectForm.controls['question3']?.errors?.required">Dieses Feld ist erforderlich.</div>
               </div>
             </div>
           </form>
@@ -166,7 +171,7 @@
 
   <div class="modal-footer">
     <div class="float-right">
-      <mat-icon>print</mat-icon>
+      <mat-icon (click)="printAnnouncement(currentAnnouncement)">print</mat-icon>
     </div>
   </div>
 </ng-template>

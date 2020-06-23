@@ -21,7 +21,23 @@ exports.create = (announcement) => {
  * @param announcement Json object containing a announcement within the database
  */
 exports.find = (param) => {
-    return Announcement.findByPk(param).then(data => {
+    return Announcement.findByPk(param, {include: [{model: AnnouncementVerification}]}).then(data => {
+        if(data){
+            return data;
+        } else {
+            return 'Not found';
+        }
+    }).catch(err => {
+        return 'Not found';
+    });
+};
+
+/**
+ * Searched one Announcement in the database
+ * @param announcement Json object containing a announcement within the database
+ */
+exports.findOne = (param) => {
+    return Announcement.findOne(param, {include: [{model: AnnouncementVerification}]}).then(data => {
         if(data){
             return data;
         } else {
@@ -164,7 +180,7 @@ exports.delete = (req, res) => {
                 res.send(responseObj);
             }).catch(err => {
                 responseObj = rb.error(err);
-
+                res.send(responseObj);
             });
         } else {
             responseObj = rb.failure("Announcement", "deleting");
@@ -178,7 +194,7 @@ exports.delete = (req, res) => {
  * @param param Id of the announcement that should be deleted
  */
 exports.deleteManually = (param) => {
-    return Announcement.destroy({where: { id: param }}).then(data => {
+    return Announcement.destroy({where: { id: param }, include: [{model: AnnouncementVerification}]}).then(data => {
         if(data){
             return data;
         } else {

@@ -15,6 +15,6 @@ db.announcements = require("../database/model/announcement.model")(sequelize, Se
 db.announcement_verification = require("../database/model/announcement_verification.model")(sequelize, Sequelize);
 
 db.announcements.belongsTo(db.users, {foreignKey: 'uid', allowNull: true});
-db.announcements.hasOne(db.announcement_verification, {foreignKey: 'aid'});
+db.announcements.hasOne(db.announcement_verification, {foreignKey: 'aid', onDelete: 'CASCADE'});
 
 module.exports = db;

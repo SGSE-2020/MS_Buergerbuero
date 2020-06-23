@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {GlobalConstantService} from './global-constant.service';
-import {ApiModel} from '../model/api.model';
-import {Announcement} from '../model/announcement.model';
 
 @Injectable({
   providedIn: 'root'

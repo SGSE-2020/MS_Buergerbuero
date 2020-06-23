@@ -24,7 +24,7 @@ module.exports = function (app, firebase) {
     });
 
     /**
-     * Create new announcement
+     * Create new found object
      * @param body Complete json object with all found object data
      * @returns Status object
      */
@@ -70,5 +70,35 @@ module.exports = function (app, firebase) {
             }
 
         });
+    });
+
+    /**
+     * Receive found object
+     * @param aid Id of the announcement to receive
+     * @param body Complete json object with all answers for found object
+     * @returns Status object
+     */
+    app.post("/announcement/receive/:aid", function (req, res) {
+        console.log('REST CALL: post -> /announcement/receive/:announcementId');
+
+        let responseObj = {};
+        announcementCtrl.find(req.params.aid).then(announcement => {
+            const validationObj = announcement.announcement_verification.dataValues;
+            const verificationId = validationObj.id;
+            if(validationObj.value1 === req.body.answer1 && validationObj.value2 === req.body.answer2
+                && validationObj.value3 === req.body.answer3){
+                announcementCtrl.deleteManually(req.params.aid ).then(() => {
+                    announcementVerificationCtrl.delete(verificationId);
+                    responseObj = rb.success("Found object", "was received");
+                    res.send(responseObj);
+                }).catch(err => {
+                    responseObj = rb.error(err);
+                    res.send(responseObj);
+                });
+            } else {
+                responseObj = rb.failure("receiving", "found object");
+                res.send(responseObj);
+            }
+        })
     });
 }
