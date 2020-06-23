@@ -58,7 +58,7 @@ console.log("-----------------------------------");
 
 /*Routes*/
 let messageService = require('./components/messageService');
-messageService.startConsumer();
+//messageService.startConsumer();
 messageService.startPublisher();
 
 
