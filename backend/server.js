@@ -58,8 +58,12 @@ console.log("-----------------------------------");
 
 /*Routes*/
 let messageService = require('./components/messageService');
-//messageService.startConsumer();
-messageService.startPublisher();
+if(process.env.MESSAGING_START == true){
+    console.log("Start messaging service");
+    //messageService.startConsumer();
+    messageService.startPublisher();
+}
+
 
 
 require('./components/restServer')(firebase, fbClient, messageService, fs);
