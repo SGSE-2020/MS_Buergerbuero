@@ -1,7 +1,7 @@
+/*
 const amqp = require('amqplib/callback_api');
 const messageURL = 'amqp://ms-rabbitmq';
 //const messageURL = 'amqp://localhost';
-//const messageURL = 'amqp://rabbitmq.dvess.network/';
 
 let pubChannel = null;
 let consumeChannel = null;
@@ -21,7 +21,7 @@ exports.startPublisher = () => {
             });
         }
     });
-};;
+};
 
 exports.startConsumer = () => {
     amqp.connect(messageURL, function (conErr, con) {
@@ -47,7 +47,6 @@ exports.startConsumer = () => {
                         // todo bind all queues
                         //channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
 
-                        /*
                         channel.consume(queue.queue, function (msg) {
                             console.log("Consume object");
                             //console.log(JSON.parse(msg.content));
@@ -57,7 +56,6 @@ exports.startConsumer = () => {
                         }, {
                             noAck: true
                         });
-                        */
 
                     });
                 }
@@ -92,6 +90,7 @@ process.on('exit', (code) => {
     }
     console.log('Shutting down rabbitmq publish channel');
 });
+*/
 
 
 
