@@ -67,11 +67,13 @@ require('./components/gRpcServer')(firebase);
 
 let db = require('./components/database');
 let dbFunctions = require('./database/initial-script')
+const shouldDropTables = false;
 
-db.sequelize.sync().then(function(){
+db.sequelize.sync({force: shouldDropTables}).then(function(){
     console.log('DB connection successful.');
-    dbFunctions.createFirebaseUserAccounts(firebase);
-    //dbFunctions.dropAll(db);
+    if(shouldDropTables){
+        dbFunctions.createFirebaseUserAccounts(firebase);
+    }
 }, function(err){
     console.log('DB connection not successful.');
 });
