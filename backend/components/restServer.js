@@ -19,12 +19,6 @@ module.exports = function(firebase, fbClient, messageService, fs){
      */
     app.get("/alive", function(req, res) {
         console.log("REST CALL: /alive");
-
-        const data = {
-            message: 'Test'
-        };
-        messageService.publishToExchange(process.env.QUEUE_USER_DEACTIVATE, data);
-
         let responseObj = {
             status:"success",
             message: "Server is alive."
