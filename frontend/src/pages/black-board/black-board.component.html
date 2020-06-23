@@ -114,7 +114,7 @@
   </div>
   <div class="modal-footer">
     <div class="float-right">
-      <mat-icon *ngIf="currentCreator != null" class="mr-2" (click)="mailTo()">mail</mat-icon>
+      <mat-icon *ngIf="currentCreator != null && currentCreator.email != undefined" class="mr-2" (click)="mailTo()">mail</mat-icon>
       <mat-icon>print</mat-icon>
     </div>
   </div>
