@@ -57,12 +57,10 @@ console.log("Initial start up Bürgerbüro Server!");
 console.log("-----------------------------------");
 
 /*Routes*/
-//let messageService = require('./components/messageService');
+let messageService = require('./components/messageService');
 //console.log("Start messaging service");
 //messageService.startConsumer();
 //messageService.startPublisher();
-
-
 
 require('./components/restServer')(firebase, fbClient, messageService, fs);
 require('./components/gRpcServer')(firebase);
