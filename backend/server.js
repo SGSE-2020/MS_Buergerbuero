@@ -57,10 +57,10 @@ console.log("Initial start up Bürgerbüro Server!");
 console.log("-----------------------------------");
 
 /*Routes*/
-let messageService = require('./components/messageService');
-console.log("Start messaging service");
+//let messageService = require('./components/messageService');
+//console.log("Start messaging service");
 //messageService.startConsumer();
-messageService.startPublisher();
+//messageService.startPublisher();
 
 
 
