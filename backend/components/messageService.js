@@ -1,6 +1,7 @@
 const amqp = require('amqplib/callback_api');
-const messageURL = 'amqp://ms-rabbitmq';
+const messageURL = 'amqp://testmanager:sgseistgeil@ms-rabbitmq';
 //const messageURL = 'amqp://localhost';
+//const messageURL = 'amqp://rabbitmq.dvess.network/';
 
 let pubChannel = null;
 let consumeChannel = null;
