@@ -147,13 +147,13 @@ module.exports = function (app, firebase, fbClient, messageService) {
                 if(databaseResult !== "Not updated"){
                     responseObj = rb.success("User", "was updated", {
                         user: databaseResult
-                    });/*
+                    });
                     const data = {
                         uid: user.uid,
                         message: 'User was updated'
                     };
                     messageService.publishToExchange(process.env.QUEUE_USER_CHANGED, data);
-                    */
+                    
                 } else {
                     responseObj = rb.failure("updating", "user");
                 }
@@ -183,13 +183,13 @@ module.exports = function (app, firebase, fbClient, messageService) {
                         responseObj = rb.success("User", "was deactivated", {
                             user: databaseResult
                         });
-                        /*
+                        
                         const data = {
                             uid: req.params.uid,
                             message: 'User was deactivated'
                         };
                         messageService.publishToExchange(process.env.QUEUE_USER_DEACTIVATE, data);
-                        */
+                        
                     } else {
                         responseObj = rb.failure("deactivating", "user");
                     }

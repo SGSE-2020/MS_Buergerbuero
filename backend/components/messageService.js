@@ -1,5 +1,5 @@
 const amqp = require('amqplib/callback_api');
-const messageURL = 'amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/smartcity';
+const messageURL = 'amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/';
 //const messageURL = 'amqp://localhost';
 
 let pubChannel = null;
@@ -44,12 +44,13 @@ exports.startConsumer = () => {
                             console.error("AMQP ERROR: " + queueErr.message);
                         }
 
-                        /*
-                        // todo bind all queues
-                        //channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
+                        
+                        // todo bind rettungsdienst queue
+                        channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
+                        channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_DEACTIVATE);
 
                         channel.consume(queue.queue, function (msg) {
-                            console.log("Consume object");
+                            console.log("AMQP - Consumed message: " + msg.content );
                             //console.log(JSON.parse(msg.content));
                             //console.log(msg.fields);
                             //console.log(msg.properties);
@@ -57,7 +58,7 @@ exports.startConsumer = () => {
                         }, {
                             noAck: true
                         });
-                        */
+                        
 
                     });
                 }
