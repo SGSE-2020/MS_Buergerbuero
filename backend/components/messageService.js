@@ -1,5 +1,5 @@
 const amqp = require('amqplib/callback_api');
-const messageURL = 'amqp://ms-rabbitmq';
+const messageURL = 'amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/smartcity';
 //const messageURL = 'amqp://localhost';
 
 let pubChannel = null;
