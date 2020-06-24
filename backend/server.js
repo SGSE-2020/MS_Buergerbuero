@@ -60,7 +60,7 @@ console.log("-----------------------------------");
 let messageService = require('./components/messageService');
 console.log("Start messaging service");
 messageService.startPublisher();
-messageService.startConsumer();
+//messageService.startConsumer();
 
 
 require('./components/restServer')(firebase, fbClient, messageService, fs);
