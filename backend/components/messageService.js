@@ -68,19 +68,27 @@ exports.startConsumer = () => {
 };
 
 exports.publishToExchange = (routingKey, data) => {
-    pubChannel.assertExchange(process.env.MESSAGE_EXCHANGE, process.env.MESSAGE_EXCHANGE_TYPE, {
-        durable: false
-    });
-    pubChannel.publish(process.env.MESSAGE_EXCHANGE, routingKey, Buffer.from(JSON.stringify(data)), {
-        appId: 'Bürgerbüro',
-        timestamp: new Date().getTime(),
-        contentType: 'application/json',
-        type: routingKey
-    }).then(() => {
-        console.log("AMQP - Published message: " + JSON.stringify(data));
-    }).catch(err => {
-        console.log("AMQP - ERROR on publishing message: " + err.message);
-    });
+    if(pubChannel != null){
+         console.log("AMQP - Start publishing");
+        /*
+        pubChannel.assertExchange(process.env.MESSAGE_EXCHANGE, process.env.MESSAGE_EXCHANGE_TYPE, {
+            durable: false
+        });
+        */
+        pubChannel.publish(process.env.MESSAGE_EXCHANGE, routingKey, Buffer.from(JSON.stringify(data)), {
+            appId: 'Bürgerbüro',
+            timestamp: new Date().getTime(),
+            contentType: 'application/json',
+            type: routingKey
+        }).then(() => {
+            console.log("AMQP - Published message: " + JSON.stringify(data));
+        }).catch(err => {
+            console.error("AMQP - ERROR on publishing message: " + err.message);
+        });
+    
+    } else {
+        console.error("AMQP - Can not publish");
+    }
 };
 
 process.on('exit', (code) => {
