@@ -4,12 +4,12 @@
       <h4 class="text-info">Aushänge</h4>
       <ngb-tabset #t="ngbTabset" justify="end">
         <ngb-tab id="tab-selectbyid1">
-          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'announcement').length > 0">{{(constants.activeAnnouncementList | filterAnnouncementType: 'announcement').length}}</span></ng-template>
+          <ng-template ngbTabTitle>Aushänge <span class="badge badge-info" *ngIf="(activeAnnouncements | filterAnnouncementType: 'announcement').length > 0">{{(activeAnnouncements | filterAnnouncementType: 'announcement').length}}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <h6 *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'announcement').length == 0">Es sind keine Aushänge vorhanden.</h6>
-                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let announcement of constants.activeAnnouncementList | filterAnnouncementType: 'announcement'" [ngClass]="constants.currentUser != null && announcement.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
+                <h6 *ngIf="(activeAnnouncements | filterAnnouncementType: 'announcement').length == 0">Es sind keine Aushänge vorhanden.</h6>
+                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let announcement of activeAnnouncements | filterAnnouncementType: 'announcement'" [ngClass]="constants.currentUser != null && announcement.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
                   <div class="card-body">
                     <h5 class="card-title">{{announcement.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{announcement.source}}</h6>
@@ -27,12 +27,12 @@
           </ng-template>
         </ngb-tab>
         <ngb-tab id="tab-selectbyid2">
-          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'found object').length > 0">{{(constants.activeAnnouncementList | filterAnnouncementType: 'found object').length}}</span></ng-template>
+          <ng-template ngbTabTitle>Fundgegenstände <span class="badge badge-info" *ngIf="(activeAnnouncements | filterAnnouncementType: 'found object').length > 0">{{(activeAnnouncements | filterAnnouncementType: 'found object').length}}</span></ng-template>
           <ng-template ngbTabContent>
             <div class="p-3">
               <div class="row">
-                <h6 *ngIf="(constants.activeAnnouncementList | filterAnnouncementType: 'found object').length == 0">Es sind keine Fundgegenstände vorhanden.</h6>
-                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let foundObject of constants.activeAnnouncementList | filterAnnouncementType: 'found object'" [ngClass]="constants.currentUser != null && foundObject.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
+                <h6 *ngIf="(activeAnnouncements | filterAnnouncementType: 'found object').length == 0">Es sind keine Fundgegenstände vorhanden.</h6>
+                <div class="col-xl-3 card mr-3 mb-3" *ngFor="let foundObject of activeAnnouncements | filterAnnouncementType: 'found object'" [ngClass]="constants.currentUser != null && foundObject.uid == constants.currentUser.uid && constants.userRole == 1 ? 'bg-custom' : 'bg-light'">
                   <div class="card-body">
                     <h5 class="card-title">{{foundObject.title}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Von: {{foundObject.source}}</h6>

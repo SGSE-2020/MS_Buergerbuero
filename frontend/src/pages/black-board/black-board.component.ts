@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../services/notification.service';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import {Subscription} from "rxjs";
+import {NavigationEnd, Router} from "@angular/router";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -20,11 +22,15 @@ export class BlackBoardComponent implements OnInit {
   receiveFoundObjectFormSubmitted: boolean;
 
   allAnnouncements: any;
+  activeAnnouncements: any;
 
+  private navigationSubscription: Subscription;
   constructor(public constants: GlobalConstantService, private modalService: NgbModal, private formBuilder: FormBuilder,
-              private http: HttpClient, private notificationService: NotificationService) { }
+              private http: HttpClient, private notificationService: NotificationService,  private router: Router) { }
 
   ngOnInit(): void {
+    this.allAnnouncements = [];
+    this.activeAnnouncements = [];
     this.receiveFoundObjectFormSubmitted = false;
     this.receiveFoundObjectForm = this.formBuilder.group({
       question1: ['', Validators.required],
@@ -32,41 +38,28 @@ export class BlackBoardComponent implements OnInit {
       question3: ['', Validators.required]
     });
 
-    this.getAllActiveAnnouncements().then( resultA => {
-      this.constants.activeAnnouncementList = resultA;
-      this.getAllInactiveAnnouncements().then( resultB => {
-        this.constants.inActiveAnnouncementList = resultB;
-        this.allAnnouncements = this.constants.activeAnnouncementList.concat(this.constants.inActiveAnnouncementList);
-      });
+    this.currentCreator = null;
+    this.refreshData();
+
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd && e.url === '/black-board') {
+        this.refreshData();
+      }
+    });
+  }
+
+  /**
+  **
+  * Refreshes the form validation depending on the current user -> Reset if no user is logged in
+  */
+  refreshData() {
+    this.constants.getAllAnnouncements().then(res => {
+      this.allAnnouncements = res;
     });
 
-    this.currentCreator = null;
-  }
-
-  /**
-   * Get all active announcements
-   */
-   async getAllActiveAnnouncements(){
-     const data = await this.http.get(this.constants.host + '/announcement/active').toPromise();
-     const obj = JSON.parse(JSON.stringify(data));
-     if (obj.status === 'success'){
-       return obj.param.announcements;
-     } else {
-       return [];
-     }
-  }
-
-  /**
-   * Get all in active announcements
-   */
-  async getAllInactiveAnnouncements(){
-    const data = await this.http.get(this.constants.host + '/announcement/inactive').toPromise();
-    const obj = JSON.parse(JSON.stringify(data));
-    if (obj.status === 'success'){
-      return obj.param.announcements;
-    } else {
-      return [];
-    }
+    this.constants.getAllActiveAnnouncements().then(res => {
+      this.activeAnnouncements = res;
+    });
   }
 
   /**
@@ -120,8 +113,8 @@ export class BlackBoardComponent implements OnInit {
             this.receiveFoundObjectFormSubmitted = false;
             const elementIndexA = this.allAnnouncements.indexOf(this.currentAnnouncement);
             this.allAnnouncements.splice(elementIndexA, 1);
-            const elementIndexB = this.constants.activeAnnouncementList.indexOf(this.currentAnnouncement);
-            this.constants.activeAnnouncementList.splice(elementIndexB, 1);
+            const elementIndexB = this.activeAnnouncements.indexOf(this.currentAnnouncement);
+            this.activeAnnouncements.splice(elementIndexB, 1);
             this.notificationService.showSuccess('Fundgegenstand wurde erfolgreich abgeholt.',
               'toast-top-left');
             this.modalService.dismissAll();
@@ -157,8 +150,8 @@ export class BlackBoardComponent implements OnInit {
         if (val.status === 'success'){
           const elementIndexA = this.allAnnouncements.indexOf(this.currentAnnouncement);
           this.allAnnouncements.splice(elementIndexA, 1);
-          const elementIndexB = this.constants.activeAnnouncementList.indexOf(this.currentAnnouncement);
-          this.constants.activeAnnouncementList.splice(elementIndexB, 1);
+          const elementIndexB = this.activeAnnouncements.indexOf(this.currentAnnouncement);
+          this.activeAnnouncements.splice(elementIndexB, 1);
           this.notificationService.showSuccess('Aushang wurde gelöscht.',
             'toast-top-center');
           this.modalService.dismissAll();

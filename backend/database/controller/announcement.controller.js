@@ -80,7 +80,7 @@ exports.getAllActive = (req, res) => {
     let responseObj = {};
     Announcement.findAll({where: { isActive: true }, include: [{model: AnnouncementVerification}]}).then(data => {
         if(data){
-            responseObj = rb.success("Active announcements", "found", { announcements: data });
+            responseObj = rb.success("Active announcements", "found", data);
         } else {
             responseObj = rb.failure("Active announcements", "finding");
         }
@@ -101,7 +101,7 @@ exports.getAllInactive = (req, res) => {
     let responseObj = {};
     Announcement.findAll({where: { isActive: false }, include: [{model: AnnouncementVerification}]}).then(data => {
         if(data){
-            responseObj = rb.success("Inactive announcements", "found", { announcements: data });
+            responseObj = rb.success("Inactive announcements", "found", data);
         } else {
             responseObj = rb.failure("Inactive announcements", "finding");
         }

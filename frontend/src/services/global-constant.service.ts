@@ -7,8 +7,8 @@ import { NotificationService } from './notification.service';
   providedIn: 'root'
 })
 export class GlobalConstantService {
-  // public host = 'http://localhost:8080';
-  public host = '/api';
+  public host = 'http://localhost:8080';
+  // public host = '/api';
 
   public authAction = 'login';
   public firebaseUser = null;
@@ -18,9 +18,6 @@ export class GlobalConstantService {
   public maxVarcharLength = 255;
   public defaultImage: string;
   public defaultAnnouncementPreview: string;
-
-  public activeAnnouncementList = [];
-  public inActiveAnnouncementList = [];
 
   constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private notificationService: NotificationService) {
     this.defaultImage = '../../assets/img/avatar.png';
@@ -67,26 +64,39 @@ export class GlobalConstantService {
   }
 
   /**
-   * Get all active announcements
+   * Get all announcements
    */
-  public async getAllActiveAnnouncements(){
-    const data = await this.http.get(this.host + '/announcement/active').toPromise();
+  async getAllAnnouncements(){
+    const data = await this.http.get(this.host + '/announcement').toPromise();
     const obj = JSON.parse(JSON.stringify(data));
     if (obj.status === 'success'){
-      return obj.param.announcements;
+      return obj.param;
     } else {
       return [];
     }
   }
 
   /**
-   * Get all inactive announcements
+   * Get all active announcements
    */
-  public async getAllInActiveAnnouncements(){
+  async getAllActiveAnnouncements(){
+    const data = await this.http.get(this.host + '/announcement/active').toPromise();
+    const obj = JSON.parse(JSON.stringify(data));
+    if (obj.status === 'success'){
+      return obj.param;
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   * Get all in active announcements
+   */
+  async getAllInactiveAnnouncements(){
     const data = await this.http.get(this.host + '/announcement/inactive').toPromise();
     const obj = JSON.parse(JSON.stringify(data));
     if (obj.status === 'success'){
-      return obj.param.announcements;
+      return obj.param;
     } else {
       return [];
     }

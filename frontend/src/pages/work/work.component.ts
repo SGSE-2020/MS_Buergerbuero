@@ -1,10 +1,10 @@
-import {Component, OnInit, Pipe, PipeTransform} from '@angular/core';
+import {Component, OnInit } from '@angular/core';
 import { GlobalConstantService } from '../../services/global-constant.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {HttpClient} from '@angular/common/http';
-import {NotificationService} from '../../services/notification.service';
-import {NavigationEnd, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../../services/notification.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-work',
@@ -13,11 +13,14 @@ import {Subscription} from 'rxjs';
 })
 export class WorkComponent implements OnInit {
   currentAnnouncement: any;
+  inactiveAnnouncements: any;
+
   private navigationSubscription: Subscription;
   constructor(public constants: GlobalConstantService, private modalService: NgbModal, private http: HttpClient,
               private notificationService: NotificationService, private router: Router) { }
 
   ngOnInit(): void {
+    this.inactiveAnnouncements = [];
     this.refreshData();
 
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
@@ -32,22 +35,9 @@ export class WorkComponent implements OnInit {
    * Refreshes the form validation depending on the current user -> Reset if no user is logged in
    */
   refreshData() {
-    this.getAllInActiveAnnouncements().then( result => {
-      this.constants.inActiveAnnouncementList = result;
+    this.constants.getAllInactiveAnnouncements().then( result => {
+      this.inactiveAnnouncements  = result;
     });
-  }
-
-  /**
-   * Get all inactive announcements
-   */
-  async getAllInActiveAnnouncements(){
-    const data = await this.http.get(this.constants.host + '/announcement/inactive').toPromise();
-    const obj = JSON.parse(JSON.stringify(data));
-    if (obj.status === 'success'){
-      return obj.param.announcements;
-    } else {
-      return [];
-    }
   }
 
   /**
@@ -72,12 +62,8 @@ export class WorkComponent implements OnInit {
     this.http.put(this.constants.host + '/announcement/activate/' +
       announcement.id, {}).subscribe((val: any) => {
         if (val.status === 'success'){
-          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(this.currentAnnouncement);
-          this.constants.inActiveAnnouncementList.splice(elementIndex, 1);
-
-          const activeAnnouncement = this.currentAnnouncement;
-          activeAnnouncement.isActive = true;
-          this.constants.activeAnnouncementList.push(activeAnnouncement);
+          const elementIndex = this.inactiveAnnouncements.indexOf(this.currentAnnouncement);
+          this.inactiveAnnouncements.splice(elementIndex, 1);
           this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
             'toast-top-left');
           this.modalService.dismissAll();
@@ -100,8 +86,8 @@ export class WorkComponent implements OnInit {
     this.http.delete(this.constants.host + '/announcement/' +
       this.currentAnnouncement.id, {}).subscribe((val: any) => {
         if (val.status === 'success'){
-          const elementIndex = this.constants.inActiveAnnouncementList.indexOf(this.currentAnnouncement);
-          this.constants.inActiveAnnouncementList.splice(elementIndex, 1);
+          const elementIndex = this.inactiveAnnouncements.indexOf(this.currentAnnouncement);
+          this.inactiveAnnouncements.splice(elementIndex, 1);
           this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
             'toast-top-left');
           this.modalService.dismissAll();
