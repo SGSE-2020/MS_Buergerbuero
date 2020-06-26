@@ -1,15 +1,21 @@
 const amqp = require('amqp');
-const messageURL = 'amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/';
-const connection = amqp.createConnection(messageURL);
 let exchange = null;
 
-
 exports.initialize = () => {
+    const connection = amqp.createConnection({
+        host: 'ms-rabbitmq',
+        port: 5672,
+        login: 'testmanager',
+        password: 'sgseistgeil',
+        vhost: '/'
+    });
+
     connection.on('ready', () => {
+        console.log("AMQP connection established.");
         connection.exchange(process.env.MESSAGE_EXCHANGE, {
             type: process.env.MESSAGE_EXCHANGE_TYPE
         }, (exchangeRes) => {
-            console.log("Initialized AMQP exchange");
+            console.log("AMQP exchange established.");
             exchange = exchangeRes;
             /*
             exchange.queue('', queue => {
@@ -23,6 +29,10 @@ exports.initialize = () => {
             });*/
         });
     });
+
+    connection.on('error', error => {
+        console.error("AMQP Connection error: " + error.message);
+    })
 };
 
 exports.publishToExchange = (routingKey, data) => {
