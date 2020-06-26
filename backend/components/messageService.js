@@ -12,11 +12,10 @@ exports.initialize = () => {
 
     connection.on('ready', () => {
         console.log("AMQP connection established.");
-        connection.exchange(process.env.MESSAGE_EXCHANGE, {
+        exchange = connection.exchange(process.env.MESSAGE_EXCHANGE, {
             type: process.env.MESSAGE_EXCHANGE_TYPE
         }, (exchangeRes) => {
-            console.log("AMQP exchange established.");
-            exchange = exchangeRes;
+            console.log("AMQP exchange " + exchangeRes.name + " established.");
             /*
             exchange.queue('', queue => {
                queue.bind(process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
