@@ -50,10 +50,12 @@ exports.publishToExchange = (routingKey, data) => {
             timestamp: new Date().getTime(),
             contentType: 'application/json',
             type: routingKey
-        }).then(() => {
-            console.log("AMQP - Published message: " + JSON.stringify(data));
-        }).catch(err => {
-            console.error("AMQP - ERROR on publishing message: " + err.message);
+        }, res => {
+            if(res == true){
+                console.log("AMQP - Published message: " + JSON.stringify(data));
+            } else {
+                console.error("AMQP - Could not publish message");
+            }
         });
 
         exchange.on('error', error => {
