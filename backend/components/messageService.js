@@ -14,7 +14,8 @@ exports.initialize = () => {
         console.log("AMQP connection established.");
         exchange = connection.exchange(process.env.MESSAGE_EXCHANGE, {
             type: process.env.MESSAGE_EXCHANGE_TYPE,
-            durable: true
+            durable: true,
+            autoDelete: false
         }, (exchangeRes) => {
             console.log("AMQP exchange " + exchangeRes.name + " established.");
 
