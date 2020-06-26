@@ -57,6 +57,10 @@ exports.publishToExchange = (routingKey, data) => {
                 console.error("AMQP - ERROR on publishing message: " + err.message);
             });
         });
+
+        exchange.on('error', error => {
+            console.error("AMQP Exchange error: " + error.message);
+        });
     } else {
         console.error("AMQP - Can not publish");
     }
