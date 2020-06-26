@@ -246,9 +246,7 @@ export class BlackBoardComponent implements OnInit {
       margin: [0, 10, 0, 0]
     };
     documentDefinition.content.push(textObj);
-
-    pdfMake.createPdf(documentDefinition).open();
+    const fileName = currentAnnouncement.title + '.pdf';
+    pdfMake.createPdf(documentDefinition).download(fileName);
   }
-
-
 }
