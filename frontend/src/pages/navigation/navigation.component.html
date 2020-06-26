@@ -11,7 +11,7 @@
     </button>
     <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
-        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'home'" [ngClass]="isActive() == '/home' ? 'btn-info' : 'btn-outline-info'">
+        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'home'" [ngClass]="isActive() == ('/home' || '/') ? 'btn-info' : 'btn-outline-info'">
           <mat-icon>home</mat-icon>
           Home
         </button>
