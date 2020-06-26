@@ -7,7 +7,6 @@ const fbClient = require("firebase");
 const serviceAccount = require("./smartcity_servicekey.json");
 const fs = require('fs');
 const util = require('util');
-const path = require('path');
 
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),

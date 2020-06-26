@@ -18,7 +18,7 @@ exports.initialize = () => {
             autoDelete: false
         }, (exchangeRes) => {
             console.log("AMQP exchange " + exchangeRes.name + " established.");
-
+            /*
             exchange.queue('', queue => {
                queue.bind(process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
                queue.subscribe(msg => {
@@ -28,6 +28,7 @@ exports.initialize = () => {
                    //console.log(msg.properties);
                });
             });
+            */
         });
 
         exchange.on('error', error => {
