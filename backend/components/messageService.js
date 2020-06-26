@@ -15,6 +15,9 @@ exports.startPublisher = () => {
                     console.error("AMQP ERROR: " + chErr.message);
                 } else {
                     pubChannel = channel;
+                    pubChannel.assertExchange(process.env.MESSAGE_EXCHANGE, process.env.MESSAGE_EXCHANGE_TYPE, {
+                        durable: false
+                    });
                     console.log("Initialized AMQP publisher channel");
                 }
             });
@@ -44,7 +47,6 @@ exports.startConsumer = () => {
                             console.error("AMQP ERROR: " + queueErr.message);
                         }
 
-                        
                         // todo bind rettungsdienst queue
                         channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
                         channel.bindQueue(queue.queue, process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_DEACTIVATE);
@@ -69,12 +71,7 @@ exports.startConsumer = () => {
 
 exports.publishToExchange = (routingKey, data) => {
     if(pubChannel != null){
-         console.log("AMQP - Start publishing");
-        /*
-        pubChannel.assertExchange(process.env.MESSAGE_EXCHANGE, process.env.MESSAGE_EXCHANGE_TYPE, {
-            durable: false
-        });
-        */
+        console.log("AMQP - Start publishing");
         pubChannel.publish(process.env.MESSAGE_EXCHANGE, routingKey, Buffer.from(JSON.stringify(data)), {
             appId: 'Bürgerbüro',
             timestamp: new Date().getTime(),

@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 export class WorkComponent implements OnInit {
   currentAnnouncement: any;
   inactiveAnnouncements: any;
+  inactiveFoundObjects: any;
 
   private navigationSubscription: Subscription;
   constructor(public constants: GlobalConstantService, private modalService: NgbModal, private http: HttpClient,
@@ -21,6 +22,7 @@ export class WorkComponent implements OnInit {
 
   ngOnInit(): void {
     this.inactiveAnnouncements = [];
+    this.inactiveFoundObjects = [];
     this.refreshData();
 
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
@@ -30,13 +32,22 @@ export class WorkComponent implements OnInit {
     });
   }
 
+  /**
+   * Track by function for component lists
+   * @param index Index of array
+   * @param announcement announcement
+   */
+  trackByObj(index: number, announcement: any) {
+    return announcement;
+  }
 
   /**
    * Refreshes the form validation depending on the current user -> Reset if no user is logged in
    */
   refreshData() {
     this.constants.getAllInactiveAnnouncements().then( result => {
-      this.inactiveAnnouncements  = result;
+      this.inactiveAnnouncements  = result.filter(x => x.type === 'announcement');
+      this.inactiveFoundObjects  = result.filter(x => x.type === 'found object');
     });
   }
 
@@ -86,8 +97,21 @@ export class WorkComponent implements OnInit {
     this.http.delete(this.constants.host + '/announcement/' +
       this.currentAnnouncement.id, {}).subscribe((val: any) => {
         if (val.status === 'success'){
-          const elementIndex = this.inactiveAnnouncements.indexOf(this.currentAnnouncement);
-          this.inactiveAnnouncements.splice(elementIndex, 1);
+          if (this.currentAnnouncement.type === 'announcement'){
+            const elementIndex = this.inactiveAnnouncements.map(item => {
+              return item.id;
+            }).indexOf(this.currentAnnouncement.id);
+            if (elementIndex !== -1){
+              this.inactiveAnnouncements.splice(elementIndex, 1);
+            }
+          } else {
+            const elementIndex = this.inactiveFoundObjects.map(item => {
+              return item.id;
+            }).indexOf(this.currentAnnouncement.id);
+            if (elementIndex !== -1){
+              this.inactiveFoundObjects.splice(elementIndex, 1);
+            }
+          }
           this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
             'toast-top-left');
           this.modalService.dismissAll();

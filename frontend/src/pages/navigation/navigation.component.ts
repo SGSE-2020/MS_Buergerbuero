@@ -65,6 +65,13 @@ export class NavigationComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Return active route
+   */
+  isActive() {
+    return this.router.url;
+  }
+
   // <editor-fold desc="Authentication functions">
   /**
    * Perform login or register depending on current action when the form is valid
@@ -199,4 +206,6 @@ export class NavigationComponent implements OnInit, AfterViewInit {
   backToPortal() {
     window.location.href = 'http://portal.dvess.network';
   }
+
+
 }

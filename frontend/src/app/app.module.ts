@@ -22,8 +22,6 @@ import { AdminPanelComponent } from '../pages/admin-panel/admin-panel.component'
 import { GlobalConstantService } from '../services/global-constant.service';
 import { NotificationService } from '../services/notification.service';
 
-import { FilterAnnouncementUserPipe } from '../pipes/filter-announcement-user.pipe';
-import { FilterAnnouncementTypePipe } from '../pipes/filter-announcement-type.pipe';
 
 @NgModule({
   declarations: [
@@ -33,9 +31,7 @@ import { FilterAnnouncementTypePipe } from '../pipes/filter-announcement-type.pi
     BlackBoardComponent,
     UserAccountComponent,
     WorkComponent,
-    AdminPanelComponent,
-    FilterAnnouncementUserPipe,
-    FilterAnnouncementTypePipe,
+    AdminPanelComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -6,8 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../services/notification.service';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import {Subscription} from "rxjs";
-import {NavigationEnd, Router} from "@angular/router";
+import { Subscription } from "rxjs";
+import { NavigationEnd, Router } from "@angular/router";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -21,16 +21,18 @@ export class BlackBoardComponent implements OnInit {
   receiveFoundObjectForm: any;
   receiveFoundObjectFormSubmitted: boolean;
 
-  allAnnouncements: any;
-  activeAnnouncements: any;
+  announcementList: any;
+  foundObjectList: any;
+  userAnnouncements: any;
 
   private navigationSubscription: Subscription;
   constructor(public constants: GlobalConstantService, private modalService: NgbModal, private formBuilder: FormBuilder,
               private http: HttpClient, private notificationService: NotificationService,  private router: Router) { }
 
   ngOnInit(): void {
-    this.allAnnouncements = [];
-    this.activeAnnouncements = [];
+    this.announcementList = [];
+    this.foundObjectList = [];
+    this.userAnnouncements = [];
     this.receiveFoundObjectFormSubmitted = false;
     this.receiveFoundObjectForm = this.formBuilder.group({
       question1: ['', Validators.required],
@@ -49,16 +51,29 @@ export class BlackBoardComponent implements OnInit {
   }
 
   /**
-  **
-  * Refreshes the form validation depending on the current user -> Reset if no user is logged in
-  */
+   * Track by function for component lists
+   * @param index Index of array
+   * @param announcement announcement
+   */
+  trackByObj(index: number, announcement: any) {
+    return announcement;
+  }
+
+  /**
+   * Refreshes the form validation depending on the current user -> Reset if no user is logged in
+   */
   refreshData() {
-    this.constants.getAllAnnouncements().then(res => {
-      this.allAnnouncements = res;
-    });
+    if (this.constants.firebaseUser != null){
+      this.constants.getAllAnnouncements().then(res => {
+        this.userAnnouncements = res.filter(x => x.uid === this.constants.firebaseUser.uid);
+      });
+    } else {
+      this.userAnnouncements = [];
+    }
 
     this.constants.getAllActiveAnnouncements().then(res => {
-      this.activeAnnouncements = res;
+      this.announcementList = res.filter(x => x.type === 'announcement');
+      this.foundObjectList = res.filter(x => x.type === 'found object');
     });
   }
 
@@ -111,10 +126,14 @@ export class BlackBoardComponent implements OnInit {
         validationObj).subscribe((val: any) => {
           if (val.status === 'success'){
             this.receiveFoundObjectFormSubmitted = false;
-            const elementIndexA = this.allAnnouncements.indexOf(this.currentAnnouncement);
-            this.allAnnouncements.splice(elementIndexA, 1);
-            const elementIndexB = this.activeAnnouncements.indexOf(this.currentAnnouncement);
-            this.activeAnnouncements.splice(elementIndexB, 1);
+            const elementIndex = this.foundObjectList.indexOf(this.currentAnnouncement);
+            if (elementIndex !== -1){
+              this.foundObjectList.splice(elementIndex, 1);
+            }
+            const elementIndexUser = this.userAnnouncements.indexOf(this.currentAnnouncement);
+            if (elementIndexUser !== -1){
+              this.userAnnouncements.splice(elementIndexUser, 1);
+            }
             this.notificationService.showSuccess('Fundgegenstand wurde erfolgreich abgeholt.',
               'toast-top-left');
             this.modalService.dismissAll();
@@ -148,21 +167,39 @@ export class BlackBoardComponent implements OnInit {
     this.http.delete(this.constants.host + '/announcement/' + this.currentAnnouncement.id,
       {}).subscribe((val: any) => {
         if (val.status === 'success'){
-          const elementIndexA = this.allAnnouncements.indexOf(this.currentAnnouncement);
-          this.allAnnouncements.splice(elementIndexA, 1);
-          const elementIndexB = this.activeAnnouncements.indexOf(this.currentAnnouncement);
-          this.activeAnnouncements.splice(elementIndexB, 1);
+          let removeIndex;
+          if (this.currentAnnouncement.type === 'announcement'){
+            removeIndex = this.announcementList.map(item => {
+              return item.id;
+            }).indexOf(this.currentAnnouncement.id);
+            if (removeIndex !== -1){
+              this.announcementList.splice(removeIndex, 1);
+            }
+          } else {
+            removeIndex = this.foundObjectList.map(item => {
+              return item.id;
+            }).indexOf(this.currentAnnouncement.id);
+            if (removeIndex !== -1){
+              this.foundObjectList.splice(removeIndex, 1);
+            }
+          }
+          removeIndex = this.userAnnouncements.map(item => {
+            return item.id;
+          }).indexOf(this.currentAnnouncement.id);
+          if (removeIndex !== -1){
+            this.userAnnouncements.splice(removeIndex, 1);
+          }
           this.notificationService.showSuccess('Aushang wurde gelöscht.',
-            'toast-top-center');
+            'toast-top-left');
           this.modalService.dismissAll();
         } else {
           this.notificationService.showError('Aushang konte nicht gelöscht werden. Bitte versuchen Sie es später erneut.',
-          'toast-top-center');
+          'toast-top-left');
         }
       },
       error => {
         this.notificationService.showError('Aushang konte nicht gelöscht werden. Bitte versuchen Sie es später erneut.',
-          'toast-top-center');
+          'toast-top-left');
       });
   }
 
@@ -212,4 +249,6 @@ export class BlackBoardComponent implements OnInit {
 
     pdfMake.createPdf(documentDefinition).open();
   }
+
+
 }

@@ -11,23 +11,23 @@
     </button>
     <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
-        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'home'">
+        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'home'" [ngClass]="isActive() == '/home' ? 'btn-info' : 'btn-outline-info'">
           <mat-icon>home</mat-icon>
           Home
         </button>
-        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'black-board'">
+        <button type="button" class="btn mr-1 ml-1" [routerLink]="'black-board'" [ngClass]="isActive() == '/black-board' ? 'btn-info' : 'btn-outline-info'">
           <mat-icon>assignment</mat-icon>
           Aushänge
         </button>
-        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'user-account'" *ngIf="this.constants.userRole==1">
+        <button type="button" class="btn mr-1 ml-1" [routerLink]="'user-account'" *ngIf="this.constants.userRole==1" [ngClass]="isActive() == '/user-account' ? 'btn-info' : 'btn-outline-info'">
           <mat-icon>settings</mat-icon>
           Konto
         </button>
-        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'work'" *ngIf="this.constants.userRole==2">
+        <button type="button" class="btn mr-1 ml-1" [routerLink]="'work'" *ngIf="this.constants.userRole==2" [ngClass]="isActive() == '/work' ? 'btn-info' : 'btn-outline-info'">
           <mat-icon>work</mat-icon>
           Arbeit
         </button>
-        <button type="button" class="btn btn-outline-info mr-1 ml-1" [routerLink]="'admin-panel'" *ngIf="this.constants.userRole==3">
+        <button type="button" class="btn mr-1 ml-1" [routerLink]="'admin-panel'" *ngIf="this.constants.userRole==3" [ngClass]="isActive() == '/admin-panel' ? 'btn-info' : 'btn-outline-info'">
           <mat-icon>settings</mat-icon>
           Admin Panel
         </button>
