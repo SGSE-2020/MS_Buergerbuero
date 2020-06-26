@@ -13,10 +13,11 @@ exports.initialize = () => {
     connection.on('ready', () => {
         console.log("AMQP connection established.");
         exchange = connection.exchange(process.env.MESSAGE_EXCHANGE, {
-            type: process.env.MESSAGE_EXCHANGE_TYPE
+            type: process.env.MESSAGE_EXCHANGE_TYPE,
+            durable: true
         }, (exchangeRes) => {
             console.log("AMQP exchange " + exchangeRes.name + " established.");
-            /*
+
             exchange.queue('', queue => {
                queue.bind(process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
                queue.subscribe(msg => {
@@ -25,7 +26,7 @@ exports.initialize = () => {
                    //console.log(msg.fields);
                    //console.log(msg.properties);
                });
-            });*/
+            });
         });
 
         exchange.on('error', error => {
