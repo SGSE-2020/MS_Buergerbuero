@@ -97,18 +97,34 @@ export class UserAccountComponent implements OnInit {
       this.constants.getCurrentUserData();
     }
 
-    if (this.constants.currentUser != null) {
-      this.dataUpdateForm.setValue({
-        firstName: this.constants.currentUser.firstName,
-        lastName: this.constants.currentUser.lastName,
-        nickName: this.constants.currentUser.nickName,
-        birthDate: this.constants.currentUser.birthDate,
-        streetAddress: this.constants.currentUser.streetAddress,
-        zipCode: this.constants.currentUser.zipCode,
-        city: 'Smart City',
-        phone: this.constants.currentUser.phone,
-        email: this.constants.currentUser.email
-      });
+    if (this.constants.firebaseUser != null) {
+      if (this.constants.currentUser == null){
+        this.constants.getCurrentUserData().then(() => {
+          this.dataUpdateForm.setValue({
+            firstName: this.constants.currentUser.firstName,
+            lastName: this.constants.currentUser.lastName,
+            nickName: this.constants.currentUser.nickName,
+            birthDate: this.constants.currentUser.birthDate,
+            streetAddress: this.constants.currentUser.streetAddress,
+            zipCode: this.constants.currentUser.zipCode,
+            city: 'Smart City',
+            phone: this.constants.currentUser.phone,
+            email: this.constants.currentUser.email
+          });
+        });
+      } else {
+        this.dataUpdateForm.setValue({
+          firstName: this.constants.currentUser.firstName,
+          lastName: this.constants.currentUser.lastName,
+          nickName: this.constants.currentUser.nickName,
+          birthDate: this.constants.currentUser.birthDate,
+          streetAddress: this.constants.currentUser.streetAddress,
+          zipCode: this.constants.currentUser.zipCode,
+          city: 'Smart City',
+          phone: this.constants.currentUser.phone,
+          email: this.constants.currentUser.email
+        });
+      }
     }
   }
 

@@ -27,6 +27,10 @@ exports.initialize = () => {
                });
             });*/
         });
+
+        exchange.on('error', error => {
+            console.error("AMQP Exchange error: " + error.message);
+        });
     });
 
     connection.on('error', error => {

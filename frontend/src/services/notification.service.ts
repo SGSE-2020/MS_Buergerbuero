@@ -10,25 +10,25 @@ export class NotificationService {
 
   showSuccess(message: string, position: string){
     this.toastr.success(message, '', {
-      positionClass: position,
+      positionClass: position
     });
   }
 
   showError(message: string, position: string){
     this.toastr.error(message, '', {
-      positionClass: position,
+      positionClass: position
     });
   }
 
   showInfo(message: string, position: any){
     this.toastr.info(message, '', {
-      positionClass: position,
+      positionClass: position
     });
   }
 
   showWarning(message: string, position: any){
     this.toastr.warning(message, '', {
-      positionClass: position,
+      positionClass: position
     });
   }
 }
