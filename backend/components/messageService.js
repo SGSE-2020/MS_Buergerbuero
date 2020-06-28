@@ -44,18 +44,13 @@ exports.initialize = () => {
 exports.publishToExchange = (routingKey, data) => {
     if(exchange != null){
         console.log("AMQP - Start publishing");
-        console.log(exchange);
         exchange.publish(routingKey, Buffer.from(JSON.stringify(data)), {
             appId: 'Bürgerbüro',
             timestamp: new Date().getTime(),
             contentType: 'application/json',
             type: routingKey
-        }, res => {
-            if(res == true){
-                console.log("AMQP - Published message: " + JSON.stringify(data));
-            } else {
-                console.error("AMQP - Could not publish message");
-            }
+        }, () => {
+            console.log("AMQP - Published message: " + JSON.stringify(data));
         });
 
         exchange.on('error', error => {

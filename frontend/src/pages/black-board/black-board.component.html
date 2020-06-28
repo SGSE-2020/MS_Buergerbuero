@@ -171,6 +171,7 @@
 
   <div class="modal-footer">
     <div class="float-right">
+      <mat-icon *ngIf="currentCreator != null && currentCreator.email != undefined" class="mr-2" (click)="mailTo()" ngbTooltip="Mail an Ersteller senden">mail</mat-icon>
       <mat-icon (click)="printAnnouncement(currentAnnouncement)" ngbTooltip="Als PDF anzeigen">print</mat-icon>
     </div>
   </div>

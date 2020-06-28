@@ -83,24 +83,20 @@ export class BlackBoardComponent implements OnInit {
    * @param announcement Announcement that was selected
    */
   async openDetailView(modalContent: any, announcement: any) {
-    if (announcement.type === 'announcement'){
-      if (announcement.uid != null && announcement.uid !== this.constants.currentUser?.uid){
-        const data = await this.http.get(this.constants.host + '/user/' + announcement.uid, {}).toPromise();
-        const obj = JSON.parse(JSON.stringify(data));
-        if (obj.status === 'success'){
-          this.currentCreator = obj.param;
-        } else {
-          this.currentCreator = null;
-        }
-      } else if (announcement.uid == null){
-        this.currentCreator = {
-          nickName: announcement.service
-        };
+    if (announcement.uid != null && announcement.uid !== this.constants.currentUser?.uid){
+      const data = await this.http.get(this.constants.host + '/user/' + announcement.uid, {}).toPromise();
+      const obj = JSON.parse(JSON.stringify(data));
+      if (obj.status === 'success'){
+        this.currentCreator = obj.param;
       } else {
-        this.currentCreator = this.constants.currentUser;
+        this.currentCreator = null;
       }
+    } else if (announcement.uid == null){
+      this.currentCreator = {
+        nickName: announcement.service
+      };
     } else {
-      this.currentCreator = null;
+      this.currentCreator = this.constants.currentUser;
     }
 
     this.modalService.open(modalContent, {
