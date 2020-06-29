@@ -46,7 +46,6 @@ module.exports = function(firebase, fbClient, messageService, fs){
                     console.error(responseObj.message);
                     res.send(responseObj);
                 } else {
-                    // todo format much prettier
                     console.log("Log file was send.");
                     res.send("<body style='font-family: Courier'>" + data.toString().replace(/\n/g, "<br>") + "</body>");
                 }

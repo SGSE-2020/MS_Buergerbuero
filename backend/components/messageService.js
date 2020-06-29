@@ -1,7 +1,7 @@
 const amqp = require('amqp');
-let exchange = null;
+let publishExchange = null;
 
-exports.initialize = () => {
+exports.initializePublisher = () => {
     const connection = amqp.createConnection({
         host: 'ms-rabbitmq',
         port: 5672,
@@ -12,26 +12,15 @@ exports.initialize = () => {
 
     connection.on('ready', () => {
         console.log("AMQP connection established.");
-        exchange = connection.exchange(process.env.MESSAGE_EXCHANGE, {
+        publishExchange = connection.exchange(process.env.MESSAGE_EXCHANGE, {
             type: process.env.MESSAGE_EXCHANGE_TYPE,
             durable: true,
             autoDelete: false
         }, (exchangeRes) => {
-            console.log("AMQP exchange " + exchangeRes.name + " established.");
-            /*
-            exchange.queue('', queue => {
-               queue.bind(process.env.MESSAGE_EXCHANGE, process.env.QUEUE_USER_CHANGED);
-               queue.subscribe(msg => {
-                   console.log("AMQP - Consumed message: " + msg.content );
-                   //console.log(JSON.parse(msg.content));
-                   //console.log(msg.fields);
-                   //console.log(msg.properties);
-               });
-            });
-            */
+            console.log("AMQP exchange '" + exchangeRes.name + "' established.");
         });
 
-        exchange.on('error', error => {
+        publishExchange.on('error', error => {
             console.error("AMQP Exchange error: " + error.message);
         });
     });
@@ -42,9 +31,9 @@ exports.initialize = () => {
 };
 
 exports.publishToExchange = (routingKey, data) => {
-    if(exchange != null){
+    if(publishExchange != null){
         console.log("AMQP - Start publishing");
-        exchange.publish(routingKey, Buffer.from(JSON.stringify(data)), {
+        publishExchange.publish(routingKey, Buffer.from(JSON.stringify(data)), {
             appId: 'Bürgerbüro',
             timestamp: new Date().getTime(),
             contentType: 'application/json',
@@ -53,7 +42,7 @@ exports.publishToExchange = (routingKey, data) => {
             console.log("AMQP - Published message: " + JSON.stringify(data));
         });
 
-        exchange.on('error', error => {
+        publishExchange.on('error', error => {
             console.error("AMQP Exchange error: " + error.message);
         });
     } else {

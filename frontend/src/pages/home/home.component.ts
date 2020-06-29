@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { GlobalConstantService } from '../../services/global-constant.service';
 
 @Component({

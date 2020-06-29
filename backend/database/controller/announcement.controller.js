@@ -12,7 +12,7 @@ exports.create = (announcement) => {
     return Announcement.create(announcement).then(data => {
         return data;
     }).catch(err => {
-        console.log(err);
+        console.error("DB ERROR: " + err);
         return 'Error on creation';
     });
 };
@@ -28,6 +28,7 @@ exports.find = (param) => {
             return 'Not found';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not found';
     });
 };
@@ -44,6 +45,7 @@ exports.findOne = (param) => {
             return 'Not found';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not found';
     });
 };
@@ -201,6 +203,7 @@ exports.deleteManually = (param) => {
             return 'Not deleted';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not deleted';
     });
 };

@@ -1,10 +1,11 @@
 import {Component, OnInit } from '@angular/core';
-import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../services/notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+
+import { GlobalConstantService } from '../../services/global-constant.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-work',

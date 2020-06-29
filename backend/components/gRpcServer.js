@@ -153,7 +153,7 @@ module.exports = function(firebase){
      */
     async function deleteAnnouncement (param) {
         console.log("GRPC CALL: AnnouncementService -> deleteAnnouncement");
-        console.log(param.req);
+
         try{
             let dataFind = await announcementCtrl.find(param.req.id);
             if(dataFind){

@@ -6,28 +6,37 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class NotificationService {
 
-  constructor(private toastr: ToastrService) { }
+  constructor(private toast: ToastrService) { }
 
+  /**
+   * Show success message with toast notification
+   * @param message message to show
+   * @param position position to open the toast notification at
+   */
   showSuccess(message: string, position: string){
-    this.toastr.success(message, '', {
+    this.toast.success(message, '', {
       positionClass: position
     });
   }
 
+  /**
+   * Show error message with toast notification
+   * @param message message to show
+   * @param position position to open the toast notification at
+   */
   showError(message: string, position: string){
-    this.toastr.error(message, '', {
+    this.toast.error(message, '', {
       positionClass: position
     });
   }
 
-  showInfo(message: string, position: any){
-    this.toastr.info(message, '', {
-      positionClass: position
-    });
-  }
-
+  /**
+   * Show warning message with toast notification
+   * @param message message to show
+   * @param position position to open the toast notification at
+   */
   showWarning(message: string, position: any){
-    this.toastr.warning(message, '', {
+    this.toast.warning(message, '', {
       positionClass: position
     });
   }

@@ -13,6 +13,7 @@ exports.createVerification = (param) => {
             return 'Not created';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not created';
     });
 };
@@ -25,6 +26,7 @@ exports.delete = (param) => {
     return AnnouncementVerification.destroy({where: { id: param }}).then(data => {
         return 'Deleted';
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not deleted';
     });
 };

@@ -7,13 +7,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { RoutingModule } from './app.routing';
 import { ToastrModule } from 'ngx-toastr';
 
-import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
-import { NavigationComponent } from '../pages/navigation/navigation.component';
+import { RoutingModule } from './app.routing';
+
+import { AppComponent } from './app.component';
 import { HomeComponent } from '../pages/home/home.component';
+import { NavigationComponent } from '../pages/navigation/navigation.component';
 import { BlackBoardComponent } from '../pages/black-board/black-board.component';
 import { UserAccountComponent } from '../pages/user-account/user-account.component';
 import { WorkComponent } from '../pages/work/work.component';
@@ -26,8 +27,8 @@ import { NotificationService } from '../services/notification.service';
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationComponent,
     HomeComponent,
+    NavigationComponent,
     BlackBoardComponent,
     UserAccountComponent,
     WorkComponent,

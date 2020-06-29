@@ -14,6 +14,7 @@ exports.create = (param) => {
             return 'Not created';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not created';
     });
 };
@@ -74,6 +75,7 @@ exports.findOneManually = async (param) => {
             return 'Not found';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not found';
     });
 };
@@ -91,6 +93,7 @@ exports.update = (param) => {
             return 'Not updated';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not updated';
     });
 };
@@ -181,6 +184,7 @@ exports.deactivate = (param) => {
             return 'Not deactivated';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not deactivated';
     });
 };
@@ -198,6 +202,7 @@ exports.delete = (param) => {
             return 'Not deleted';
         }
     }).catch(err => {
+        console.error("DB ERROR: " + err);
         return 'Not deleted';
     });
 };

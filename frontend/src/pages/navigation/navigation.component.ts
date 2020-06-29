@@ -1,9 +1,10 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { GlobalConstantService } from '../../services/global-constant.service';
 import { NotificationService } from '../../services/notification.service';
 
@@ -50,7 +51,7 @@ export class NavigationComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit(): void {
     const user = JSON.parse(localStorage.getItem('user'));
-    const isLoggedIn = (user !== null && user.emailVerified !== false) ? true : false
+    const isLoggedIn = (user !== null && user.emailVerified !== false) ? true : false;
     if (isLoggedIn){
       this.constants.firebaseUser = user;
       if (this.constants.firebaseUser.uid !== this.constants.currentUser?.uid){
@@ -70,6 +71,13 @@ export class NavigationComponent implements OnInit, AfterViewInit {
    */
   isActive() {
     return this.router.url;
+  }
+
+  /**
+   * Back to smart city portal
+   */
+  backToPortal() {
+    window.location.href = 'http://portal.dvess.network';
   }
 
   // <editor-fold desc="Authentication functions">
@@ -199,13 +207,4 @@ export class NavigationComponent implements OnInit, AfterViewInit {
     this.constants.authAction = givenAction;
   }
   // </editor-fold>
-
-  /**
-   * Back to smart city portal
-   */
-  backToPortal() {
-    window.location.href = 'http://portal.dvess.network';
-  }
-
-
 }

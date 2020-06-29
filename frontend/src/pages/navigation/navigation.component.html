@@ -148,7 +148,6 @@
           <div class="invalid-feedback ml-1 mb-1" *ngIf="authForm.controls['password']?.errors?.maxlength">Die Eingabe darf maximal 255 Zeichen lang sein.</div>
         </div>
       </div>
-
       <button type="button" class="btn btn-link text-info" *ngIf="this.constants.authAction=='login'" (click)="setAction('register')">Noch kein Bürger der Smart City? Jetzt registrieren!</button>
       <button type="button" class="btn btn-link text-info" *ngIf="this.constants.authAction=='register'" (click)="setAction('login')">Bereits Bürger der Smart City? Jetzt anmelden!</button>
     </form>

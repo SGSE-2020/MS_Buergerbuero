@@ -1,11 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { GlobalConstantService } from '../../services/global-constant.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+
+import { GlobalConstantService } from '../../services/global-constant.service';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
@@ -42,8 +43,7 @@ export class UserAccountComponent implements OnInit {
    * Subscribes the router action to get current modal
    */
   ngOnInit(): void {
-    // 9.214.643,25‬ = 9MB
-    this.maxFileSize = 9214644;
+    this.maxFileSize = 9214644; // 9.214.643,25‬ = 9MB
     this.announcementFormImage = this.constants.defaultAnnouncementPreview;
     this.foundObjectFormImage = this.constants.defaultAnnouncementPreview;
     this.userDataIsSubmitted = false;
@@ -350,8 +350,7 @@ export class UserAccountComponent implements OnInit {
         answer2: this.createFoundObjectForm.value.answer2,
         answer3: this.createFoundObjectForm.value.answer3
       };
-
-      // todo add image while creating found object
+      
       this.sendFoundObjectToServer(foundObject);
     }
   }

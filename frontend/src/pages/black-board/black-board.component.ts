@@ -1,14 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import { GlobalConstantService } from '../../services/global-constant.service';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../services/notification.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { Subscription } from "rxjs";
-import { NavigationEnd, Router } from "@angular/router";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+import { GlobalConstantService } from '../../services/global-constant.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-black-board',

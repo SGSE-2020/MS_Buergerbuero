@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalConstantService } from '../../services/global-constant.service';
-import {NotificationService} from '../../services/notification.service';
-import {NavigationEnd, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import { NotificationService } from '../../services/notification.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-panel',
