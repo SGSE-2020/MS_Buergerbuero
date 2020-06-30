@@ -48,7 +48,7 @@ exports.initializeConsumer = () => {
         }, (exchangeRes) => {
             console.log("AMQP exchange '" + exchangeRes.name + "' established.");
 
-            connection.queue('', queue => {
+            connection.queue('buergerbuero_nutzerVerstorben', queue => {
                 console.log("AMQP queue '" + queue.name + "' is open.");
 
                 queue.bind(process.env.CONSUME_EXCHANGE, process.env.QUEUE_USER_DEAD, callback => {
