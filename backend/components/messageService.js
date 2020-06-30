@@ -10,6 +10,8 @@ const connectionObj = {
     vhost: '/'
 };
 
+const firebase = require("firebase-admin");
+
 exports.initializePublisher = () => {
     const connection = amqp.createConnection(connectionObj);
 
@@ -56,17 +58,27 @@ exports.initializeConsumer = () => {
                 queue.subscribe((msg) => {
                     console.log("AMQP: Consume message: " + JSON.stringify(msg));
                     if(msg !== undefined){
-                        userCtrl.deactivate({uid: msg.patientID}).then((dbResult) => {
-                           if(dbResult){
-                               console.log("Deactivated User with id: " + msg.patientID);
-                               const data = {
-                                   uid: msg.patientID,
-                                   message: 'User was deactivated.'
-                               };
-                               publishToExchange(process.env.QUEUE_USER_DEACTIVATE, data);
-                           } else {
-                               console.error("ERROR: Cannot deactivate user in database");
-                           }
+                        firebase.auth().updateUser(msg.patientID, {
+                            disabled: true
+                        }).then(function(userRecord) {
+                            if(userRecord.disabled === true){
+                                userCtrl.deactivate({uid: msg.patientID}).then(dbResult => {
+                                    if(dbResult !== "Not deactivated") {
+                                        console.log("Deactivated User with id: " + msg.patientID);
+                                        const data = {
+                                            uid: msg.patientID,
+                                            message: 'User was deactivated.'
+                                        };
+                                        publishToExchange(process.env.QUEUE_USER_DEACTIVATE, data);
+                                    } else {
+                                        console.error("ERROR: Cannot deactivate user in database");
+                                    }
+                                });
+                            } else {
+                                console.error("ERROR: Cannot deactivate user in firebase");
+                            }
+                        }).catch(function(err) {
+                            console.error("ERROR: " + err.message);
                         });
                     } else {
                         console.error("AMQP: Message malformed");

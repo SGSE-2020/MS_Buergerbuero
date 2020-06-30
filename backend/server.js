@@ -11,7 +11,6 @@ const util = require('util');
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
     databaseURL: "https://smart-city-ss2020.firebaseio.com",
-
 });
 
 fbClient.initializeApp({
