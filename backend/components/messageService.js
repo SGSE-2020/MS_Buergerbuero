@@ -56,7 +56,7 @@ exports.initializeConsumer = () => {
                 });
 
                 queue.subscribe((msg) => {
-                    console.log("AMQP: Consume message: " + JSON.stringify(msg));
+                    console.log("AMQP: Consume message from exchange '" + process.env.CONSUME_EXCHANGE +"'. Routing Key: '" + process.env.QUEUE_USER_DEAD + "'. Message: " + JSON.stringify(msg));
                     if(msg !== undefined){
                         firebase.auth().updateUser(msg.patientID, {
                             disabled: true

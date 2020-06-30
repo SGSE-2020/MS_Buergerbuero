@@ -36,7 +36,7 @@
           Anmeldung
         </button >
         <div ngbDropdown *ngIf="this.constants.userRole!=0">
-          <button class="btn btn-outline-light mr-1 ml-1" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.firebaseUser.displayName}} <mat-icon>account_circle</mat-icon></button>
+          <button class="btn btn-outline-light mr-1 ml-1 full-width" id="useraccount-dropdown" ngbDropdownToggle>{{this.constants.firebaseUser.displayName}} <mat-icon>account_circle</mat-icon></button>
           <div ngbDropdownMenu aria-labelledby="useraccount-dropdown">
             <button ngbDropdownItem (click)="this.constants.performLogout()">Logout</button>
           </div>
