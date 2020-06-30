@@ -1,23 +1,78 @@
 const amqp = require('amqp');
+const userCtrl = require("../database/controller/user.controller");
 let publishExchange = null;
 
+const connectionObj = {
+    host: 'ms-rabbitmq',
+    port: 5672,
+    login: 'testmanager',
+    password: 'sgseistgeil',
+    vhost: '/'
+};
+
 exports.initializePublisher = () => {
-    const connection = amqp.createConnection({
-        host: 'ms-rabbitmq',
-        port: 5672,
-        login: 'testmanager',
-        password: 'sgseistgeil',
-        vhost: '/'
-    });
+    const connection = amqp.createConnection(connectionObj);
 
     connection.on('ready', () => {
-        console.log("AMQP connection established.");
-        publishExchange = connection.exchange(process.env.MESSAGE_EXCHANGE, {
+        console.log("AMQP connection for publisher established.");
+
+        publishExchange = connection.exchange(process.env.PUBLISH_EXCHANGE, {
             type: process.env.MESSAGE_EXCHANGE_TYPE,
             durable: true,
             autoDelete: false
         }, (exchangeRes) => {
             console.log("AMQP exchange '" + exchangeRes.name + "' established.");
+        });
+
+        publishExchange.on('error', error => {
+            console.error("AMQP Exchange error: " + error.message);
+        });
+    });
+
+    connection.on('error', error => {
+        console.error("AMQP Connection error: " + error.message);
+    })
+};
+
+exports.initializeConsumer = () => {
+    const connection = amqp.createConnection(connectionObj);
+
+    connection.on('ready', () => {
+        console.log("AMQP connection for consumer established.");
+        connection.exchange(process.env.CONSUME_EXCHANGE, {
+            type: process.env.MESSAGE_EXCHANGE_TYPE,
+            durable: true,
+            autoDelete: false
+        }, (exchangeRes) => {
+            console.log("AMQP exchange '" + exchangeRes.name + "' established.");
+
+            connection.queue('', queue => {
+                console.log("AMQP queue '" + queue.name + "' is open.");
+
+                queue.bind(process.env.CONSUME_EXCHANGE, process.env.QUEUE_USER_DEAD, callback => {
+                    console.log("AMQP queue '" + queue.name + "' is bound to exchange: " + exchangeRes.name + ".");
+                });
+
+                queue.subscribe((msg) => {
+                    console.log("AMQP: Consume message: " + JSON.stringify(msg));
+                    if(msg !== undefined){
+                        userCtrl.deactivate({uid: msg.patientID}).then((dbResult) => {
+                           if(dbResult){
+                               console.log("Deactivated User with id: " + msg.patientID);
+                               const data = {
+                                   uid: msg.patientID,
+                                   message: 'User was deactivated.'
+                               };
+                               publishToExchange(process.env.QUEUE_USER_DEACTIVATE, data);
+                           } else {
+                               console.error("ERROR: Cannot deactivate user in database");
+                           }
+                        });
+                    } else {
+                        console.error("AMQP: Message malformed");
+                    }
+                });
+            });
         });
 
         publishExchange.on('error', error => {
