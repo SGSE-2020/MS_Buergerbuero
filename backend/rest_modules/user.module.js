@@ -116,14 +116,15 @@ module.exports = function (app, firebase, fbClient, messageService) {
     });
 
     /**
-     * Update image of existing user
+     * Update existing user
      * @param uid Uid of of user the that should be updated
-     * @param body Object containing new image string
+     * @param body User object that should be updated in the database
      * @returns Status object with user param if successful
      */
     app.put("/user/:uid", function (req, res) {
-        console.log('REST CALL: put -> /user/image/:uid');
+        console.log('REST CALL: put -> /user/:uid');
 
+        let userObj = req.body
         let responseObj = {};
 
         firebase.auth().updateUser(req.params.uid, {
@@ -142,21 +143,38 @@ module.exports = function (app, firebase, fbClient, messageService) {
                 phone: userObj.phone
             };
 
-
+            userCtrl.update(user).then (databaseResult => {
+                if(databaseResult !== "Not updated"){
+                    responseObj = rb.success("User", "was updated", {
+                        user: databaseResult
+                    });
+                    const data = {
+                        uid: req.params.uid,
+                        message: 'User was updated'
+                    };
+                    
+                    if(messageService != undefined && messageService != null){
+                        messageService.publishToExchange(process.env.QUEUE_USER_CHANGED, data);
+                    }
+                } else {
+                    responseObj = rb.failure("updating", "user");
+                }
+                res.send(responseObj);
+            })
          }).catch(function(err) {
             responseObj = rb.error(err);
             res.send(responseObj);
          });
     });
-
+     
     /**
-     * Update existing user
+     * Delete an image from an user in the database
      * @param uid Uid of of user the that should be updated
-     * @param body User object that should be updated in the database
+     * @param body Obbject containing image that should be updated in the database
      * @returns Status object with user param if successful
      */
     app.put("/user/image/:uid", function (req, res) {
-        console.log('REST CALL: put -> /user/:uid');
+        console.log('REST CALL: put -> /user/image/:uid');
 
         let responseObj = {};
 
