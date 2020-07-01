@@ -21,12 +21,15 @@
   - Mitarbeiter
     - Erstellten Aushang freigeben 
     - Aushang entfernen
+      
   - Andere Dienstleister (Microservices)
     - Nutzerdaten anfragen
     - Nutzertoken verifizieren
     - Aushang abgeben
     - Aushang wieder entfernen
-            
+  - Admin
+    - Mitarbeiter einstellen
+    - Mitarbeiter kündigen
 ## Technologie:
 
 - Node JS Backend Server (mit mehreren Komponenten)
@@ -49,3 +52,20 @@
 - Bürgerdaten haben sich geändert
 - Bürger ist zugezogen (Neue Registrierung)
 - Nutzerkonto wurde deaktiviert (weggezogen oder für tot erklärt)
+
+## Testdaten
+
+#### Mitarbeiter
+
+```
+E-Mail: mitarbeiter@buergerbuero.de
+Passwort: 123456
+```
+
+#### Admin
+
+```
+E-Mail: admin@buergerbuero.de
+Passwort: 123456
+```
+

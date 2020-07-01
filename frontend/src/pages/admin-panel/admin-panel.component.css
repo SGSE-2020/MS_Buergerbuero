@@ -2,3 +2,9 @@ mat-icon:hover{
   color: #138294;
   cursor: pointer;
 }
+
+.table-scroll {
+  position: relative;
+  height: 75vh;
+  overflow: auto;
+}

@@ -74,18 +74,32 @@ export class WorkComponent implements OnInit {
     this.http.put(this.constants.host + '/announcement/activate/' +
       announcement.id, {}).subscribe((val: any) => {
         if (val.status === 'success'){
-          const elementIndex = this.inactiveAnnouncements.indexOf(this.currentAnnouncement);
-          this.inactiveAnnouncements.splice(elementIndex, 1);
-          this.notificationService.showSuccess('Aushang wurde erfolgreich abgelehnt.',
+          let removeIndex;
+          if (announcement.type === 'announcement'){
+            removeIndex = this.inactiveAnnouncements.map(item => {
+              return item.id;
+            }).indexOf(announcement.id);
+            if (removeIndex !== -1){
+              this.inactiveAnnouncements.splice(removeIndex, 1);
+            }
+          } else {
+            removeIndex = this.inactiveFoundObjects.map(item => {
+              return item.id;
+            }).indexOf(announcement.id);
+            if (removeIndex !== -1){
+              this.inactiveFoundObjects.splice(removeIndex, 1);
+            }
+          }
+          this.notificationService.showSuccess('Aushang wurde erfolgreich akzeptiert.',
             'toast-top-left');
           this.modalService.dismissAll();
         } else {
-          this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+          this.notificationService.showError('Aktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
             'toast-top-left');
         }
       },
       error => {
-        this.notificationService.showError('Deaktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
+        this.notificationService.showError('Aktivieren des Aushangs nicht möglich. Bitte versuchen Sie es später erneut.',
           'toast-top-left');
       });
   }

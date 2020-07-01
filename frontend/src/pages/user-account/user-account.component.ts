@@ -350,7 +350,6 @@ export class UserAccountComponent implements OnInit {
         answer2: this.createFoundObjectForm.value.answer2,
         answer3: this.createFoundObjectForm.value.answer3
       };
-      
       this.sendFoundObjectToServer(foundObject);
     }
   }
